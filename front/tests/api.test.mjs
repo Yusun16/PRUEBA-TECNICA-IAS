@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { reconcile, ApiError } from "../src/api.js";
+import { reconcile, authenticate, ApiError } from "../src/api.js";
 import {
   formatAmount,
   formatTime,
@@ -9,6 +9,48 @@ import {
 } from "../src/presentation.js";
 
 const credentials = { username: "n3", password: "test-secret" };
+
+test("login validates identity with a read-only authenticated request", async () => {
+  const identity = await authenticate(credentials, async (url, options) => {
+    assert.equal(url, "/api/support/session");
+    assert.equal(options.method, "GET");
+    assert.equal(options.credentials, "omit");
+    assert.equal(
+      options.headers.Authorization,
+      `Basic ${btoa("n3:test-secret")}`,
+    );
+    return Response.json({ username: "n3", role: "SUPPORT" });
+  });
+  assert.equal(identity.username, "n3");
+});
+
+test("login rejects invalid credentials, roles, network loss and invalid identity", async () => {
+  await assert.rejects(authenticate(null), { status: 400 });
+  for (const status of [401, 403, 503]) {
+    await assert.rejects(
+      authenticate(credentials, async () =>
+        Response.json({ detail: "secret" }, { status }),
+      ),
+      (error) => {
+        assert.equal(error.status, status);
+        assert.ok(!error.message.includes("secret"));
+        return true;
+      },
+    );
+  }
+  await assert.rejects(
+    authenticate(credentials, async () => {
+      throw new TypeError("network");
+    }),
+    /validar/,
+  );
+  await assert.rejects(
+    authenticate(credentials, async () =>
+      Response.json({ username: "n3", role: "VIEWER" }),
+    ),
+    /confirmar/,
+  );
+});
 
 test("session timestamps use the Bogota time zone", () => {
   assert.match(formatTime(new Date("2026-10-19T12:00:00Z")), /07:00:00/);

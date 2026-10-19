@@ -7,6 +7,8 @@ const root = fileURLToPath(new URL(".", import.meta.url));
 const assets = new Map([
   ["/", ["index.html", "text/html; charset=utf-8"]],
   ["/index.html", ["index.html", "text/html; charset=utf-8"]],
+  ["/login", ["index.html", "text/html; charset=utf-8"]],
+  ["/dashboard", ["index.html", "text/html; charset=utf-8"]],
   ["/styles.css", ["styles.css", "text/css; charset=utf-8"]],
   ["/favicon.svg", ["favicon.svg", "image/svg+xml"]],
   ["/src/app.js", ["src/app.js", "text/javascript; charset=utf-8"]],
@@ -50,12 +52,14 @@ export function createAppServer({
     try {
       const url = new URL(req.url, "http://localhost");
       if (url.pathname.startsWith("/api/")) {
-        if (req.method !== "POST")
+        const session = url.pathname === "/api/support/session";
+        if (req.method !== (session ? "GET" : "POST"))
           return problem(res, 405, "METHOD_NOT_ALLOWED");
         if (
-          !/^\/api\/support\/payments\/[A-Za-z0-9_-]{1,40}\/reconcile$/.test(
-            url.pathname,
-          ) ||
+          (!session &&
+            !/^\/api\/support\/payments\/[A-Za-z0-9_-]{1,40}\/reconcile$/.test(
+              url.pathname,
+            )) ||
           url.search
         )
           return problem(res, 404, "NOT_FOUND");
@@ -71,7 +75,7 @@ export function createAppServer({
         )
           return problem(res, 400, "BODY_NOT_SUPPORTED");
         const response = await fetch(new URL(url.pathname, upstream), {
-          method: "POST",
+          method: session ? "GET" : "POST",
           headers: {
             Accept: "application/json",
             ...(req.headers.authorization
@@ -81,7 +85,7 @@ export function createAppServer({
           redirect: "error",
           signal: AbortSignal.timeout(timeout),
         });
-        // Do not forward WWW-Authenticate: browsers should use the explicit access dialog.
+        // Keep authentication in the explicit login form, not the browser's native Basic dialog.
         if (!response.ok)
           return problem(res, response.status, "RECONCILIATION_FAILED");
         const body = await response.text();

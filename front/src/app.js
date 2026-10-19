@@ -1,4 +1,4 @@
-import { reconcile } from "./api.js";
+import { reconcile, authenticate } from "./api.js";
 import {
   referencePattern,
   outcomes,
@@ -18,7 +18,7 @@ const state = {
   manual: 0,
   lastReference: null,
 };
-const dialog = $("#connection-dialog");
+const initialResult = $("#result-content").cloneNode(true);
 
 function node(tag, className, text) {
   const element = document.createElement(tag);
@@ -27,24 +27,32 @@ function node(tag, className, text) {
   return element;
 }
 
-function openConnection() {
-  $("#username").value = state.credentials?.username ?? "";
+function signOut(message = "") {
+  state.credentials = null;
+  state.history = [];
+  state.total = 0;
+  state.resolved = 0;
+  state.manual = 0;
+  state.lastReference = null;
+  $("#reference").value = "";
+  $("#reference").removeAttribute("aria-invalid");
+  $("#form-error").hidden = true;
+  $("#result-content").replaceWith(initialResult.cloneNode(true));
+  $("#result-label").textContent = "SIN EJECUTAR";
+  updateActivity();
+  $("#dashboard").hidden = true;
+  $("#login-view").hidden = false;
+  $("#username").value = "";
   $("#password").value = "";
-  $("#connection-error").hidden = true;
-  $("#disconnect").hidden = !state.credentials;
-  dialog.showModal();
-}
-
-function setCredentials(credentials) {
-  state.credentials = credentials;
-  $("#connection-label").textContent = credentials
-    ? "Acceso configurado"
-    : "Configurar acceso";
-  $("#operator-name").textContent = credentials
-    ? credentials.username
-    : "Sin credenciales";
-  $("#connection-dot").classList.toggle("configured", Boolean(credentials));
-  $("#password").value = "";
+  $("#password").type = "password";
+  $("#password-toggle").textContent = "Mostrar";
+  $("#password-toggle").setAttribute("aria-pressed", "false");
+  $("#password-toggle").setAttribute("aria-label", "Mostrar contrase\u00f1a");
+  $("#operator-name").textContent = "";
+  $("#login-error").textContent = message;
+  $("#login-error").hidden = !message;
+  history.replaceState(null, "", "/login");
+  document.title = "PagoClaro | Iniciar sesi\u00f3n";
 }
 
 function changeView(view) {
@@ -89,7 +97,7 @@ function setBusy(busy) {
   state.busy = busy;
   $("#submit-button").disabled = busy;
   $("#reference").disabled = busy;
-  $("#connection-open").disabled = busy;
+  $("#logout-button").disabled = busy;
   $("#submit-label").textContent = busy ? "Conciliando…" : "Conciliar pago";
   $("#submit-icon").textContent = busy ? "···" : "→";
   $("#result-region").setAttribute("aria-busy", String(busy));
@@ -258,7 +266,7 @@ $("#reconcile-form").addEventListener("submit", async (event) => {
     return;
   }
   if (!state.credentials) {
-    openConnection();
+    signOut();
     return;
   }
   $("#form-error").hidden = true;
@@ -266,6 +274,7 @@ $("#reconcile-form").addEventListener("submit", async (event) => {
   setBusy(true);
   showLoading(reference);
   let entry;
+  let accessLost = false;
   try {
     const result = await reconcile(reference, state.credentials);
     entry = { reference, result, date: new Date() };
@@ -275,39 +284,80 @@ $("#reconcile-form").addEventListener("submit", async (event) => {
   } catch (error) {
     entry = { reference, date: new Date() };
     showError(reference, error);
-    if (error.status === 401) setCredentials(null);
+    if (error.status === 401 || error.status === 403) {
+      accessLost = true;
+      signOut("Tu acceso ya no es v\u00e1lido. Inicia sesi\u00f3n de nuevo.");
+    }
   } finally {
-    state.lastReference = reference;
-    state.total++;
-    state.history.unshift(entry);
-    state.history = state.history.slice(0, 30);
-    updateActivity();
+    if (!accessLost) {
+      state.lastReference = reference;
+      state.total++;
+      state.history.unshift(entry);
+      state.history = state.history.slice(0, 30);
+      updateActivity();
+    }
     setBusy(false);
   }
 });
 
-$("#connection-open").addEventListener("click", openConnection);
-$("#connection-close").addEventListener("click", () => dialog.close());
-$("#connection-form").addEventListener("submit", (event) => {
+$("#login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const username = $("#username").value.trim();
-  const password = $("#password").value;
-  if (!username || username.includes(":") || !password) {
-    $("#connection-error").textContent =
-      "Ingresa un usuario sin dos puntos y una contraseña.";
-    $("#connection-error").hidden = false;
-    return;
+  if ($("#login-button").disabled) return;
+  const credentials = {
+    username: $("#username").value.trim(),
+    password: $("#password").value,
+  };
+  $("#login-error").hidden = true;
+  $("#login-button").disabled = true;
+  $("#username").disabled = true;
+  $("#password").disabled = true;
+  $("#password-toggle").disabled = true;
+  $("#login-button-label").textContent = "Validando acceso...";
+  try {
+    const identity = await authenticate(credentials);
+    state.credentials = credentials;
+    $("#operator-name").textContent = identity.username;
+    $("#connection-dot").classList.add("configured");
+    $("#password").value = "";
+    $("#login-view").hidden = true;
+    $("#dashboard").hidden = false;
+    changeView("reconcile");
+    history.replaceState(null, "", "/dashboard");
+    document.title = "PagoClaro | Conciliaci\u00f3n de pagos";
+    $("#main").focus();
+  } catch (error) {
+    $("#password").value = "";
+    $("#login-error").textContent = error.message;
+    $("#login-error").hidden = false;
+  } finally {
+    $("#login-button").disabled = false;
+    $("#username").disabled = false;
+    $("#password").disabled = false;
+    $("#password-toggle").disabled = false;
+    $("#login-button-label").textContent = "Iniciar sesi\u00f3n";
   }
-  setCredentials({ username, password });
-  dialog.close();
 });
-$("#disconnect").addEventListener("click", () => {
-  setCredentials(null);
-  dialog.close();
+$("#logout-button").addEventListener("click", () => {
+  if (!state.busy) {
+    signOut();
+    $("#username").focus();
+  }
 });
-dialog.addEventListener("close", () => {
-  $("#password").value = "";
+$("#password-toggle").addEventListener("click", () => {
+  const visible = $("#password").type === "password";
+  $("#password").type = visible ? "text" : "password";
+  $("#password-toggle").textContent = visible ? "Ocultar" : "Mostrar";
+  $("#password-toggle").setAttribute("aria-pressed", String(visible));
+  $("#password-toggle").setAttribute(
+    "aria-label",
+    visible ? "Ocultar contrase\u00f1a" : "Mostrar contrase\u00f1a",
+  );
 });
+window.addEventListener("popstate", () =>
+  history.replaceState(null, "", state.credentials ? "/dashboard" : "/login"),
+);
+signOut();
+
 document
   .querySelectorAll("[data-view]")
   .forEach((button) =>

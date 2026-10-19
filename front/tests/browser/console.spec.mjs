@@ -12,36 +12,32 @@ const corrected = {
 };
 
 async function connect(page) {
-  await page.getByRole("button", { name: "Configurar acceso" }).click();
-  await page.getByLabel("Usuario", { exact: true }).fill("n3");
-  await page.getByLabel("Contraseña", { exact: true }).fill("demo-change-me");
-  await page.getByRole("button", { name: "Guardar acceso" }).click();
+  await page.route("**/api/support/session", (route) =>
+    route.fulfill({ json: { username: "n3", role: "SUPPORT" } }),
+  );
+  await page.locator("#username").fill("n3");
+  await page.locator("#password").fill("demo-change-me");
+  await page.locator("#login-button").click();
+  await expect(page.locator("#dashboard")).toBeVisible();
   await page.locator("#reference").fill("PAY-BX17");
 }
 
-test("initial state is honest and configuring credentials does not reconcile", async ({
+test("login hides the dashboard and validates access without payment commands", async ({
   page,
 }) => {
   let commands = 0;
-  await page.route("**/api/**", (route) => {
+  await page.route("**/api/support/payments/**", (route) => {
     commands++;
     return route.fulfill({ json: corrected });
   });
-  await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "La claridad empieza aquí" }),
-  ).toBeVisible();
-  await expect(page.locator("#reference")).toHaveValue("");
-  await expect(page.locator("body")).not.toContainText("PAY-BX17");
-  await page.locator("#reference").fill("PAY-BX17");
-  await page
-    .getByRole("button", { name: "Conciliar pago", exact: true })
-    .click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByLabel("Usuario", { exact: true }).fill("n3");
-  await page.getByLabel("Contraseña", { exact: true }).fill("demo-change-me");
-  await page.getByRole("button", { name: "Guardar acceso" }).click();
-  await page.locator("#reference").fill("PAY-BX17");
+  await page.goto("/dashboard");
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.locator("#login-view")).toBeVisible();
+  await expect(page.locator("#dashboard")).toBeHidden();
+  await expect(page.locator("#username")).toHaveValue("");
+  await expect(page.locator("#password")).toHaveValue("");
+  await connect(page);
+  await expect(page).toHaveURL(/\/dashboard$/);
   expect(commands).toBe(0);
   expect(
     await page.evaluate(() => [localStorage.length, sessionStorage.length]),
@@ -190,15 +186,20 @@ for (const [status, text] of [
     await page
       .getByRole("button", { name: "Conciliar pago", exact: true })
       .click();
-    await expect(
-      page.getByRole("heading", { name: "No pudimos confirmar el resultado" }),
-    ).toBeVisible();
-    await expect(page.locator("#result-content")).toContainText(text);
-    await expect(page.locator("body")).not.toContainText("secret SQL password");
-    if (status === 401)
+    if (status === 401) {
+      await expect(page.locator("#login-view")).toBeVisible();
+      await expect(page.locator("#dashboard")).toBeHidden();
+      await expect(page.locator("#login-error")).toBeVisible();
+      await expect(page.locator("#all-activity tbody tr")).toHaveCount(0);
+    } else {
       await expect(
-        page.getByRole("button", { name: "Configurar acceso" }),
+        page.getByRole("heading", {
+          name: "No pudimos confirmar el resultado",
+        }),
       ).toBeVisible();
+      await expect(page.locator("#result-content")).toContainText(text);
+    }
+    await expect(page.locator("body")).not.toContainText("secret SQL password");
   });
 }
 
@@ -207,14 +208,15 @@ test("mobile layout is usable without horizontal page overflow", async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(page.getByLabel("Referencia del pago")).toBeVisible();
+  await expect(page.locator("#login-view")).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
   await connect(page);
-  await expect(page.getByRole("dialog")).not.toBeVisible();
+  await expect(page.locator("#login-view")).toBeHidden();
+  await expect(page.getByLabel("Referencia del pago")).toBeVisible();
   await page.screenshot({ path: "test-results/mobile.png", fullPage: true });
 });
 
@@ -225,9 +227,49 @@ test("desktop renders without console or resource errors", async ({ page }) => {
     if (message.type() === "error") errors.push(message.text());
   });
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Conciliación de pagos." }),
-  ).toBeVisible();
+  await expect(page.locator("#login-title")).toBeVisible();
   await page.screenshot({ path: "test-results/desktop.png", fullPage: true });
   expect(errors).toEqual([]);
+});
+
+for (const status of [401, 403, 503]) {
+  test(
+    "login HTTP " + status + " never reveals the dashboard",
+    async ({ page }) => {
+      await page.route("**/api/support/session", (route) =>
+        route.fulfill({ status, json: { detail: "secret backend error" } }),
+      );
+      await page.goto("/login");
+      await page.locator("#username").fill("n3");
+      await page.locator("#password").fill("incorrect");
+      await page.locator("#login-button").click();
+      await expect(page.locator("#login-error")).toBeVisible();
+      await expect(page.locator("#dashboard")).toBeHidden();
+      await expect(page.locator("#password")).toHaveValue("");
+      await expect(page.locator("body")).not.toContainText(
+        "secret backend error",
+      );
+    },
+  );
+}
+
+test("logout and reload remove access and session data", async ({ page }) => {
+  await page.route("**/api/support/payments/**", (route) =>
+    route.fulfill({ json: corrected }),
+  );
+  await page.goto("/");
+  await connect(page);
+  await page.locator("#submit-button").click();
+  await expect(page.locator("#metric-total")).toHaveText("1");
+  await page.locator("#logout-button").click();
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.locator("#dashboard")).toBeHidden();
+  await expect(page.locator("#reference")).toHaveValue("");
+  await expect(page.locator("#all-activity tbody tr")).toHaveCount(0);
+  await expect(page.locator("#result-content")).not.toContainText("PAY-BX17");
+  await connect(page);
+  await expect(page.locator("#metric-total")).toHaveText("0");
+  await page.reload();
+  await expect(page).toHaveURL(/\/login$/);
+  await expect(page.locator("#dashboard")).toBeHidden();
 });

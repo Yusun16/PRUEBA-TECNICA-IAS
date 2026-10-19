@@ -56,7 +56,7 @@ try {
     }
     Write-Host ''
     Write-Host 'PagoClaro listo: http://127.0.0.1:5173' -ForegroundColor Green
-    Write-Host 'Abra Configurar acceso e ingrese sus credenciales. La referencia del pago se introduce manualmente.'
+    Write-Host 'Inicie sesion con sus credenciales para entrar al dashboard. La referencia del pago se introduce manualmente.'
     Write-Host 'Ctrl+C detiene los dos servicios. Logs en front\.tools.'
     while (-not $frontendProcess.HasExited -and -not $backendProcess.HasExited) { Start-Sleep -Seconds 1 }
 } finally {

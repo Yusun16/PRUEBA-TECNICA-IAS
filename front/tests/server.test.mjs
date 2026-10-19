@@ -49,6 +49,31 @@ test("public assets disclose neither sample payment references nor demo credenti
   }
 });
 
+test("login endpoint forwards only GET and returns the verified identity", async (context) => {
+  const upstream = await start(
+    createServer((req, res) => {
+      assert.equal(req.method, "GET");
+      assert.equal(req.url, "/api/support/session");
+      assert.equal(req.headers.authorization, "Basic test");
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify({ username: "n3", role: "SUPPORT" }));
+    }),
+    context,
+  );
+  const url = await start(createAppServer({ backend: upstream }), context);
+  const response = await fetch(url + "/api/support/session", {
+    headers: { Authorization: "Basic test" },
+  });
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).role, "SUPPORT");
+  assert.equal(
+    (await fetch(url + "/api/support/session", { method: "POST" })).status,
+    405,
+  );
+  for (const route of ["/login", "/dashboard"])
+    assert.equal((await fetch(url + route)).status, 200);
+});
+
 test("proxies only valid commands and forwards explicit auth without cookies", async (context) => {
   let received;
   const upstream = await start(

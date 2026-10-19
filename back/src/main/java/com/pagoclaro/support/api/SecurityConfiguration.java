@@ -15,6 +15,7 @@ public class SecurityConfiguration {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/api/support/session").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.POST, "/api/support/payments/*/reconcile").hasRole("SUPPORT")
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults()).build();

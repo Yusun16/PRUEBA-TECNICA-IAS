@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -31,6 +33,24 @@ class ReconciliationIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired MockMvc mvc;
     @MockitoSpyBean PaymentRepository repository;
+
+    @Test void loginValidatesCredentialsWithoutChangingPayments() throws Exception {
+        mvc.perform(get("/api/support/session")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/support/session").with(httpBasic("n3", "incorrect")))
+                .andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/support/session").with(httpBasic("n3", "demo-change-me")))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.username").value("n3"))
+                .andExpect(jsonPath("$.role").value("SUPPORT"))
+                .andExpect(header().string("Cache-Control", "no-store"));
+        assertThat(count("support_audit", 2)).isZero();
+        assertThat(count("ledger_entry", 2)).isEqualTo(2);
+        assertThat(version(2)).isZero();
+    }
+
+    @Test @WithMockUser(roles = "VIEWER")
+    void loginRequiresSupportRole() throws Exception {
+        mvc.perform(get("/api/support/session")).andExpect(status().isForbidden());
+    }
 
     @BeforeEach
     void resetData() {

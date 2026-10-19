@@ -48,6 +48,8 @@ Primera respuesta de BX17:
 
 `POST /api/support/payments/{reference}/reconcile` acepta entre 1 y 40 letras ASCII, números, `_` o `-`. No requiere cuerpo. Revisión manual es un resultado de negocio HTTP 200; **no significa que el pago haya sido corregido**. Errores: 400 referencia inválida, 401 sin autenticación, 403 sin rol SUPPORT, 404 pago inexistente, 409 bloqueo ocupado, 503 fallo transaccional/persistencia. Las respuestas de error usan Problem Detail y no incluyen SQL ni stack traces.
 
+`GET /api/support/session` valida credenciales Basic y rol SUPPORT para el login del frontend. Devuelve únicamente `{ "username": "...", "role": "SUPPORT" }` con `Cache-Control: no-store`; no consulta ni modifica pagos ni crea una sesión de servidor. Sin credenciales o con contraseña inválida: 401; con un rol sin acceso: 403. Todos los comandos siguen validando la autorización por separado.
+
 ## Política implementada
 
 | Evidencia e historial | Acción |

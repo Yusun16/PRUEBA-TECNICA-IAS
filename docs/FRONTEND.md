@@ -22,8 +22,8 @@ Fecha: 19 de octubre de 2026, America/Bogota.
 
 | Verificación | Resultado |
 |---|---|
-| `npm test` | 14 pruebas aprobadas, sin fallos. |
-| `npm run test:e2e` | 10 pruebas aprobadas en Chrome real. |
+| `npm test` | 17 pruebas aprobadas, sin fallos. |
+| `npm run test:e2e` | 14 pruebas aprobadas en Chrome real. |
 | `start-local.ps1 -Check` | Frontend HTTP 200; backend HTTP 401 sin credenciales; ambos procesos cerrados. |
 | Integración Chrome → Node → Spring Boot | Seis comandos reales verificados sobre H2 recién iniciado. |
 | Escritorio y móvil | Capturas revisadas; móvil de 390 px sin desbordamiento horizontal. |
@@ -58,3 +58,13 @@ La primera interfaz incluía referencias y etiquetas del PDF como atajos estáti
 Una prueba verifica que HTML y módulos públicos no contengan las referencias del enunciado ni la contraseña demo. Las pruebas de navegador ahora introducen referencias y credenciales manualmente. Se comprobó sobre los servicios en ejecución que el proxy en 5173 y Java en 8080 responden HTTP 401 al POST sin credenciales. Esto verifica ese control de acceso; no constituye una auditoría completa de seguridad.
 
 Los datos del PDF permanecen en documentación y fixtures de laboratorio, que el servidor web no expone. Las capturas de integración anteriores documentan la versión inicial; [la pantalla actual](evidencia/frontend-acceso-actual.png) muestra el formulario vacío sin atajos de pago.
+
+## Login validado y entrada al dashboard
+
+La pantalla inicial ahora es `/login`; el dashboard está oculto en el HTML inicial y solo se muestra después de verificar credenciales y rol con Java. La ruta `/dashboard` sin acceso en memoria vuelve a `/login`. El control visual no sustituye la seguridad de la API: tanto el GET de acceso como cada conciliación requieren rol SUPPORT en Spring Security.
+
+La validación de acceso usa un GET independiente y no ejecuta conciliaciones ni consulta pagos. No se implementan sesiones persistentes ni cookies; la autorización Basic se envía explícitamente a Java en cada solicitud. Cerrar sesión o recibir 401/403 de una conciliación limpia credenciales, resultado, referencia, contadores e historial. Recargar requiere autenticarse de nuevo.
+
+Verificación adicional: 25 pruebas Java aprobadas, incluyendo acceso anónimo, contraseña incorrecta, rol no autorizado, identidad válida y ausencia de efectos sobre pagos. En navegador se probaron acceso directo a dashboard, errores de login, entrada válida, logout y recarga. Contra la aplicación real se verificó contraseña incorrecta → error, credenciales válidas → dashboard y logout → login, sin ejecutar comandos de pago.
+
+Capturas actuales: [login escritorio](evidencia/login-escritorio.png), [login móvil](evidencia/login-movil.png) y [dashboard tras autenticación](evidencia/dashboard-autenticado.png). Los servicios locales se reiniciaron con el nuevo backend; H2 cargó nuevamente los datos de muestra.

@@ -40,7 +40,7 @@ Desde la raíz, en este equipo con Node instalado y las herramientas Java portá
 powershell -ExecutionPolicy Bypass -File .\front\scripts\start-local.ps1
 ```
 
-Abre **http://127.0.0.1:5173**, pulsa **Configurar acceso**, introduce tus credenciales y guarda el acceso. Introduce manualmente la referencia que necesitas conciliar. El comando inicia frontend y backend; Ctrl+C detiene ambos. Usa `-Build` para recompilar y probar Java antes de iniciar. Los puertos 8080 y 5173 deben estar libres.
+Abre **http://127.0.0.1:5173/login**, introduce tus credenciales y pulsa **Iniciar sesión**. Java valida el acceso antes de mostrar el dashboard. Introduce allí la referencia que necesitas conciliar. **Cerrar sesión** borra el acceso y los datos locales de esta ventana. El comando inicia frontend y backend; Ctrl+C detiene ambos. Usa `-Build` para recompilar y probar Java antes de iniciar. Los puertos 8080 y 5173 deben estar libres.
 
 La interfaz permite ejecutar conciliaciones, comparar el débito neto anterior/final y revisar la actividad de esta ventana. No publica referencias de ejemplo ni credenciales. Los resultados provienen de la API real. La revisión manual se diferencia de una corrección aplicada.
 
@@ -67,6 +67,6 @@ npm start
 
 La interfaz inicia en `http://127.0.0.1:5173` y la API en `http://127.0.0.1:8080`. Los ejemplos HTTP están en [back/requests.http](back/requests.http).
 
-El backend tiene 23 pruebas automatizadas; el frontend cuenta con 14 pruebas del cliente/proxy y 10 pruebas de navegador. Los scripts Oracle están entregados; su ejecución en un servidor Oracle sigue pendiente.
+El backend tiene 25 pruebas automatizadas; el frontend cuenta con 17 pruebas del cliente/proxy y 14 pruebas de navegador. Los scripts Oracle están entregados; su ejecución en un servidor Oracle sigue pendiente.
 
 Detalles: [backend](back/README.md), [frontend](front/README.md), [validación Java](docs/VALIDACION_LOCAL.md) y [validación de la interfaz](docs/FRONTEND.md).

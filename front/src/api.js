@@ -24,6 +24,57 @@ function basicAuth(username, password) {
   return `Basic ${btoa(Array.from(bytes, (byte) => String.fromCharCode(byte)).join(""))}`;
 }
 
+export async function authenticate(credentials, fetcher = fetch) {
+  if (
+    !credentials?.username ||
+    !credentials.password ||
+    credentials.username.includes(":")
+  ) {
+    throw new ApiError("Ingresa un usuario válido y una contraseña.", 400);
+  }
+  let response;
+  try {
+    response = await fetcher("/api/support/session", {
+      method: "GET",
+      headers: {
+        Authorization: basicAuth(credentials.username, credentials.password),
+        Accept: "application/json",
+      },
+      credentials: "omit",
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000),
+    });
+  } catch {
+    throw new ApiError(
+      "No pudimos validar el acceso. Comprueba la conexión con el servidor e inténtalo de nuevo.",
+    );
+  }
+  if (!response.ok) {
+    throw new ApiError(
+      response.status === 401
+        ? "Usuario o contraseña incorrectos."
+        : response.status === 403
+          ? "Tu usuario no tiene acceso al panel de soporte."
+          : "No pudimos validar el acceso. Comprueba que el backend esté iniciado.",
+      response.status,
+    );
+  }
+  let identity;
+  try {
+    identity = await response.json();
+  } catch {
+    throw new ApiError("El servidor no pudo confirmar tu acceso.");
+  }
+  if (
+    typeof identity?.username !== "string" ||
+    !identity.username ||
+    identity.role !== "SUPPORT"
+  ) {
+    throw new ApiError("El servidor no pudo confirmar tu acceso.");
+  }
+  return identity;
+}
+
 export async function reconcile(reference, credentials, fetcher = fetch) {
   if (!referencePattern.test(reference)) throw new ApiError(errors[400], 400);
   if (
