@@ -12,13 +12,18 @@ BEGIN
  reconcile_payment('PAY-AX91',v_out,v_reason,v_before,v_after);
  check_true(v_out='RESOLVED' AND v_after=125000,'AX91 must be confirmed');
  reconcile_payment('PAY-BX17',v_out,v_reason,v_before,v_after);
+ check_true(v_out='MANUAL_REVIEW' AND v_reason='DUPLICATE_DEBITS_REQUIRE_REVIEW','Default must not infer a single capture');
+ SELECT COUNT(*) INTO v_count FROM ledger_entry WHERE payment_id=2;
+ check_true(v_count=2,'Default policy must preserve ledger');
+ -- Explicitly accept the fictional single-capture premise for this demo case only.
+ reconcile_payment('PAY-BX17',v_out,v_reason,v_before,v_after,1);
  check_true(v_out='RESOLVED' AND v_before=178000 AND v_after=89000,'BX17 must be compensated');
  SELECT COUNT(*) INTO v_count FROM ledger_entry WHERE payment_id=2;
  check_true(v_count=3,'BX17 must have two debits and one reversal');
  reconcile_payment('PAY-BX17',v_out,v_reason,v_before,v_after);
  check_true(v_out='ALREADY_CONSISTENT','BX17 retry must be no-op');
  SELECT COUNT(*) INTO v_count FROM support_audit WHERE payment_id=2;
- check_true(v_count=1,'BX17 retry must not duplicate audit');
+ check_true(v_count=2,'BX17 retry must not duplicate audit (one manual + one resolved)');
  reconcile_payment('PAY-CQ22',v_out,v_reason,v_before,v_after);
  check_true(v_out='MANUAL_REVIEW' AND v_after=0,'CQ22 must remain manual');
  SELECT evidence_key INTO v_key FROM support_audit WHERE payment_id=3;

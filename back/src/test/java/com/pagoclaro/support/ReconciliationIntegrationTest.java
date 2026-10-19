@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,13 +30,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "spring.datasource.url=jdbc:h2:mem:reconciliation-test;MODE=Oracle;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000",
+        "spring.security.user.name=n3", "spring.security.user.password=demo-change-me"})
 @AutoConfigureMockMvc
 class ReconciliationIntegrationTest {
     @Autowired ReconciliationService service;
     @Autowired JdbcTemplate jdbc;
     @Autowired MockMvc mvc;
     @MockitoSpyBean PaymentRepository repository;
+    @Autowired PlatformTransactionManager transactionManager;
 
     @Test void loginValidatesCredentialsWithoutChangingPayments() throws Exception {
         mvc.perform(get("/api/support/session")).andExpect(status().isUnauthorized());
@@ -55,19 +62,10 @@ class ReconciliationIntegrationTest {
     @BeforeEach
     void resetData() {
         reset(repository);
-        jdbc.update("DELETE FROM support_audit");
-        jdbc.update("DELETE FROM ledger_entry WHERE entry_type = 'REVERSAL'");
-        jdbc.update("DELETE FROM ledger_entry");
-        jdbc.update("DELETE FROM provider_event");
-        jdbc.update("DELETE FROM payment");
-        payment(1, "PAY-AX91", "PENDING", "125000");
-        payment(2, "PAY-BX17", "CONFIRMED", "89000");
-        payment(3, "PAY-CQ22", "PENDING", "54000");
-        payment(4, "PAY-DK44", "CONFIRMED", "31000");
-        event(1, 1, "APPROVED"); event(2, 2, "APPROVED"); event(3, 2, "APPROVED");
-        event(4, 3, "APPROVED"); event(5, 3, "DECLINED"); event(6, 4, "APPROVED");
-        debit(5001, 1, "125000"); debit(5002, 2, "89000");
-        debit(5003, 2, "89000"); debit(5004, 4, "31000");
+        // Dedicated, disposable test database: never mutate historical rows to reset fixtures.
+        jdbc.execute("DROP ALL OBJECTS");
+        new ResourceDatabasePopulator(new ClassPathResource("db/local/schema.sql"),
+                new ClassPathResource("db/local/data.sql")).execute(jdbc.getDataSource());
     }
 
     @Test void fixesStatusWithoutPostingAgain() {
@@ -142,10 +140,11 @@ class ReconciliationIntegrationTest {
     }
 
     @Test void partialDebitRequiresManualReview() {
-        jdbc.update("UPDATE ledger_entry SET amount=1 WHERE id=5003");
-        assertThat(service.reconcile("PAY-BX17").reason()).isEqualTo("AMBIGUOUS_DEBIT");
-        assertThat(count("ledger_entry", 2)).isEqualTo(2);
-        assertThat(version(2)).isZero();
+        payment(5, "PAY-PARTIAL", "PENDING", "10"); event(7, 5, "APPROVED");
+        debit(5005, 5, "1");
+        assertThat(service.reconcile("PAY-PARTIAL").reason()).isEqualTo("AMBIGUOUS_DEBIT");
+        assertThat(count("ledger_entry", 5)).isEqualTo(1);
+        assertThat(version(5)).isZero();
     }
 
     @Test void fullyReversedApprovalDoesNotRecreateDebit() {
@@ -154,10 +153,93 @@ class ReconciliationIntegrationTest {
         assertThat(count("ledger_entry", 4)).isEqualTo(2);
     }
 
-    @Test void crossPaymentReversalRequiresReview() {
-        jdbc.update("INSERT INTO ledger_entry VALUES (6000,2,'REVERSAL',125000,5001,CURRENT_TIMESTAMP)");
-        assertThat(service.reconcile("PAY-BX17").reason()).isEqualTo("INVALID_REVERSAL");
+    @Test void databaseRejectsCrossPaymentAndPartialReversals() {
+        assertThatThrownBy(() -> jdbc.update("INSERT INTO ledger_entry VALUES (6000,2,'REVERSAL',125000,5001,CURRENT_TIMESTAMP)"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbc.update("INSERT INTO ledger_entry VALUES (6000,2,'REVERSAL',1,5003,CURRENT_TIMESTAMP)"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThat(count("ledger_entry", 2)).isEqualTo(2);
+    }
+
+    @Test void databaseEnforcesImmutabilityAndOneReversalPerDebit() {
+        assertThatThrownBy(() -> jdbc.update("UPDATE ledger_entry SET amount=1 WHERE id=5003"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbc.update("DELETE FROM ledger_entry WHERE id=5003"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        jdbc.update("INSERT INTO ledger_entry VALUES (6000,2,'REVERSAL',89000,5003,CURRENT_TIMESTAMP)");
+        assertThatThrownBy(() -> jdbc.update("INSERT INTO ledger_entry VALUES (6001,2,'REVERSAL',89000,5003,CURRENT_TIMESTAMP)"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThatThrownBy(() -> jdbc.update("INSERT INTO ledger_entry VALUES (6001,2,'REVERSAL',89000,6000,CURRENT_TIMESTAMP)"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
         assertThat(count("ledger_entry", 2)).isEqualTo(3);
+    }
+
+    @Test void directEventWriterWaitsForParentAndNewEvidenceGetsOneNewAudit() throws Exception {
+        var started = new CountDownLatch(1);
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            java.util.concurrent.atomic.AtomicReference<java.util.concurrent.Future<?>> future = new java.util.concurrent.atomic.AtomicReference<>();
+            new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+                repository.lock("PAY-CQ22").orElseThrow();
+                future.set(executor.submit(() -> { started.countDown(); event(7, 3, "APPROVED"); }));
+                try {
+                    assertThat(started.await(2, TimeUnit.SECONDS)).isTrue();
+                    assertThatThrownBy(() -> future.get().get(200, TimeUnit.MILLISECONDS))
+                            .isInstanceOf(java.util.concurrent.TimeoutException.class);
+                } catch (InterruptedException ex) { throw new RuntimeException(ex); }
+                assertThat(service.reconcile("PAY-CQ22").auditCreated()).isTrue();
+            });
+            future.get().get(5, TimeUnit.SECONDS);
+        }
+        assertThat(service.reconcile("PAY-CQ22").auditCreated()).isTrue();
+        assertThat(service.reconcile("PAY-CQ22").auditCreated()).isFalse();
+        assertThat(count("support_audit", 3)).isEqualTo(2);
+    }
+
+    @Test void competingDirectReversalCannotBypassParentOrDuplicateCompensation() throws Exception {
+        var started = new CountDownLatch(1);
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            java.util.concurrent.atomic.AtomicReference<java.util.concurrent.Future<?>> future = new java.util.concurrent.atomic.AtomicReference<>();
+            new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+                repository.lock("PAY-BX17").orElseThrow();
+                future.set(executor.submit(() -> {
+                    started.countDown();
+                    jdbc.update("INSERT INTO ledger_entry VALUES (7000,2,'REVERSAL',89000,5003,CURRENT_TIMESTAMP)");
+                }));
+                try {
+                    assertThat(started.await(2, TimeUnit.SECONDS)).isTrue();
+                    assertThatThrownBy(() -> future.get().get(200, TimeUnit.MILLISECONDS))
+                            .isInstanceOf(java.util.concurrent.TimeoutException.class);
+                } catch (InterruptedException ex) { throw new RuntimeException(ex); }
+                assertThat(service.reconcile("PAY-BX17").movementsCreated()).isEqualTo(1);
+            });
+            assertThatThrownBy(() -> future.get().get(5, TimeUnit.SECONDS))
+                    .hasCauseInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        }
+        assertThat(count("ledger_entry", 2)).isEqualTo(3);
+        assertThat(count("support_audit", 2)).isEqualTo(1);
+    }
+
+    @Test @WithMockUser(roles = "SUPPORT")
+    void lockTimeoutReturnsConflictWithoutPartialWritesAndRetrySucceeds() throws Exception {
+        var locked = new CountDownLatch(1);
+        var release = new CountDownLatch(1);
+        try (var executor = Executors.newSingleThreadExecutor()) {
+            var holder = executor.submit(() -> new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+                repository.lock("PAY-BX17").orElseThrow(); locked.countDown();
+                try { if (!release.await(12, TimeUnit.SECONDS)) throw new IllegalStateException("Lock test timed out"); }
+                catch (InterruptedException ex) { throw new RuntimeException(ex); }
+            }));
+            try {
+                assertThat(locked.await(2, TimeUnit.SECONDS)).isTrue();
+                mvc.perform(post("/api/support/payments/PAY-BX17/reconcile"))
+                        .andExpect(status().isConflict()).andExpect(jsonPath("$.title").value("PAYMENT_BUSY"));
+                assertThat(count("ledger_entry", 2)).isEqualTo(2);
+                assertThat(count("support_audit", 2)).isZero();
+                assertThat(version(2)).isZero();
+            } finally { release.countDown(); }
+            holder.get(5, TimeUnit.SECONDS);
+        }
+        assertThat(service.reconcile("PAY-BX17").outcome()).isEqualTo(Outcome.RESOLVED);
     }
 
     @Test void concurrentRequestsProduceOneReversalAndOneAudit() throws Exception {
@@ -182,6 +264,24 @@ class ReconciliationIntegrationTest {
         assertThat(count("ledger_entry", 2)).isEqualTo(2);
         assertThat(count("support_audit", 2)).isZero();
         assertThat(version(2)).isZero();
+    }
+
+    @Test void secondReversalInsertFailureRollsBackTheFirstInsertAndRetryIsSafe() {
+        payment(5, "PAY-MULTIPLE", "PENDING", "10"); event(7, 5, "APPROVED");
+        debit(9000, 5, "10"); debit(9001, 5, "10"); debit(9002, 5, "10");
+        // First sequence value (10000) succeeds, second (10001) hits a real PK collision.
+        debit(10001, 4, "31000");
+        assertThatThrownBy(() -> service.reconcile("PAY-MULTIPLE"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThat(count("ledger_entry", 5)).isEqualTo(3);
+        assertThat(count("support_audit", 5)).isZero();
+        assertThat(version(5)).isZero();
+        assertThat(jdbc.queryForObject("SELECT status FROM payment WHERE id=5", String.class)).isEqualTo("PENDING");
+        var retry = service.reconcile("PAY-MULTIPLE");
+        assertThat(retry.movementsCreated()).isEqualTo(2);
+        assertThat(retry.netDebitAfter()).isEqualByComparingTo("10");
+        assertThat(count("support_audit", 5)).isEqualTo(1);
+        assertThat(service.reconcile("PAY-MULTIPLE").outcome()).isEqualTo(Outcome.ALREADY_CONSISTENT);
     }
 
     @Test void auditFailureAlsoRollsBackStatusCorrection() {
@@ -227,6 +327,17 @@ class ReconciliationIntegrationTest {
     @Test @WithMockUser(roles = "VIEWER")
     void wrongRoleCannotReconcile() throws Exception {
         mvc.perform(post("/api/support/payments/PAY-BX17/reconcile")).andExpect(status().isForbidden());
+    }
+
+    @Test @WithMockUser(roles = "SUPPORT")
+    void unsupportedNumericIdentifierFailsWithoutTruncatingIntoAnotherPayment() throws Exception {
+        jdbc.update("INSERT INTO payment VALUES (5.5,'PAY-BAD-ID','PENDING',10,CURRENT_TIMESTAMP,0)");
+        mvc.perform(post("/api/support/payments/PAY-BAD-ID/reconcile"))
+                .andExpect(status().isInternalServerError()).andExpect(jsonPath("$.title").value("INTERNAL_ERROR"));
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM support_audit", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM ledger_entry", Integer.class)).isEqualTo(4);
+        assertThat(jdbc.queryForObject("SELECT id FROM payment WHERE external_ref='PAY-BAD-ID'", BigDecimal.class))
+                .isEqualByComparingTo("5.5");
     }
 
     private void payment(int id, String reference, String status, String amount) {

@@ -1,11 +1,13 @@
 -- Oracle 19c+. Sin COMMIT: el llamador confirma la unidad de trabajo.
+-- Caller contract: READ COMMITTED; do not invoke from an older SERIALIZABLE/read-only snapshot.
 -- API Java y este procedimiento deben compartir el bloqueo de PAYMENT.
 CREATE OR REPLACE PROCEDURE reconcile_payment (
  p_external_ref IN payment.external_ref%TYPE,
  p_outcome OUT VARCHAR2,
  p_reason OUT VARCHAR2,
  p_net_before OUT NUMBER,
- p_net_after OUT NUMBER
+ p_net_after OUT NUMBER,
+ p_allow_duplicate_compensation IN NUMBER DEFAULT 0
 ) AUTHID DEFINER AS
  v_payment payment%ROWTYPE;
  v_approved PLS_INTEGER;
@@ -30,7 +32,8 @@ CREATE OR REPLACE PROCEDURE reconcile_payment (
  FUNCTION hash_value(p_value VARCHAR2) RETURN VARCHAR2 IS
    v_hash VARCHAR2(64);
  BEGIN
-   SELECT LOWER(RAWTOHEX(STANDARD_HASH(p_value,'SHA256'))) INTO v_hash FROM dual;
+   SELECT LOWER(RAWTOHEX(STANDARD_HASH(UTL_I18N.STRING_TO_RAW(p_value,'AL32UTF8'),'SHA256')))
+   INTO v_hash FROM dual;
    RETURN v_hash;
  END;
  PROCEDURE mark_manual(p_code VARCHAR2) IS
@@ -39,6 +42,10 @@ CREATE OR REPLACE PROCEDURE reconcile_payment (
  END;
 BEGIN
  SAVEPOINT reconciliation_start;
+ p_outcome := NULL; p_reason := NULL; p_net_before := NULL; p_net_after := NULL;
+ IF p_allow_duplicate_compensation IS NULL OR p_allow_duplicate_compensation NOT IN (0,1) THEN
+   RAISE_APPLICATION_ERROR(-20004,'Compensation policy must be 0 or 1');
+ END IF;
  BEGIN
    SELECT * INTO v_payment FROM payment WHERE external_ref=p_external_ref FOR UPDATE WAIT 5;
  EXCEPTION WHEN NO_DATA_FOUND THEN
@@ -46,7 +53,8 @@ BEGIN
    p_net_before := NULL; p_net_after := NULL; RETURN;
  END;
  p_outcome := NULL; p_reason := NULL; v_target := v_payment.status;
- SELECT COUNT(*), NVL(SUM(CASE WHEN entry_type='REVERSAL' THEN -amount ELSE amount END),0)
+ SELECT COUNT(*), NVL(SUM(CASE WHEN entry_type='DEBIT' THEN amount
+                             WHEN entry_type='REVERSAL' THEN -amount ELSE 0 END),0)
  INTO v_entries, p_net_before FROM ledger_entry WHERE payment_id=v_payment.id;
  p_net_after := p_net_before;
 
@@ -87,6 +95,7 @@ BEGIN
        AND NOT EXISTS (SELECT 1 FROM ledger_entry r WHERE r.payment_id=v_payment.id
                        AND r.entry_type='REVERSAL' AND r.related_entry_id=d.id);
      IF v_active=0 AND v_entries>0 THEN mark_manual('APPROVED_WITH_REVERSED_HISTORY');
+     ELSIF v_active>1 AND p_allow_duplicate_compensation=0 THEN mark_manual('DUPLICATE_DEBITS_REQUIRE_REVIEW');
      ELSE v_target:='CONFIRMED'; p_reason:='APPROVED_RECONCILED'; END IF;
    END IF;
  END IF;
@@ -135,6 +144,8 @@ BEGIN
    VALUES (support_audit_seq.NEXTVAL,v_payment.id,p_outcome,p_reason,LOCALTIMESTAMP,v_key);
  END IF;
 EXCEPTION WHEN OTHERS THEN
+ -- OUT values are not a result when the call raises: callers must discard them.
+ p_outcome := NULL; p_reason := NULL; p_net_before := NULL; p_net_after := NULL;
  ROLLBACK TO reconciliation_start;
  RAISE;
 END;

@@ -10,7 +10,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReconciliationEngineTest {
-    private final ReconciliationEngine engine = new ReconciliationEngine();
+    private final ReconciliationEngine engine = new ReconciliationEngine(true);
+
+    @Test void realEnvironmentDoesNotInferThatTwoApprovalsAreOneCapture() {
+        var snapshot = new Snapshot(new Payment(1,"REAL-PAYMENT","CONFIRMED",new BigDecimal("10"),0),
+                List.of(new Event(1,"E1","APPROVED"), new Event(2,"E2","APPROVED")),
+                List.of(entry(1,"DEBIT","10",null), entry(2,"DEBIT","10",null)));
+        var decision = new ReconciliationEngine().evaluate(snapshot);
+        assertThat(decision.outcome()).isEqualTo(Outcome.MANUAL_REVIEW);
+        assertThat(decision.reason()).isEqualTo("DUPLICATE_DEBITS_REQUIRE_REVIEW");
+        assertThat(decision.movements()).isEmpty();
+    }
 
     @Test void duplicateReversalsAreNotTreatedAsSafe() {
         assertThat(evaluate(List.of(entry(1,"DEBIT","10",null), entry(2,"REVERSAL","10",1L),
@@ -32,6 +42,7 @@ class ReconciliationEngineTest {
     @Test void invalidAmountOrUnknownTypeRequiresReview() {
         assertThat(evaluate(List.of(entry(1,"DEBIT","-10",null))).reason()).isEqualTo("INVALID_LEDGER");
         assertThat(evaluate(List.of(entry(1,"UNKNOWN","10",null))).reason()).isEqualTo("INVALID_LEDGER");
+        assertThat(evaluate(List.of(entry(1,"UNKNOWN","10",null))).netBefore()).isEqualByComparingTo("0");
     }
 
     private Decision evaluate(List<Entry> entries) {

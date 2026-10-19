@@ -1,0 +1,26 @@
+-- Read-only DDL extraction. Store the spool outside the repository and protect access to it.
+-- Does not back up data: arrange an Oracle backup/export separately before migration.
+SET LONG 2000000
+SET LONGCHUNKSIZE 2000000
+SET PAGESIZE 0
+SET LINESIZE 32767
+SET TRIMSPOOL ON
+SET FEEDBACK OFF
+BEGIN
+ DBMS_METADATA.SET_TRANSFORM_PARAM(DBMS_METADATA.SESSION_TRANSFORM,'SQLTERMINATOR',TRUE);
+END;
+/
+SPOOL pagoclaro_before_metadata.sql
+SELECT DBMS_METADATA.GET_DDL('TABLE',table_name) FROM user_tables
+WHERE table_name IN ('PAYMENT','PROVIDER_EVENT','LEDGER_ENTRY','SUPPORT_AUDIT');
+SELECT DBMS_METADATA.GET_DDL('INDEX',index_name) FROM user_indexes
+WHERE table_name IN ('PAYMENT','PROVIDER_EVENT','LEDGER_ENTRY','SUPPORT_AUDIT') AND generated='N';
+SELECT DBMS_METADATA.GET_DDL('SEQUENCE',sequence_name) FROM user_sequences
+WHERE sequence_name IN ('LEDGER_ENTRY_SEQ','SUPPORT_AUDIT_SEQ');
+SELECT DBMS_METADATA.GET_DDL('TRIGGER',trigger_name) FROM user_triggers
+WHERE table_name IN ('PAYMENT','PROVIDER_EVENT','LEDGER_ENTRY','SUPPORT_AUDIT');
+SELECT DBMS_METADATA.GET_DDL('PROCEDURE',object_name) FROM user_objects
+WHERE object_type='PROCEDURE' AND object_name='RECONCILE_PAYMENT';
+SPOOL OFF
+SET FEEDBACK ON
+SET PAGESIZE 50

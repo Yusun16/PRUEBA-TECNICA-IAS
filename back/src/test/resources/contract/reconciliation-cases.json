@@ -1,0 +1,375 @@
+[
+  {
+    "name": "status-only",
+    "payment": {
+      "id": 1,
+      "reference": "PAY-AX91",
+      "status": "PENDING",
+      "amount": "125000",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 1,
+        "providerEventId": "E-1",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 5001,
+        "type": "DEBIT",
+        "amount": "125000",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "status": "CONFIRMED",
+      "netBefore": "125000",
+      "netAfter": "125000",
+      "movements": 0
+    }
+  },
+  {
+    "name": "duplicate-demo",
+    "payment": {
+      "id": 2,
+      "reference": "PAY-BX17",
+      "status": "CONFIRMED",
+      "amount": "89000",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 2,
+        "providerEventId": "E-2",
+        "status": "APPROVED"
+      },
+      {
+        "id": 3,
+        "providerEventId": "E-3",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 5002,
+        "type": "DEBIT",
+        "amount": "89000",
+        "relatedId": null
+      },
+      {
+        "id": 5003,
+        "type": "DEBIT",
+        "amount": "89000",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": true,
+    "expected": {
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "status": "CONFIRMED",
+      "netBefore": "178000",
+      "netAfter": "89000",
+      "movements": 1
+    }
+  },
+  {
+    "name": "duplicate-safe",
+    "payment": {
+      "id": 2,
+      "reference": "PAY-BX17",
+      "status": "CONFIRMED",
+      "amount": "89000",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 2,
+        "providerEventId": "E-2",
+        "status": "APPROVED"
+      },
+      {
+        "id": 3,
+        "providerEventId": "E-3",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 5002,
+        "type": "DEBIT",
+        "amount": "89000",
+        "relatedId": null
+      },
+      {
+        "id": 5003,
+        "type": "DEBIT",
+        "amount": "89000",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "status": "CONFIRMED",
+      "netBefore": "178000",
+      "netAfter": "178000",
+      "movements": 0
+    }
+  },
+  {
+    "name": "contradictory",
+    "payment": {
+      "id": 3,
+      "reference": "PAY-CQ22",
+      "status": "PENDING",
+      "amount": "54000",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 4,
+        "providerEventId": "E-4",
+        "status": "APPROVED"
+      },
+      {
+        "id": 5,
+        "providerEventId": "E-5",
+        "status": "DECLINED"
+      }
+    ],
+    "entries": [],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+      "status": "PENDING",
+      "netBefore": "0",
+      "netAfter": "0",
+      "movements": 0
+    }
+  },
+  {
+    "name": "healthy",
+    "payment": {
+      "id": 4,
+      "reference": "PAY-DK44",
+      "status": "CONFIRMED",
+      "amount": "31000",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 6,
+        "providerEventId": "E-6",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 5004,
+        "type": "DEBIT",
+        "amount": "31000",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "status": "CONFIRMED",
+      "netBefore": "31000",
+      "netAfter": "31000",
+      "movements": 0
+    }
+  },
+  {
+    "name": "missing-evidence",
+    "payment": {
+      "id": 5,
+      "reference": "PAY-NONE",
+      "status": "PENDING",
+      "amount": "10",
+      "version": 0
+    },
+    "events": [],
+    "entries": [],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "MISSING_PROVIDER_EVIDENCE",
+      "status": "PENDING",
+      "netBefore": "0",
+      "netAfter": "0",
+      "movements": 0
+    }
+  },
+  {
+    "name": "missing-debit",
+    "payment": {
+      "id": 6,
+      "reference": "PAY-NEW",
+      "status": "PENDING",
+      "amount": "10.51",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 7,
+        "providerEventId": "E-7",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "status": "CONFIRMED",
+      "netBefore": "0",
+      "netAfter": "10.51",
+      "movements": 1
+    }
+  },
+  {
+    "name": "declined-empty",
+    "payment": {
+      "id": 7,
+      "reference": "PAY-DECLINED",
+      "status": "PENDING",
+      "amount": "10",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 8,
+        "providerEventId": "E-8",
+        "status": "DECLINED"
+      }
+    ],
+    "entries": [],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "RESOLVED",
+      "reason": "DECLINED_WITHOUT_LEDGER",
+      "status": "REJECTED",
+      "netBefore": "0",
+      "netAfter": "0",
+      "movements": 0
+    }
+  },
+  {
+    "name": "partial-debit",
+    "payment": {
+      "id": 8,
+      "reference": "PAY-PARTIAL",
+      "status": "PENDING",
+      "amount": "10",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 9,
+        "providerEventId": "E-9",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 6000,
+        "type": "DEBIT",
+        "amount": "1",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "AMBIGUOUS_DEBIT",
+      "status": "PENDING",
+      "netBefore": "1",
+      "netAfter": "1",
+      "movements": 0
+    }
+  },
+  {
+    "name": "reversed-history",
+    "payment": {
+      "id": 9,
+      "reference": "PAY-REVERSED",
+      "status": "CONFIRMED",
+      "amount": "10",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 10,
+        "providerEventId": "E-10",
+        "status": "APPROVED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 6001,
+        "type": "DEBIT",
+        "amount": "10",
+        "relatedId": null
+      },
+      {
+        "id": 6002,
+        "type": "REVERSAL",
+        "amount": "10",
+        "relatedId": 6001
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "APPROVED_WITH_REVERSED_HISTORY",
+      "status": "CONFIRMED",
+      "netBefore": "0",
+      "netAfter": "0",
+      "movements": 0
+    }
+  },
+  {
+    "name": "declined-history",
+    "payment": {
+      "id": 10,
+      "reference": "PAY-DECL-HISTORY",
+      "status": "CONFIRMED",
+      "amount": "10",
+      "version": 0
+    },
+    "events": [
+      {
+        "id": 11,
+        "providerEventId": "E-11",
+        "status": "DECLINED"
+      }
+    ],
+    "entries": [
+      {
+        "id": 6003,
+        "type": "DEBIT",
+        "amount": "10",
+        "relatedId": null
+      }
+    ],
+    "allowDuplicateCompensation": false,
+    "expected": {
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DECLINED_WITH_LEDGER_HISTORY",
+      "status": "CONFIRMED",
+      "netBefore": "10",
+      "netAfter": "10",
+      "movements": 0
+    }
+  }
+]

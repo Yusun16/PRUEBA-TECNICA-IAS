@@ -2,7 +2,7 @@ CREATE TABLE payment (
  id NUMBER PRIMARY KEY, external_ref VARCHAR2(40) UNIQUE NOT NULL,
  status VARCHAR2(20) NOT NULL CHECK (status IN ('PENDING','CONFIRMED','REJECTED')),
  amount NUMBER(18,2) NOT NULL CHECK (amount > 0), updated_at TIMESTAMP NOT NULL,
- row_version NUMBER DEFAULT 0 NOT NULL
+ row_version NUMBER DEFAULT 0 NOT NULL CHECK (row_version >= 0 AND row_version = TRUNC(row_version))
 );
 CREATE TABLE provider_event (
  id NUMBER PRIMARY KEY, payment_id NUMBER NOT NULL REFERENCES payment(id),
@@ -21,7 +21,7 @@ CREATE TABLE ledger_entry (
 );
 CREATE TABLE support_audit (
  id NUMBER PRIMARY KEY, payment_id NUMBER NOT NULL REFERENCES payment(id),
- action VARCHAR2(40) NOT NULL, reason VARCHAR2(400) NOT NULL,
+ action VARCHAR2(40) NOT NULL CHECK (action IN ('RESOLVED','MANUAL_REVIEW')), reason VARCHAR2(400) NOT NULL,
  evidence_key VARCHAR2(64) NOT NULL, created_at TIMESTAMP NOT NULL,
  CONSTRAINT uq_audit_evidence UNIQUE (payment_id, evidence_key)
 );
@@ -29,3 +29,7 @@ CREATE SEQUENCE ledger_entry_seq START WITH 10000;
 CREATE SEQUENCE support_audit_seq START WITH 10000;
 CREATE INDEX ix_provider_payment ON provider_event(payment_id);
 CREATE INDEX ix_ledger_payment ON ledger_entry(payment_id);
+CREATE TRIGGER trg_ledger_guard BEFORE INSERT, UPDATE, DELETE ON ledger_entry
+ FOR EACH ROW CALL 'com.pagoclaro.support.persistence.h2.AccountingGuard';
+CREATE TRIGGER trg_provider_guard BEFORE INSERT, UPDATE, DELETE ON provider_event
+ FOR EACH ROW CALL 'com.pagoclaro.support.persistence.h2.AccountingGuard';

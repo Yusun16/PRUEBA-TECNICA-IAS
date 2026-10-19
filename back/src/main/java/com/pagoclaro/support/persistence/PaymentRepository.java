@@ -3,6 +3,8 @@ package com.pagoclaro.support.persistence;
 import com.pagoclaro.support.domain.ReconciliationEngine.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.QueryTimeoutException;
+import org.springframework.dao.CannotAcquireLockException;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,24 +15,28 @@ public class PaymentRepository {
     public PaymentRepository(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
     public Optional<Payment> lock(String reference) {
-        return jdbc.query("""
+        try {
+            return jdbc.query("""
                 SELECT id, external_ref, status, amount, row_version
-                FROM payment WHERE external_ref = ? FOR UPDATE
-                """, (rs, row) -> new Payment(rs.getLong("id"), rs.getString("external_ref"),
-                rs.getString("status"), rs.getBigDecimal("amount"), rs.getLong("row_version")), reference)
+                FROM payment WHERE external_ref = ? FOR UPDATE WAIT 5
+                """, (rs, row) -> new Payment(rs.getBigDecimal("id").longValueExact(), rs.getString("external_ref"),
+                rs.getString("status"), rs.getBigDecimal("amount"), rs.getBigDecimal("row_version").longValueExact()), reference)
                 .stream().findFirst();
+        } catch (QueryTimeoutException ex) {
+            throw new CannotAcquireLockException("Payment lock wait timed out", ex);
+        }
     }
 
     public Snapshot load(Payment payment) {
         List<Event> events = jdbc.query("""
                 SELECT id, provider_event_id, provider_status FROM provider_event
                 WHERE payment_id = ? ORDER BY id
-                """, (rs, row) -> new Event(rs.getLong(1), rs.getString(2), rs.getString(3)), payment.id());
+                """, (rs, row) -> new Event(rs.getBigDecimal(1).longValueExact(), rs.getString(2), rs.getString(3)), payment.id());
         List<Entry> entries = jdbc.query("""
                 SELECT id, entry_type, amount, related_entry_id FROM ledger_entry
                 WHERE payment_id = ? ORDER BY id
-                """, (rs, row) -> new Entry(rs.getLong(1), rs.getString(2), rs.getBigDecimal(3),
-                rs.getObject(4) == null ? null : rs.getLong(4)), payment.id());
+                """, (rs, row) -> new Entry(rs.getBigDecimal(1).longValueExact(), rs.getString(2), rs.getBigDecimal(3),
+                rs.getObject(4) == null ? null : rs.getBigDecimal(4).longValueExact()), payment.id());
         return new Snapshot(payment, events, entries);
     }
 

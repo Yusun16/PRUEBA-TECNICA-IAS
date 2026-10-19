@@ -6,6 +6,8 @@ import com.pagoclaro.support.persistence.PaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -20,15 +22,19 @@ import java.util.HexFormat;
 public class ReconciliationService {
     private static final Logger log = LoggerFactory.getLogger(ReconciliationService.class);
     private final PaymentRepository repository;
-    private final ReconciliationEngine engine = new ReconciliationEngine();
+    private final ReconciliationEngine engine;
 
-    public ReconciliationService(PaymentRepository repository) { this.repository = repository; }
+    public ReconciliationService(PaymentRepository repository,
+            @Value("${reconciliation.allow-duplicate-compensation:false}") boolean allowDuplicateCompensation) {
+        this.repository = repository;
+        this.engine = new ReconciliationEngine(allowDuplicateCompensation);
+    }
 
     public record Result(String reference, Outcome outcome, String reason, String paymentStatus,
                          BigDecimal netDebitBefore, BigDecimal netDebitAfter,
                          int movementsCreated, boolean auditCreated) {}
 
-    @Transactional(timeout = 15)
+    @Transactional(timeout = 15, isolation = Isolation.READ_COMMITTED)
     public Result reconcile(String reference) {
         Payment payment = repository.lock(reference).orElseThrow(PaymentNotFoundException::new);
         Snapshot snapshot = repository.load(payment);

@@ -43,6 +43,8 @@ const reasons = {
     "El proveedor rechazó el pago, pero existe historial contable que debe revisarse.",
   APPROVED_WITH_REVERSED_HISTORY:
     "El pago aprobado ya tiene su historial revertido. Podría corresponder a una devolución.",
+  DUPLICATE_DEBITS_REQUIRE_REVIEW:
+    "Los débitos repetidos no demuestran un único cobro. Soporte debe validar la evidencia antes de autorizar una compensación.",
 };
 
 export const paymentStatuses = {

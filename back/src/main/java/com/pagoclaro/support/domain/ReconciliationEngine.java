@@ -10,11 +10,20 @@ import java.util.Set;
 
 /** Pure business policy: no persistence, clock or framework dependencies. */
 public final class ReconciliationEngine {
+    private final boolean allowDuplicateCompensation;
+
+    public ReconciliationEngine() { this(false); }
+    public ReconciliationEngine(boolean allowDuplicateCompensation) {
+        this.allowDuplicateCompensation = allowDuplicateCompensation;
+    }
     public record Payment(long id, String reference, String status, BigDecimal amount, long version) {}
     public record Event(long id, String providerEventId, String status) {}
     public record Entry(long id, String type, BigDecimal amount, Long relatedId) {}
     public record Snapshot(Payment payment, List<Event> events, List<Entry> entries) {
-        public Snapshot { events = List.copyOf(events); entries = List.copyOf(entries); }
+        public Snapshot {
+            events = events.stream().sorted(java.util.Comparator.comparingLong(Event::id)).toList();
+            entries = entries.stream().sorted(java.util.Comparator.comparingLong(Entry::id)).toList();
+        }
     }
     public record Movement(String type, BigDecimal amount, Long relatedId) {}
     public enum Outcome { RESOLVED, ALREADY_CONSISTENT, MANUAL_REVIEW }
@@ -26,7 +35,8 @@ public final class ReconciliationEngine {
     public Decision evaluate(Snapshot snapshot) {
         Payment payment = snapshot.payment();
         BigDecimal net = snapshot.entries().stream()
-                .map(e -> "REVERSAL".equals(e.type()) ? e.amount().negate() : e.amount())
+                .map(e -> "DEBIT".equals(e.type()) ? e.amount()
+                        : "REVERSAL".equals(e.type()) ? e.amount().negate() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (payment.amount().signum() <= 0 || !Set.of("PENDING", "CONFIRMED", "REJECTED").contains(payment.status())) {
             return manual(payment, net, "INVALID_PAYMENT");
@@ -66,6 +76,9 @@ public final class ReconciliationEngine {
         List<Entry> active = debits.values().stream().filter(e -> !reversed.contains(e.id()))
                 .sorted(java.util.Comparator.comparingLong(Entry::id)).toList();
         List<Movement> movements = new ArrayList<>();
+        if (active.size() > 1 && !allowDuplicateCompensation) {
+            return manual(payment, net, "DUPLICATE_DEBITS_REQUIRE_REVIEW");
+        }
         if (active.isEmpty()) {
             // A fully reversed history might represent a refund, not a missing posting.
             if (!snapshot.entries().isEmpty()) return manual(payment, net, "APPROVED_WITH_REVERSED_HISTORY");
