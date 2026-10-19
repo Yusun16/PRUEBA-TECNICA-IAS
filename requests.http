@@ -1,0 +1,19 @@
+### Demo local: corregir duplicado
+POST http://127.0.0.1:8080/api/support/payments/PAY-BX17/reconcile
+Authorization: Basic n3 demo-change-me
+
+### Repetir el anterior: ALREADY_CONSISTENT
+POST http://127.0.0.1:8080/api/support/payments/PAY-BX17/reconcile
+Authorization: Basic n3 demo-change-me
+
+### Corregir solo estado
+POST http://127.0.0.1:8080/api/support/payments/PAY-AX91/reconcile
+Authorization: Basic n3 demo-change-me
+
+### Evidencia contradictoria: MANUAL_REVIEW
+POST http://127.0.0.1:8080/api/support/payments/PAY-CQ22/reconcile
+Authorization: Basic n3 demo-change-me
+
+### Pago sano: ALREADY_CONSISTENT
+POST http://127.0.0.1:8080/api/support/payments/PAY-DK44/reconcile
+Authorization: Basic n3 demo-change-me

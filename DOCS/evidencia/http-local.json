@@ -1,0 +1,96 @@
+[
+  {
+    "ref": "PAY-BX17",
+    "http": 401
+  },
+  {
+    "ref": "PAY-AX91",
+    "http": 200,
+    "reference": "PAY-AX91",
+    "outcome": "RESOLVED",
+    "reason": "APPROVED_RECONCILED",
+    "paymentStatus": "CONFIRMED",
+    "netDebitBefore": 125000,
+    "netDebitAfter": 125000,
+    "movementsCreated": 0,
+    "auditCreated": true
+  },
+  {
+    "ref": "PAY-BX17",
+    "http": 200,
+    "reference": "PAY-BX17",
+    "outcome": "RESOLVED",
+    "reason": "APPROVED_RECONCILED",
+    "paymentStatus": "CONFIRMED",
+    "netDebitBefore": 178000,
+    "netDebitAfter": 89000,
+    "movementsCreated": 1,
+    "auditCreated": true
+  },
+  {
+    "ref": "PAY-BX17",
+    "http": 200,
+    "reference": "PAY-BX17",
+    "outcome": "ALREADY_CONSISTENT",
+    "reason": "NO_CHANGES_REQUIRED",
+    "paymentStatus": "CONFIRMED",
+    "netDebitBefore": 89000,
+    "netDebitAfter": 89000,
+    "movementsCreated": 0,
+    "auditCreated": false
+  },
+  {
+    "ref": "PAY-CQ22",
+    "http": 200,
+    "reference": "PAY-CQ22",
+    "outcome": "MANUAL_REVIEW",
+    "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+    "paymentStatus": "PENDING",
+    "netDebitBefore": 0,
+    "netDebitAfter": 0,
+    "movementsCreated": 0,
+    "auditCreated": true
+  },
+  {
+    "ref": "PAY-CQ22",
+    "http": 200,
+    "reference": "PAY-CQ22",
+    "outcome": "MANUAL_REVIEW",
+    "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+    "paymentStatus": "PENDING",
+    "netDebitBefore": 0,
+    "netDebitAfter": 0,
+    "movementsCreated": 0,
+    "auditCreated": false
+  },
+  {
+    "ref": "PAY-DK44",
+    "http": 200,
+    "reference": "PAY-DK44",
+    "outcome": "ALREADY_CONSISTENT",
+    "reason": "NO_CHANGES_REQUIRED",
+    "paymentStatus": "CONFIRMED",
+    "netDebitBefore": 31000,
+    "netDebitAfter": 31000,
+    "movementsCreated": 0,
+    "auditCreated": false
+  },
+  {
+    "ref": "MISSING",
+    "http": 404,
+    "type": "about:blank",
+    "title": "PAYMENT_NOT_FOUND",
+    "status": 404,
+    "detail": "No existe el pago solicitado.",
+    "instance": "/api/support/payments/MISSING/reconcile"
+  },
+  {
+    "ref": "bad.reference",
+    "http": 400,
+    "type": "about:blank",
+    "title": "INVALID_REFERENCE",
+    "status": 400,
+    "detail": "Referencia inválida: use entre 1 y 40 letras, números, guiones o guiones bajos.",
+    "instance": "/api/support/payments/bad.reference/reconcile"
+  }
+]
