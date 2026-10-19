@@ -33,10 +33,10 @@ public final class ReconciliationEngine {
         }
         Map<Long, Entry> debits = new HashMap<>();
         Set<Long> reversed = new HashSet<>();
+        boolean invalidLedger = snapshot.entries().stream().anyMatch(entry -> entry.amount().signum() <= 0
+                || !Set.of("DEBIT", "REVERSAL").contains(entry.type()));
+        if (invalidLedger) return manual(payment, net, "INVALID_LEDGER");
         for (Entry entry : snapshot.entries()) {
-            if (entry.amount().signum() <= 0 || !Set.of("DEBIT", "REVERSAL").contains(entry.type())) {
-                return manual(payment, net, "INVALID_LEDGER");
-            }
             if ("DEBIT".equals(entry.type())) {
                 if (entry.relatedId() != null || entry.amount().compareTo(payment.amount()) != 0
                         || debits.put(entry.id(), entry) != null) {

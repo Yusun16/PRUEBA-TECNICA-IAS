@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -36,24 +38,32 @@ public class ReconciliationService {
         if (decision.outcome() != Outcome.ALREADY_CONSISTENT) {
             audit = repository.audit(payment.id(), decision, fingerprint(snapshot, decision.reason()));
         }
-        log.info("reconciliation paymentId={} outcome={} reason={} movements={} auditCreated={}",
-                payment.id(), decision.outcome(), decision.reason(), decision.movements().size(), audit);
+        boolean auditCreated = audit;
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override public void afterCommit() {
+                log.info("reconciliation committed paymentId={} outcome={} reason={} movements={} auditCreated={}",
+                        payment.id(), decision.outcome(), decision.reason(), decision.movements().size(), auditCreated);
+            }
+        });
         return new Result(reference, decision.outcome(), decision.reason(), decision.targetStatus(),
                 decision.netBefore(), decision.netAfter(), decision.movements().size(), audit);
     }
 
     /** Canonical evidence includes identities and statuses; timestamps are not business evidence. */
     static String fingerprint(Snapshot snapshot, String reason) {
-        StringBuilder data = new StringBuilder("policy-v1|").append(reason).append('|');
         Payment p = snapshot.payment();
-        data.append(p.id()).append('|').append(p.status()).append('|')
-                .append(p.amount().toPlainString()).append('|').append(p.version());
-        snapshot.events().forEach(e -> data.append("|E:").append(e.id()).append(':').append(e.status()));
-        snapshot.entries().forEach(e -> data.append("|L:").append(e.id()).append(':').append(e.type())
-                .append(':').append(e.amount().toPlainString()).append(':').append(e.relatedId()));
+        String key = hash("policy-v1|" + reason);
+        key = hash(key + "|P:" + p.id() + ':' + p.status() + ':' + p.amount().setScale(2).toPlainString() + ':' + p.version());
+        for (Event e : snapshot.events()) key = hash(key + "|E:" + e.id() + ':' + e.status());
+        for (Entry e : snapshot.entries()) key = hash(key + "|L:" + e.id() + ':' + e.type()
+                + ':' + e.amount().setScale(2).toPlainString() + ':' + e.relatedId());
+        return key;
+    }
+
+    private static String hash(String value) {
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256")
-                    .digest(data.toString().getBytes(StandardCharsets.UTF_8)));
+                    .digest(value.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException("SHA-256 unavailable", ex);
         }
