@@ -229,12 +229,12 @@
     "entries": [],
     "allowDuplicateCompensation": false,
     "expected": {
-      "outcome": "RESOLVED",
-      "reason": "APPROVED_RECONCILED",
-      "status": "CONFIRMED",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "APPROVED_WITHOUT_CAPTURE_EVIDENCE",
+      "status": "PENDING",
       "netBefore": "0",
-      "netAfter": "10.51",
-      "movements": 1
+      "netAfter": "0",
+      "movements": 0
     }
   },
   {

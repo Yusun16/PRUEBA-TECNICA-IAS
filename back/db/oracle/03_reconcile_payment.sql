@@ -20,6 +20,12 @@ CREATE OR REPLACE PROCEDURE reconcile_payment (
  v_target payment.status%TYPE;
  v_key VARCHAR2(64);
  v_count PLS_INTEGER;
+ -- Undefined compile flag is NULL: fail closed. Only demo_install enables this.
+ $IF $$pagoclaro_demo $THEN
+ c_demo CONSTANT BOOLEAN := TRUE;
+ $ELSE
+ c_demo CONSTANT BOOLEAN := FALSE;
+ $END
 
  FUNCTION num(p_value NUMBER) RETURN VARCHAR2 IS
  BEGIN
@@ -45,6 +51,9 @@ BEGIN
  p_outcome := NULL; p_reason := NULL; p_net_before := NULL; p_net_after := NULL;
  IF p_allow_duplicate_compensation IS NULL OR p_allow_duplicate_compensation NOT IN (0,1) THEN
    RAISE_APPLICATION_ERROR(-20004,'Compensation policy must be 0 or 1');
+ END IF;
+ IF p_allow_duplicate_compensation=1 AND NOT c_demo THEN
+   RAISE_APPLICATION_ERROR(-20005,'Compensation flag is permitted only in a compiled laboratory simulation');
  END IF;
  BEGIN
    SELECT * INTO v_payment FROM payment WHERE external_ref=p_external_ref FOR UPDATE WAIT 5;
@@ -95,6 +104,7 @@ BEGIN
        AND NOT EXISTS (SELECT 1 FROM ledger_entry r WHERE r.payment_id=v_payment.id
                        AND r.entry_type='REVERSAL' AND r.related_entry_id=d.id);
      IF v_active=0 AND v_entries>0 THEN mark_manual('APPROVED_WITH_REVERSED_HISTORY');
+     ELSIF v_active=0 THEN mark_manual('APPROVED_WITHOUT_CAPTURE_EVIDENCE');
      ELSIF v_active>1 AND p_allow_duplicate_compensation=0 THEN mark_manual('DUPLICATE_DEBITS_REQUIRE_REVIEW');
      ELSE v_target:='CONFIRMED'; p_reason:='APPROVED_RECONCILED'; END IF;
    END IF;
@@ -121,10 +131,7 @@ BEGIN
 
  IF p_outcome='RESOLVED' THEN
    IF v_target='CONFIRMED' THEN
-     IF v_active=0 THEN
-       INSERT INTO ledger_entry(id,payment_id,entry_type,amount,related_entry_id,created_at)
-       VALUES (ledger_entry_seq.NEXTVAL,v_payment.id,'DEBIT',v_payment.amount,NULL,LOCALTIMESTAMP);
-     ELSE
+     IF v_active>1 THEN
        FOR d IN (SELECT d.id,d.amount FROM ledger_entry d WHERE d.payment_id=v_payment.id AND d.entry_type='DEBIT'
                  AND d.id<>v_keep AND NOT EXISTS (SELECT 1 FROM ledger_entry r
                    WHERE r.payment_id=v_payment.id AND r.entry_type='REVERSAL' AND r.related_entry_id=d.id)

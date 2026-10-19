@@ -122,11 +122,12 @@ class ReconciliationIntegrationTest {
         assertThatThrownBy(() -> service.reconcile("MISSING")).isInstanceOf(ReconciliationService.PaymentNotFoundException.class);
     }
 
-    @Test void createsMissingDebitUsingDecimalPrecision() {
+    @Test void approvalWithoutCaptureNeverCreatesDebit() {
         payment(5, "PAY-NEW", "PENDING", "10.51"); event(7, 5, "APPROVED");
-        assertThat(service.reconcile("PAY-NEW").netDebitAfter()).isEqualByComparingTo("10.51");
+        assertThat(service.reconcile("PAY-NEW").reason()).isEqualTo("APPROVED_WITHOUT_CAPTURE_EVIDENCE");
+        assertThat(version(5)).isZero();
         service.reconcile("PAY-NEW");
-        assertThat(count("ledger_entry", 5)).isEqualTo(1);
+        assertThat(count("ledger_entry", 5)).isZero();
         assertThat(count("support_audit", 5)).isEqualTo(1);
     }
 
@@ -139,12 +140,32 @@ class ReconciliationIntegrationTest {
         assertThat(count("ledger_entry", 5)).isEqualTo(1);
     }
 
-    @Test void partialDebitRequiresManualReview() {
+    @Test void incompatibleNewDebitIsRejectedAndLegacyPartialDebitRequiresReview() {
         payment(5, "PAY-PARTIAL", "PENDING", "10"); event(7, 5, "APPROVED");
+        assertThatThrownBy(() -> debit(5005, 5, "1"))
+                .isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThat(count("ledger_entry", 5)).isZero();
+        // Isolated test only: emulate an invalid legacy row predating the guard.
+        jdbc.execute("DROP TRIGGER trg_ledger_guard");
         debit(5005, 5, "1");
         assertThat(service.reconcile("PAY-PARTIAL").reason()).isEqualTo("AMBIGUOUS_DEBIT");
         assertThat(count("ledger_entry", 5)).isEqualTo(1);
         assertThat(version(5)).isZero();
+    }
+
+    @Test void multiRowInvalidDebitRollsBackWholeStatement() {
+        assertThatThrownBy(() -> jdbc.update("""
+                INSERT INTO ledger_entry VALUES
+                  (8000,2,'DEBIT',89000,NULL,CURRENT_TIMESTAMP),
+                  (8001,2,'DEBIT',1,NULL,CURRENT_TIMESTAMP)
+                """)).isInstanceOf(org.springframework.dao.DataIntegrityViolationException.class);
+        assertThat(count("ledger_entry", 2)).isEqualTo(2);
+        jdbc.update("""
+                INSERT INTO ledger_entry VALUES
+                  (8000,2,'DEBIT',89000,NULL,CURRENT_TIMESTAMP),
+                  (8001,2,'REVERSAL',89000,8000,CURRENT_TIMESTAMP)
+                """);
+        assertThat(count("ledger_entry", 2)).isEqualTo(4);
     }
 
     @Test void fullyReversedApprovalDoesNotRecreateDebit() {

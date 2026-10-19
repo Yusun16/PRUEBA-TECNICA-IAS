@@ -11,6 +11,16 @@ DECLARE
  END;
 BEGIN
  SAVEPOINT guard_tests;
+ must_fail('INSERT INTO ledger_entry VALUES (8999,2,''DEBIT'',1,NULL,LOCALTIMESTAMP)',-20003);
+ must_fail('INSERT INTO ledger_entry VALUES (8999,2,''DEBIT'',-1,NULL,LOCALTIMESTAMP)',-20003);
+ must_fail('INSERT INTO ledger_entry VALUES (8999,2,''OTHER'',89000,NULL,LOCALTIMESTAMP)',-2290);
+ must_fail('INSERT INTO ledger_entry VALUES (8999,2,''DEBIT'',89000,5002,LOCALTIMESTAMP)',-2290);
+ must_fail('INSERT INTO ledger_entry VALUES (8999,2,''REVERSAL'',89000,NULL,LOCALTIMESTAMP)',-2290);
+ -- Multi-row statement: one valid debit and its full reversal; no ORA-04091.
+ INSERT ALL
+   INTO ledger_entry VALUES (8998,2,'DEBIT',89000,NULL,LOCALTIMESTAMP)
+   INTO ledger_entry VALUES (8999,2,'REVERSAL',89000,8998,LOCALTIMESTAMP)
+ SELECT 1 FROM dual;
  must_fail('UPDATE ledger_entry SET amount=1 WHERE id=5003',-20001);
  must_fail('DELETE FROM ledger_entry WHERE id=5003',-20001);
  must_fail('INSERT INTO ledger_entry VALUES (9000,2,''REVERSAL'',125000,5001,LOCALTIMESTAMP)',-20002);

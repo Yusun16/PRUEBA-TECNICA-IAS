@@ -82,7 +82,7 @@ public final class ReconciliationEngine {
         if (active.isEmpty()) {
             // A fully reversed history might represent a refund, not a missing posting.
             if (!snapshot.entries().isEmpty()) return manual(payment, net, "APPROVED_WITH_REVERSED_HISTORY");
-            movements.add(new Movement("DEBIT", payment.amount(), null));
+            return manual(payment, net, "APPROVED_WITHOUT_CAPTURE_EVIDENCE");
         } else {
             for (Entry duplicate : active.subList(1, active.size())) {
                 movements.add(new Movement("REVERSAL", duplicate.amount(), duplicate.id()));

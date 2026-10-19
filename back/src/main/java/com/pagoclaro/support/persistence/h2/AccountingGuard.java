@@ -32,6 +32,16 @@ public final class AccountingGuard implements Trigger {
                 }
             }
         }
+        if (ledger && newRow != null && "DEBIT".equals(newRow[2])) {
+            try (var statement = connection.prepareStatement("SELECT amount FROM payment WHERE id = ?")) {
+                statement.setObject(1, newRow[1]);
+                try (var row = statement.executeQuery()) {
+                    if (!row.next() || row.getBigDecimal(1).compareTo(new BigDecimal(newRow[3].toString())) != 0) {
+                        throw new SQLException("Debit must match full payment amount", "23513", 20003);
+                    }
+                }
+            }
+        }
         if (ledger && newRow != null && "REVERSAL".equals(newRow[2])) {
             try (var statement = connection.prepareStatement("""
                     SELECT COUNT(*) FROM ledger_entry

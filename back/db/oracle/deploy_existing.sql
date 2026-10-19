@@ -6,5 +6,6 @@ WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
 @@08_integrity_constraints.sql
 @@04_ledger_immutability.sql
 @@09_write_guards.sql
+ALTER SESSION SET PLSQL_CCFLAGS='pagoclaro_demo:FALSE';
 @@03_reconcile_payment.sql
 @@14_postcheck.sql

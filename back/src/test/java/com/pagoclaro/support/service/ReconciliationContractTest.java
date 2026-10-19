@@ -18,6 +18,11 @@ class ReconciliationContractTest {
             assertThat(actual.netBefore()).isEqualByComparingTo(expected.netBefore());
             assertThat(actual.netAfter()).isEqualByComparingTo(expected.netAfter());
             assertThat(actual.movements()).hasSize(expected.movements());
+            if (test.name().equals("duplicate-demo")) {
+                assertThat(actual.movements().getFirst().type()).isEqualTo("REVERSAL");
+                assertThat(actual.movements().getFirst().relatedId()).isEqualTo(5003L);
+                assertThat(actual.movements().getFirst().amount()).isEqualByComparingTo("89000");
+            }
         }));
     }
 }

@@ -37,6 +37,15 @@ class OracleReconciliationContractTest {
                         payment.id(), payment.reference(), payment.status(), payment.amount());
                 for (var event : snapshot.events()) insert(connection,
                         "INSERT INTO provider_event VALUES (?,?,?,?,LOCALTIMESTAMP)", event.id(), payment.id(), event.providerEventId(), event.status());
+                if (test.name().equals("partial-debit")) {
+                    var entry = snapshot.entries().getFirst();
+                    org.assertj.core.api.Assertions.assertThatThrownBy(() -> insert(connection,
+                            "INSERT INTO ledger_entry VALUES (?,?,?,?,?,LOCALTIMESTAMP)",
+                            entry.id(), payment.id(), entry.type(), entry.amount(), entry.relatedId()))
+                            .isInstanceOfSatisfying(java.sql.SQLException.class, error -> assertThat(error.getErrorCode()).isEqualTo(20003));
+                    assertThat(count(connection, "ledger_entry", payment.id())).isZero();
+                    return; // Invalid legacy snapshots remain covered by the pure Java contract.
+                }
                 for (var entry : snapshot.entries()) insert(connection,
                         "INSERT INTO ledger_entry VALUES (?,?,?,?,?,LOCALTIMESTAMP)", entry.id(), payment.id(), entry.type(), entry.amount(), entry.relatedId());
                 try (var call = connection.prepareCall("{call reconcile_payment(?,?,?,?,?,?)}")) {

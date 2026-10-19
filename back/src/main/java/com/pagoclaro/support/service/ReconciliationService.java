@@ -25,9 +25,15 @@ public class ReconciliationService {
     private final ReconciliationEngine engine;
 
     public ReconciliationService(PaymentRepository repository,
-            @Value("${reconciliation.allow-duplicate-compensation:false}") boolean allowDuplicateCompensation) {
+            @Value("${reconciliation.allow-duplicate-compensation:false}") boolean allowDuplicateCompensation,
+            org.springframework.core.env.Environment environment) {
         this.repository = repository;
-        this.engine = new ReconciliationEngine(allowDuplicateCompensation);
+        // Configuration is simulation permission only, never evidence of external capture.
+        boolean localSimulation = environment.acceptsProfiles(org.springframework.core.env.Profiles.of("local & !oracle"));
+        if (allowDuplicateCompensation && !localSimulation) {
+            throw new IllegalStateException("Duplicate compensation is restricted to the local simulation profile");
+        }
+        this.engine = new ReconciliationEngine(allowDuplicateCompensation && localSimulation);
     }
 
     public record Result(String reference, Outcome outcome, String reason, String paymentStatus,

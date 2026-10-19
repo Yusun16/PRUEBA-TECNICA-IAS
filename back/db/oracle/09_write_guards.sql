@@ -27,9 +27,13 @@ COMPOUND TRIGGER
  v_reversals reversal_rows;
  v_size PLS_INTEGER:=0;
  BEFORE EACH ROW IS
-   v_payment NUMBER;
+   v_payment NUMBER; v_payment_amount NUMBER;
  BEGIN
-   SELECT id INTO v_payment FROM payment WHERE id=:NEW.payment_id FOR UPDATE WAIT 5;
+   SELECT id,amount INTO v_payment,v_payment_amount FROM payment WHERE id=:NEW.payment_id FOR UPDATE WAIT 5;
+   -- Other row-local rules belong to CHECK constraints; this is a cross-table rule.
+   IF :NEW.entry_type='DEBIT' AND :NEW.amount<>v_payment_amount THEN
+     RAISE_APPLICATION_ERROR(-20003,'Debit must match full payment amount');
+   END IF;
    IF :NEW.entry_type='REVERSAL' THEN
      v_size:=v_size+1;
      v_reversals(v_size).payment_id:=:NEW.payment_id;

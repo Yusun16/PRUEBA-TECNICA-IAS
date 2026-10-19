@@ -23,6 +23,8 @@ export const outcomes = {
 };
 
 const reasons = {
+  APPROVED_WITHOUT_CAPTURE_EVIDENCE:
+    "La aprobación no acredita una captura definitiva. Se requiere evidencia del proveedor antes de registrar un débito.",
   APPROVED_RECONCILED:
     "La evidencia de aprobación y el saldo contable quedaron conciliados.",
   DECLINED_WITHOUT_LEDGER:

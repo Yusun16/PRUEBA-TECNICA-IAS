@@ -5,7 +5,9 @@ WHENEVER SQLERROR EXIT SQL.SQLCODE ROLLBACK
 @@07_preflight.sql
 @@01_support_migration.sql
 @@08_integrity_constraints.sql
+ALTER SESSION SET PLSQL_CCFLAGS='pagoclaro_demo:TRUE';
 @@03_reconcile_payment.sql
+ALTER SESSION SET PLSQL_CCFLAGS='pagoclaro_demo:FALSE';
 @@04_ledger_immutability.sql
 @@09_write_guards.sql
 -- SHOW ERRORS no provoca SQLERROR: fallar si existen objetos inválidos.
@@ -20,4 +22,7 @@ END;
 @@06_verify_procedure.sql
 @@10_verify_guards.sql
 @@11_verify_rollback.sql
+-- Tests finished: leave the installed procedure in safe mode too.
+@@03_reconcile_payment.sql
+@@18_verify_safe_policy.sql
 @@14_postcheck.sql

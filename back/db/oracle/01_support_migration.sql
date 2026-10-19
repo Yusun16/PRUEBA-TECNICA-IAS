@@ -16,6 +16,10 @@ DECLARE
        SUM(CASE WHEN c.column_name=UPPER(p_first) OR c.column_name=UPPER(p_second) THEN 1 ELSE 0 END) AS matching_columns
      FROM user_indexes i JOIN user_ind_columns c ON c.index_name=i.index_name
      WHERE i.table_name=UPPER(p_table) AND i.status='VALID'
+       AND i.index_type='NORMAL' AND i.partitioned='NO'
+       AND (p_unique=1 OR i.visibility='VISIBLE')
+       AND NOT EXISTS (SELECT 1 FROM user_ind_expressions e WHERE e.index_name=i.index_name)
+       AND NOT EXISTS (SELECT 1 FROM user_ind_columns d WHERE d.index_name=i.index_name AND d.descend<>'ASC')
      GROUP BY i.index_name,i.uniqueness
    ) WHERE (p_unique=0 AND columns_count>=CASE WHEN p_second IS NULL THEN 1 ELSE 2 END
              AND first_matches=1 AND (p_second IS NULL OR second_matches=1))
@@ -23,6 +27,10 @@ DECLARE
              AND columns_count=CASE WHEN p_second IS NULL THEN 1 ELSE 2 END
              AND matching_columns=columns_count);
    IF v_found=0 THEN
+     SELECT COUNT(*) INTO v_found FROM user_objects WHERE object_name=UPPER(p_name);
+     IF v_found>0 THEN
+       RAISE_APPLICATION_ERROR(-20018,'Index name occupied by incompatible object: '||p_name||'; inspect manually');
+     END IF;
      EXECUTE IMMEDIATE 'CREATE '||CASE WHEN p_unique=1 THEN 'UNIQUE ' ELSE '' END||
        'INDEX '||p_name||' ON '||p_table||'('||p_first||
        CASE WHEN p_second IS NOT NULL THEN ','||p_second ELSE '' END||')';
@@ -55,7 +63,9 @@ DECLARE
          EXECUTE IMMEDIATE 'ALTER SEQUENCE '||p_name||' INCREMENT BY '||TO_CHAR(v_step,'FM9999999999999999999999999990');
        EXCEPTION WHEN OTHERS THEN
          BEGIN EXECUTE IMMEDIATE 'ALTER SEQUENCE '||p_name||' INCREMENT BY '||TO_CHAR(v_step,'FM9999999999999999999999999990');
-         EXCEPTION WHEN OTHERS THEN NULL; END;
+         EXCEPTION WHEN OTHERS THEN
+           DBMS_OUTPUT.PUT_LINE('MANUAL RECOVERY: could not restore increment of '||p_name||': '||SQLERRM);
+         END;
          RAISE;
        END;
      END IF;
@@ -76,9 +86,14 @@ BEGIN
    SELECT COUNT(*) INTO v_bad FROM user_tab_columns
    WHERE table_name='SUPPORT_AUDIT' AND column_name='EVIDENCE_KEY' AND data_type='VARCHAR2' AND char_length>=64;
    IF v_bad<>1 THEN RAISE_APPLICATION_ERROR(-20017,'Existing evidence_key must support 64 VARCHAR2 characters'); END IF;
-   EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM (SELECT payment_id,evidence_key FROM support_audit WHERE evidence_key IS NOT NULL GROUP BY payment_id,evidence_key HAVING COUNT(*)>1)' INTO v_bad;
+   -- Composite Oracle uniqueness also covers repeated (payment_id, NULL).
+   EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM (SELECT payment_id,evidence_key FROM support_audit GROUP BY payment_id,evidence_key HAVING COUNT(*)>1)' INTO v_bad;
    IF v_bad>0 THEN RAISE_APPLICATION_ERROR(-20015,'Duplicate audit evidence: investigate before migration'); END IF;
  ELSE
+   SELECT COUNT(*) INTO v_bad FROM (SELECT payment_id FROM support_audit GROUP BY payment_id HAVING COUNT(*)>1);
+   IF v_bad>0 THEN
+     RAISE_APPLICATION_ERROR(-20015,'Multiple legacy audits would share NULL evidence: preserve history and investigate');
+   END IF;
    EXECUTE IMMEDIATE 'ALTER TABLE support_audit ADD (evidence_key VARCHAR2(64))';
  END IF;
  ensure_index('uq_audit_evidence','support_audit','payment_id','evidence_key',1);
