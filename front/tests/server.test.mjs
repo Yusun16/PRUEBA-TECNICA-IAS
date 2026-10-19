@@ -170,3 +170,75 @@ test("rejects credentials and non-HTTP protocols in backend configuration", () =
     assert.throws(() => createAppServer({ backend }), /BACKEND_URL/);
   }
 });
+
+test("forwarded headers cannot relax the local HTTP origin check", async (context) => {
+  let calls = 0;
+  const upstream = await start(
+    createServer((req, res) => {
+      calls++;
+      res.end("{}");
+    }),
+    context,
+  );
+  const url = await start(createAppServer({ backend: upstream }), context);
+  for (const origin of [
+    "https://untrusted.example",
+    url.replace("http:", "https:"),
+  ]) {
+    const response = await fetch(
+      url + "/api/support/payments/PAY-AX91/reconcile",
+      {
+        method: "POST",
+        headers: {
+          Origin: origin,
+          "X-Forwarded-Proto": "https",
+          "X-Forwarded-Host": new URL(origin).host,
+        },
+      },
+    );
+    assert.equal(response.status, 403);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+  }
+  assert.equal(calls, 0);
+});
+
+test("request bodies are rejected and a disconnected backend is sanitized", async (context) => {
+  const closed = createServer();
+  const unavailable = await start(closed, context);
+  await new Promise((resolve) => closed.close(resolve));
+  const url = await start(createAppServer({ backend: unavailable }), context);
+  const body = await fetch(url + "/api/support/payments/PAY-AX91/reconcile", {
+    method: "POST",
+    body: "not-supported",
+  });
+  assert.equal(body.status, 400);
+  const response = await fetch(
+    url + "/api/support/payments/PAY-AX91/reconcile",
+    { method: "POST" },
+  );
+  assert.equal(response.status, 502);
+  assert.equal(response.headers.get("cache-control"), "no-store");
+  assert.doesNotMatch(await response.text(), /ECONNREFUSED|stack|password/);
+});
+
+test("timeout while consuming an upstream body remains a 504 with no retry", async (context) => {
+  let calls = 0;
+  const upstream = await start(
+    createServer((req, res) => {
+      calls++;
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.write("{");
+    }),
+    context,
+  );
+  const url = await start(
+    createAppServer({ backend: upstream, timeout: 50 }),
+    context,
+  );
+  const response = await fetch(
+    url + "/api/support/payments/PAY-AX91/reconcile",
+    { method: "POST" },
+  );
+  assert.equal(response.status, 504);
+  assert.equal(calls, 1);
+});

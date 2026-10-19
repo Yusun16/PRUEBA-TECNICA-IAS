@@ -1,0 +1,555 @@
+{
+  "stage": "final",
+  "apiMocked": true,
+  "observations": [
+    {
+      "width": 375,
+      "view": "login",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".login-intro",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-help p",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-footer",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "view": "dashboard",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".empty-result p",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".activity-empty small",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "view": "result",
+      "overflow": false,
+      "emptyActivityTables": 1,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".result-status p",
+          "fontSize": 12,
+          "contrast": 6.013264450956264
+        },
+        {
+          "selector": ".badge",
+          "fontSize": 12,
+          "contrast": 6.816872358224809
+        },
+        {
+          "selector": ".result-reason",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "view": "login",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".login-intro",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-help p",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-footer",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "view": "dashboard",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".empty-result p",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".activity-empty small",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "view": "result",
+      "overflow": false,
+      "emptyActivityTables": 1,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".result-status p",
+          "fontSize": 12,
+          "contrast": 6.013264450956264
+        },
+        {
+          "selector": ".badge",
+          "fontSize": 12,
+          "contrast": 6.816872358224809
+        },
+        {
+          "selector": ".result-reason",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "view": "login",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".login-intro",
+          "fontSize": 13,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-help p",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-footer",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "view": "dashboard",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".empty-result p",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".activity-empty small",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "view": "result",
+      "overflow": false,
+      "emptyActivityTables": 1,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".result-status p",
+          "fontSize": 12,
+          "contrast": 6.013264450956264
+        },
+        {
+          "selector": ".badge",
+          "fontSize": 12,
+          "contrast": 6.816872358224809
+        },
+        {
+          "selector": ".result-reason",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "view": "login",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".login-intro",
+          "fontSize": 13,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-help p",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-footer",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "view": "dashboard",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".empty-result p",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".activity-empty small",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "view": "result",
+      "overflow": false,
+      "emptyActivityTables": 1,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".result-status p",
+          "fontSize": 12,
+          "contrast": 6.013264450956264
+        },
+        {
+          "selector": ".badge",
+          "fontSize": 12,
+          "contrast": 6.816872358224809
+        },
+        {
+          "selector": ".result-reason",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "view": "login",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".login-intro",
+          "fontSize": 13,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-help p",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".login-footer",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "view": "dashboard",
+      "overflow": false,
+      "emptyActivityTables": 0,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".empty-result p",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".activity-empty small",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "view": "result",
+      "overflow": false,
+      "emptyActivityTables": 1,
+      "lowContrastText": [],
+      "text": [
+        {
+          "selector": ".field-help",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".action-notice p",
+          "fontSize": 12,
+          "contrast": 6.133167362104157
+        },
+        {
+          "selector": ".metric-label",
+          "fontSize": 12,
+          "contrast": 6.431431428129037
+        },
+        {
+          "selector": ".mini-label",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        },
+        {
+          "selector": ".result-status p",
+          "fontSize": 12,
+          "contrast": 6.013264450956264
+        },
+        {
+          "selector": ".badge",
+          "fontSize": 12,
+          "contrast": 6.816872358224809
+        },
+        {
+          "selector": ".result-reason",
+          "fontSize": 12,
+          "contrast": 6.561981044622296
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "view": "reflow-320",
+      "deviceScaleFactor": 1,
+      "nativeBrowserZoomTested": false,
+      "overflow": false
+    },
+    {
+      "width": 720,
+      "view": "zoom-equivalent-200-percent",
+      "deviceScaleFactor": 2,
+      "nativeBrowserZoomTested": false,
+      "overflow": false
+    }
+  ]
+}

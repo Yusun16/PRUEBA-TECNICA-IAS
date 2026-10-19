@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-10-19T22:12:56.310Z",
+  "baseCommit": "0881c9a7ba0ce2c27ac8af59392cead37e6ba449",
+  "baseline": {
+    "unitPassed": 17,
+    "browserPassed": 14
+  },
+  "final": {
+    "unitCommand": "npm test",
+    "unitPassed": 21,
+    "browserCommand": "npm run test:e2e",
+    "browserPassed": 28,
+    "failures": 0,
+    "skipped": 0,
+    "browserDurationSeconds": 56.6
+  },
+  "initialExpandedRun": {
+    "passed": 23,
+    "failed": 5,
+    "cause": "Focus-visible was checked after pointer modality; test corrected to use actual Tab traversal."
+  },
+  "visual": {
+    "command": "node scripts/verify-visual.mjs",
+    "apiMocked": true,
+    "requiredWidths": [
+      375,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "observations": 17,
+    "screenshots": 18,
+    "pageOverflowDetected": false,
+    "lowContrastTextDetectedInMeasuredStates": false,
+    "nativeBrowserZoomCertified": false,
+    "fullWcagCertified": false
+  },
+  "integration": {
+    "command": "node scripts/verify-integration.mjs",
+    "backendMocked": false,
+    "reconciliationsPassed": 8,
+    "artifactSha256": "200ab4de59db2b22a9ed80ab260b4b3419285434aef7c61e6075f440fe1c1929"
+  },
+  "scope": {
+    "backendSourceUnchanged": true,
+    "serverSourceUnchanged": true,
+    "packagesUnchanged": true,
+    "commitsCreated": false,
+    "pushPerformed": false,
+    "unknownFrontZipTouched": false
+  },
+  "resources": [
+    {
+      "path": "front/index.html",
+      "bytes": 14975,
+      "sha256": "3c6c91c17fe6fd77e603b9941ab8334c446a6007fd1c347bda229cba12334926"
+    },
+    {
+      "path": "front/styles.css",
+      "bytes": 37510,
+      "sha256": "734cccf9db03ad2719e9f0b12ab69acb747bf9a4c5185316ba0f7378ec97098f"
+    },
+    {
+      "path": "front/src/app.js",
+      "bytes": 12999,
+      "sha256": "d300fa12812c68f9aaf5be05463ebefa47cf9e07c28b3fc1b10842916fa91cc0"
+    },
+    {
+      "path": "front/src/api.js",
+      "bytes": 4813,
+      "sha256": "44fac9223226121ae3e17006d38f2ffe190117b0081049456df0bae74befe4ad"
+    },
+    {
+      "path": "front/src/presentation.js",
+      "bytes": 3602,
+      "sha256": "f32300ff12ab1702d6fc8275dc8775ad74a0670ea2c76f767c590f777b6b5e18"
+    }
+  ],
+  "resourceBytes": 73899
+}

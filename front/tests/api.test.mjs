@@ -162,6 +162,16 @@ test("presentation preserves decimals, checks contracts and avoids exposing unkn
   );
 });
 
+test("inherited object properties cannot impersonate financial outcomes or reasons", () => {
+  for (const key of ["__proto__", "constructor", "toString"]) {
+    assert.equal(isResult({ ...result, outcome: key }), false);
+    assert.equal(isResult({ ...result, paymentStatus: key }), false);
+    assert.equal(typeof reasonText(key), "string");
+    assert.match(reasonText(key), /Consulta la evidencia/);
+  }
+  assert.equal(isResult({ ...result, movementsCreated: 1e20 }), false);
+});
+
 test("preserves NUMBER(18,2) decimal tokens without floating point rounding", async () => {
   const body =
     '{"reference":"PAY-BX17","outcome":"RESOLVED","reason":"APPROVED_RECONCILED","paymentStatus":"CONFIRMED","netDebitBefore":9999999999999999.99,"netDebitAfter":9999999999999999.99,"movementsCreated":1,"auditCreated":true}';

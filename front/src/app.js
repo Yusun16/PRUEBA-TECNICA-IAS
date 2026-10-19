@@ -19,6 +19,12 @@ const state = {
   lastReference: null,
 };
 const initialResult = $("#result-content").cloneNode(true);
+const initialActivity = new Map(
+  ["#recent-activity", "#all-activity"].map((id) => [
+    id,
+    $(id).cloneNode(true),
+  ]),
+);
 
 function node(tag, className, text) {
   const element = document.createElement(tag);
@@ -49,10 +55,12 @@ function signOut(message = "") {
   $("#password-toggle").setAttribute("aria-pressed", "false");
   $("#password-toggle").setAttribute("aria-label", "Mostrar contrase\u00f1a");
   $("#operator-name").textContent = "";
+  $("#connection-dot").classList.remove("configured");
   $("#login-error").textContent = message;
   $("#login-error").hidden = !message;
   history.replaceState(null, "", "/login");
   document.title = "PagoClaro | Iniciar sesi\u00f3n";
+  $("#username").focus();
 }
 
 function changeView(view) {
@@ -66,6 +74,8 @@ function changeView(view) {
     if (active) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   }
+  window.scrollTo(0, 0);
+  $("#main").focus({ preventScroll: true });
 }
 
 function selectReference(reference) {
@@ -130,6 +140,7 @@ function showResult(result, date) {
     ),
     document.createTextNode(outcome.label),
   );
+  title.querySelector(".status-symbol").setAttribute("aria-hidden", "true");
   banner.append(title, node("p", "", outcome.description));
   const reference = node("div", "result-reference");
   reference.append(
@@ -198,7 +209,15 @@ function showError(reference, error) {
 
 function historyTable(entries) {
   const scroll = node("div", "table-scroll");
+  scroll.tabIndex = 0;
+  scroll.setAttribute("role", "region");
+  scroll.setAttribute("aria-label", "Operaciones de sesión; tabla desplazable");
   const table = node("table");
+  const caption = node(
+    "caption",
+    "sr-only",
+    "Actividad temporal de esta ventana, de más reciente a más antigua",
+  );
   const head = node("thead");
   const headRow = node("tr");
   ["REFERENCIA", "RESULTADO", "MOVIMIENTOS", "HORA"].forEach((label) => {
@@ -233,7 +252,7 @@ function historyTable(entries) {
     );
     body.append(row);
   }
-  table.append(head, body);
+  table.append(caption, head, body);
   scroll.append(table);
   return scroll;
 }
@@ -248,8 +267,14 @@ function updateActivity() {
     ["#all-activity", state.history],
   ]) {
     const container = $(id);
-    container.classList.add("has-rows");
-    container.replaceChildren(historyTable(entries));
+    container.classList.toggle("has-rows", entries.length > 0);
+    container.replaceChildren(
+      ...(entries.length
+        ? [historyTable(entries)]
+        : Array.from(initialActivity.get(id).childNodes, (child) =>
+            child.cloneNode(true),
+          )),
+    );
   }
 }
 
@@ -308,6 +333,7 @@ $("#login-form").addEventListener("submit", async (event) => {
     password: $("#password").value,
   };
   $("#login-error").hidden = true;
+  $("#login-form").setAttribute("aria-busy", "true");
   $("#login-button").disabled = true;
   $("#username").disabled = true;
   $("#password").disabled = true;
@@ -324,7 +350,7 @@ $("#login-form").addEventListener("submit", async (event) => {
     changeView("reconcile");
     history.replaceState(null, "", "/dashboard");
     document.title = "PagoClaro | Conciliaci\u00f3n de pagos";
-    $("#main").focus();
+    $("#main").focus({ preventScroll: true });
   } catch (error) {
     $("#password").value = "";
     $("#login-error").textContent = error.message;
@@ -335,6 +361,8 @@ $("#login-form").addEventListener("submit", async (event) => {
     $("#password").disabled = false;
     $("#password-toggle").disabled = false;
     $("#login-button-label").textContent = "Iniciar sesi\u00f3n";
+    $("#login-form").setAttribute("aria-busy", "false");
+    if (!state.credentials) $("#password").focus();
   }
 });
 $("#logout-button").addEventListener("click", () => {

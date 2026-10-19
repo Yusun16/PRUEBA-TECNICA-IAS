@@ -56,7 +56,8 @@ export const paymentStatuses = {
 };
 export function reasonText(code) {
   return (
-    reasons[code] ?? "Consulta la evidencia del pago con el equipo de soporte."
+    (Object.hasOwn(reasons, code) ? reasons[code] : undefined) ??
+    "Consulta la evidencia del pago con el equipo de soporte."
   );
 }
 export function formatAmount(amount) {
@@ -83,12 +84,12 @@ export function isResult(data) {
   return Boolean(
     data &&
       typeof data.reference === "string" &&
-      outcomes[data.outcome] &&
-      paymentStatuses[data.paymentStatus] &&
+      Object.hasOwn(outcomes, data.outcome) &&
+      Object.hasOwn(paymentStatuses, data.paymentStatus) &&
       typeof data.reason === "string" &&
       isAmount(data.netDebitBefore) &&
       isAmount(data.netDebitAfter) &&
-      Number.isInteger(data.movementsCreated) &&
+      Number.isSafeInteger(data.movementsCreated) &&
       data.movementsCreated >= 0 &&
       typeof data.auditCreated === "boolean",
   );

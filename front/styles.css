@@ -146,7 +146,7 @@ a {
   margin-left: auto;
 }
 .nav-label {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.8px;
   color: #829b9d;
   margin: 32px 11px 16px;
@@ -263,12 +263,12 @@ a {
   gap: 18px;
 }
 .breadcrumb {
-  font-size: 11px;
-  color: #8a9594;
+  font-size: 12px;
+  color: #4d6257;
 }
 .breadcrumb span {
   margin: 0 14px;
-  color: #b3bdb7;
+  color: #4d6257;
 }
 .breadcrumb strong {
   color: #425451;
@@ -282,7 +282,7 @@ a {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 10px;
+  font-size: 12px;
   color: #5d7068;
 }
 .connection-dot {
@@ -316,10 +316,10 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.8px;
   font-weight: 600;
-  color: #637f6e;
+  color: #4d6257;
 }
 .eyebrow > span {
   width: 5px;
@@ -347,16 +347,16 @@ h3 {
   font-weight: 550;
 }
 .page-heading p {
-  color: #7b8786;
+  color: #4d6257;
   font-size: 12px;
   margin: 0;
   line-height: 1.65;
 }
 .page-tag {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.1px;
   border: 1px solid #dce4d8;
-  color: #718268;
+  color: #4d6257;
   padding: 8px 10px;
   border-radius: 4px;
   margin-top: 22px;
@@ -403,8 +403,8 @@ h3 {
   color: #a28752;
 }
 .metric-label {
-  color: #7c8985;
-  font-size: 10px;
+  color: #4d6257;
+  font-size: 12px;
 }
 .metric strong {
   display: block;
@@ -415,8 +415,8 @@ h3 {
   letter-spacing: -1px;
 }
 .metric-detail {
-  font-size: 8px;
-  color: #96a095;
+  font-size: 12px;
+  color: #4d6257;
   position: absolute;
   bottom: 21px;
   right: 16px;
@@ -445,9 +445,9 @@ h3 {
   gap: 15px;
 }
 .section-number {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 1.7px;
-  color: #87978b;
+  color: #4d6257;
   font-weight: 500;
 }
 .outline-icon {
@@ -461,8 +461,8 @@ h3 {
   font-size: 24px;
 }
 .card-intro {
-  font-size: 11px;
-  color: #7f8a86;
+  font-size: 12px;
+  color: #4d6257;
   line-height: 1.8;
   margin: 17px 0 25px;
   max-width: 370px;
@@ -470,14 +470,14 @@ h3 {
 label {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #42584e;
   margin-bottom: 9px;
 }
 label span {
-  font-size: 8px;
-  color: #a2aca4;
+  font-size: 12px;
+  color: #4d6257;
   font-weight: 400;
 }
 .input-wrap {
@@ -521,15 +521,15 @@ input {
 }
 .input-wrap kbd {
   font-family: inherit;
-  font-size: 8px;
-  color: #9da99c;
+  font-size: 12px;
+  color: #4d6257;
   border: 1px solid #e4eadf;
   padding: 3px 4px;
   border-radius: 3px;
 }
 .field-help {
-  font-size: 9px;
-  color: #96a095;
+  font-size: 12px;
+  color: #4d6257;
   line-height: 1.6;
   margin: 8px 0 0;
 }
@@ -545,10 +545,10 @@ input {
   color: #879479;
 }
 .action-notice p {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
   margin: 0;
-  color: #78836e;
+  color: #4d6257;
 }
 .action-notice > span {
   font-size: 13px;
@@ -639,9 +639,9 @@ input {
   margin: 11px 0 0;
 }
 .mini-label {
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 500;
-  color: #9ca89b;
+  color: #4d6257;
   border: 1px solid #e4eae0;
   border-radius: 4px;
   padding: 5px 7px;
@@ -733,9 +733,9 @@ input {
   color: #4c6253;
 }
 .empty-result p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.9;
-  color: #95a08f;
+  color: #4d6257;
   max-width: 265px;
   margin: 0;
 }
@@ -744,9 +744,9 @@ input {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  font-size: 7px;
+  font-size: 12px;
   margin-top: 31px;
-  color: #8f9e85;
+  color: #4d6257;
 }
 .empty-steps span {
   display: flex;
@@ -754,7 +754,7 @@ input {
 }
 .empty-steps b {
   font-weight: 400;
-  color: #9ba692;
+  color: #4d6257;
 }
 .empty-steps i {
   font-style: normal;
@@ -777,8 +777,8 @@ input {
 .text-button {
   border: 0;
   background: transparent;
-  font-size: 10px;
-  color: #6e836c;
+  font-size: 12px;
+  color: #4d6257;
   padding: 6px 0;
   white-space: nowrap;
 }
@@ -796,8 +796,8 @@ input {
   justify-content: center;
   flex-direction: column;
   padding: 19px;
-  color: #a2ab9a;
-  font-size: 10px;
+  color: #4d6257;
+  font-size: 12px;
 }
 .activity-empty > span {
   font-size: 19px;
@@ -806,17 +806,17 @@ input {
 }
 .activity-empty p {
   margin: 5px 0;
-  font-size: 10px;
+  font-size: 12px;
 }
 .activity-empty small {
-  font-size: 8px;
-  color: #b0b6ab;
+  font-size: 12px;
+  color: #4d6257;
   text-align: center;
   line-height: 1.6;
 }
 .bottom-note {
-  font-size: 8px;
-  color: #9ca794;
+  font-size: 12px;
+  color: #4d6257;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -833,8 +833,8 @@ input {
 footer {
   border-top: 1px solid #e5e9df;
   padding: 18px 0 24px;
-  font-size: 8px;
-  color: #a3ac9c;
+  font-size: 12px;
+  color: #4d6257;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -856,13 +856,13 @@ footer {
   background: #fff;
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 12px;
   padding: 11px 14px;
   color: #55745d;
 }
 .session-note {
-  font-size: 11px;
-  color: #8c9b89;
+  font-size: 12px;
+  color: #4d6257;
   margin: 18px 0 40px;
   line-height: 1.7;
 }
@@ -897,9 +897,9 @@ footer {
   gap: 9px;
 }
 .result-status p {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.8;
-  color: #7b8d72;
+  color: #4d6257;
   margin: 0;
 }
 .result-status.warning h3 {
@@ -929,12 +929,12 @@ footer {
   align-items: center;
   padding: 20px 0 14px;
   border-bottom: 1px solid #eef1e9;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 550;
   letter-spacing: 0.5px;
 }
 .badge {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0;
   font-weight: 500;
   border: 1px solid #dee8d8;
@@ -966,8 +966,8 @@ footer {
 }
 .amount-item small {
   display: block;
-  color: #96a18c;
-  font-size: 9px;
+  color: #4d6257;
+  font-size: 12px;
 }
 .amount-item strong {
   display: block;
@@ -993,12 +993,12 @@ footer {
 .result-facts > div {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 12px;
   padding: 9px 0;
   gap: 15px;
 }
 .result-facts dt {
-  color: #89957e;
+  color: #4d6257;
 }
 .result-facts dd {
   margin: 0;
@@ -1007,16 +1007,16 @@ footer {
   text-align: right;
 }
 .result-reason {
-  font-size: 10px;
-  color: #8d9a82;
+  font-size: 12px;
+  color: #4d6257;
   line-height: 1.8;
   padding-top: 13px;
   border-top: 1px solid #eef1e9;
   margin: 10px 0 0;
 }
 .result-time {
-  font-size: 8px;
-  color: #abb3a4;
+  font-size: 12px;
+  color: #4d6257;
   margin-top: 13px;
 }
 .result-error {
@@ -1035,8 +1035,8 @@ footer {
   justify-content: center;
   flex-direction: column;
   min-height: 438px;
-  color: #7e9378;
-  font-size: 11px;
+  color: #4d6257;
+  font-size: 12px;
   gap: 18px;
 }
 .spinner {
@@ -1049,8 +1049,8 @@ footer {
   animation: spin 1s linear infinite;
 }
 .loading-state small {
-  font-size: 9px;
-  color: #a4ae9a;
+  font-size: 12px;
+  color: #4d6257;
 }
 .table-scroll {
   overflow-x: auto;
@@ -1059,14 +1059,14 @@ table {
   border-collapse: collapse;
   width: 100%;
   text-align: left;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 th {
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.7px;
-  color: #9ba591;
+  color: #4d6257;
   background: #fafbf7;
   border-top: 1px solid #eff2e9;
   border-bottom: 1px solid #eff2e9;
@@ -1075,7 +1075,7 @@ th {
 td {
   padding: 15px 24px;
   border-bottom: 1px solid #f0f2ec;
-  color: #7a8b70;
+  color: #4d6257;
   font-variant-numeric: tabular-nums;
 }
 tbody tr:last-child td {
@@ -1094,7 +1094,7 @@ td:first-child {
   background: none;
   border: 0;
   padding: 0;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 550;
   color: #466c50;
   text-decoration: underline;
@@ -1107,12 +1107,12 @@ td:first-child {
   margin-top: 5px;
 }
 .amount-unit-note {
-  font-size: 8px;
-  color: #a3ad98;
+  font-size: 12px;
+  color: #4d6257;
   margin: 0 0 13px;
 }
 .result-stale {
-  font-size: 9px;
+  font-size: 12px;
   color: #a38756;
   margin: 13px 0 0;
   line-height: 1.6;
@@ -1211,7 +1211,7 @@ dialog .primary-button {
     min-height: 440px;
   }
   .metric-detail {
-    font-size: 9px;
+    font-size: 12px;
   }
   .card-intro,
   .primary-button {
@@ -1241,7 +1241,7 @@ dialog .primary-button {
     display: none;
   }
   .metric-label {
-    font-size: 9px;
+    font-size: 12px;
   }
   .work-grid {
     gap: 16px;
@@ -1345,7 +1345,7 @@ dialog .primary-button {
     min-height: 86px;
   }
   .mini-label {
-    font-size: 6px;
+    font-size: 12px;
   }
   .card-heading h2 {
     font-size: 16px;
@@ -1358,7 +1358,7 @@ dialog .primary-button {
   }
   .empty-steps {
     gap: 5px;
-    font-size: 6px;
+    font-size: 12px;
   }
   .bottom-version {
     display: none;
@@ -1415,13 +1415,13 @@ dialog .primary-button {
     padding: 0 20px;
   }
   .breadcrumb {
-    font-size: 9px;
+    font-size: 12px;
   }
   .breadcrumb span {
     margin: 0 8px;
   }
   .connection-button {
-    font-size: 9px;
+    font-size: 12px;
     padding: 8px;
   }
   .connection-button > span:last-child {
@@ -1441,7 +1441,7 @@ dialog .primary-button {
     letter-spacing: -1.2px;
   }
   .eyebrow {
-    font-size: 7px;
+    font-size: 12px;
   }
   .page-heading p {
     font-size: 11px;
@@ -1463,7 +1463,7 @@ dialog .primary-button {
     font-size: 13px;
   }
   .metric-label {
-    font-size: 8px;
+    font-size: 12px;
     display: block;
     line-height: 1.5;
   }
@@ -1487,7 +1487,7 @@ dialog .primary-button {
     font-size: 7px;
   }
   .card-intro {
-    font-size: 11px;
+    font-size: 12px;
   }
   .sample {
     padding: 12px;
@@ -1510,11 +1510,11 @@ dialog .primary-button {
     padding-bottom: 7px;
   }
   .empty-steps {
-    font-size: 8px;
+    font-size: 12px;
     gap: 9px;
   }
   .empty-result p {
-    font-size: 11px;
+    font-size: 12px;
   }
   .amount-item strong {
     font-size: 24px;
@@ -1523,7 +1523,7 @@ dialog .primary-button {
     font-size: 18px;
   }
   .mini-label {
-    font-size: 7px;
+    font-size: 12px;
   }
   .activity-heading {
     padding: 20px;
@@ -1532,7 +1532,7 @@ dialog .primary-button {
     padding: 22px 16px;
   }
   .bottom-note {
-    font-size: 8px;
+    font-size: 12px;
     align-items: flex-start;
     margin-bottom: 24px;
   }
@@ -1540,7 +1540,7 @@ dialog .primary-button {
     margin-top: -2px;
   }
   footer {
-    font-size: 7px;
+    font-size: 12px;
   }
   .footer-right {
     font-size: 7px;
@@ -1552,13 +1552,13 @@ dialog .primary-button {
   .result-status p,
   .result-reason,
   .result-facts > div {
-    font-size: 11px;
+    font-size: 12px;
   }
   .field-help {
-    font-size: 10px;
+    font-size: 12px;
   }
   .action-notice p {
-    font-size: 10px;
+    font-size: 12px;
   }
   .primary-button {
     font-size: 12px;
@@ -1570,7 +1570,7 @@ dialog .primary-button {
     font-size: 13px;
   }
   .result-stale {
-    font-size: 10px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1623,7 +1623,7 @@ dialog form > p:first-of-type,
 footer,
 .demo-credentials strong,
 .demo-credentials small {
-  font-size: 10px;
+  font-size: 12px;
 }
 .primary-button {
   font-size: 13px;
@@ -1636,7 +1636,7 @@ footer,
 }
 .metric-detail {
   bottom: 18px;
-  font-size: 9px;
+  font-size: 12px;
 }
 .sample {
   min-height: 66px;
@@ -1656,10 +1656,10 @@ td,
   font-size: 12px;
 }
 th {
-  font-size: 10px;
+  font-size: 12px;
 }
 .result-stale {
-  font-size: 11px;
+  font-size: 12px;
 }
 .empty-steps {
   flex-wrap: wrap;
@@ -1684,7 +1684,7 @@ th {
   font-size: 11px;
 }
 .nav-label {
-  font-size: 9px;
+  font-size: 12px;
 }
 .bottom-note {
   flex-wrap: wrap;
@@ -1697,7 +1697,7 @@ th {
     display: none;
   }
   .metric-label {
-    font-size: 11px;
+    font-size: 12px;
   }
   .sample-heading > span {
     display: none;
@@ -1715,7 +1715,7 @@ th {
     gap: 7px;
   }
   .metric-label {
-    font-size: 10px;
+    font-size: 12px;
   }
   .sample small {
     font-size: 10px;
@@ -1728,21 +1728,21 @@ th {
     padding: 20px;
   }
   .mini-label {
-    font-size: 8px;
+    font-size: 12px;
   }
 }
 @media (max-width: 650px) {
   .breadcrumb {
-    font-size: 10px;
+    font-size: 12px;
   }
   .connection-button {
-    font-size: 10px;
+    font-size: 12px;
   }
   .metric {
     min-height: 120px;
   }
   .metric-label {
-    font-size: 10px;
+    font-size: 12px;
   }
   .reconciliation-card,
   .result-card {
@@ -1764,7 +1764,7 @@ th {
     font-size: 12px;
   }
   .mini-label {
-    font-size: 9px;
+    font-size: 12px;
   }
   .result-reference {
     gap: 10px;
@@ -1902,8 +1902,8 @@ th {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  font-size: 10px;
-  color: #7d9078;
+  font-size: 12px;
+  color: #4d6257;
 }
 .login-access-label {
   letter-spacing: 1.7px;
@@ -1913,7 +1913,7 @@ th {
   padding: 8px 11px;
   border-radius: 5px;
   font-size: 10px;
-  color: #75876e;
+  color: #4d6257;
 }
 .login-form-wrap {
   width: 100%;
@@ -1930,7 +1930,7 @@ th {
 .login-intro {
   font-size: 13px;
   line-height: 1.9;
-  color: #71816b;
+  color: #4d6257;
   margin: 0 0 33px;
 }
 .login-form-wrap label {
@@ -1945,7 +1945,7 @@ th {
   color: #355344;
 }
 .login-form-wrap input::placeholder {
-  color: #8c9a85;
+  color: #4d6257;
   font-size: 12px;
 }
 .password-wrap {
@@ -1962,7 +1962,7 @@ th {
   background: none;
   border: 0;
   color: #5f7755;
-  font-size: 11px;
+  font-size: 12px;
   padding: 0 2px;
 }
 .login-submit {
@@ -1976,10 +1976,10 @@ th {
   border-top: 1px solid #e6ebdf;
   margin-top: 29px;
   padding-top: 19px;
-  color: #7b8e70;
+  color: #4d6257;
 }
 .login-help p {
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.8;
   margin: 0;
 }
@@ -1991,11 +1991,11 @@ th {
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  color: #84937b;
-  font-size: 10px;
+  color: #4d6257;
+  font-size: 12px;
 }
 .login-form-wrap .eyebrow {
-  font-size: 9px;
+  font-size: 12px;
 }
 .login-form-wrap .form-error {
   font-size: 12px;
@@ -2057,7 +2057,7 @@ th {
     font-size: 10px;
   }
   .login-footer {
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 @media (max-width: 650px) {
@@ -2097,7 +2097,7 @@ th {
     min-height: calc(100svh - 181px);
   }
   .login-topline {
-    font-size: 9px;
+    font-size: 12px;
   }
   .login-form-wrap {
     padding: 38px 0 31px;
@@ -2107,7 +2107,7 @@ th {
     font-size: 29px;
   }
   .login-form-wrap .eyebrow {
-    font-size: 8px;
+    font-size: 12px;
   }
   .login-intro {
     font-size: 12px;
@@ -2118,13 +2118,134 @@ th {
     font-size: 14px;
   }
   .login-help p {
-    font-size: 11px;
+    font-size: 12px;
   }
   .login-main .login-footer {
-    font-size: 9px;
+    font-size: 12px;
     padding-top: 17px;
   }
   .login-story .brand small {
     display: none;
+  }
+}
+
+/* Audit fixes: readable controls, narrow result cards and keyboard access. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.table-scroll:focus-visible {
+  outline: 3px solid #276452;
+  outline-offset: -3px;
+}
+.input-wrap:focus-within {
+  outline: 2px solid #276452;
+  outline-offset: 2px;
+}
+.card-heading,
+.result-reference {
+  flex-wrap: wrap;
+}
+.result-reference > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.metric {
+  flex-wrap: wrap;
+}
+.metric-detail {
+  position: static;
+  flex-basis: 100%;
+}
+.badge {
+  color: #435d39;
+}
+.badge.warning,
+.result-status.warning h3,
+.result-status.warning p {
+  color: #70551f;
+}
+.badge.neutral {
+  color: #435e54;
+}
+.badge.error,
+.result-error h3,
+.result-error p {
+  color: #82442f;
+}
+.result-stale {
+  color: #76581e;
+}
+.empty-steps i {
+  color: #52634b;
+}
+.amount-item {
+  min-width: 0;
+}
+input,
+.input-wrap,
+.login-form-wrap input {
+  border-color: #77876f;
+}
+.text-button,
+.activity-ref,
+.connection-button {
+  min-height: 44px;
+}
+.password-wrap button {
+  min-width: 64px;
+  min-height: 44px;
+}
+.password-wrap input {
+  padding-right: 88px;
+}
+.nav-item {
+  min-height: 44px;
+  min-width: 44px;
+}
+@media (max-width: 1150px) {
+  .amount-comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .amount-item:last-child {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+}
+@media (max-width: 650px) {
+  .topbar {
+    height: auto;
+    min-height: 65px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    gap: 8px;
+  }
+  .breadcrumb span {
+    margin: 0 4px;
+  }
+  .login-form-wrap input,
+  .input-wrap input {
+    font-size: 16px;
+  }
+  .activity-heading {
+    flex-wrap: wrap;
+  }
+  .activity-ref {
+    min-height: 44px;
+  }
+  th,
+  td {
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }

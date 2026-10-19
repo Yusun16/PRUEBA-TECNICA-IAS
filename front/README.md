@@ -66,7 +66,11 @@ npm run test:e2e
 
 Las pruebas del navegador detectan Chrome/Edge en las rutas habituales de Windows. En otro entorno configura CHROME_PATH o instala Chromium con `npx playwright install chromium`. Las pruebas e2e abren su propio servidor en 5174 y simulan respuestas para aislar los escenarios; no necesitan Java.
 
-Resultados: **17 pruebas de cliente/proxy y 14 de navegador aprobadas**. Además se verificaron conciliaciones y el flujo login → dashboard → cierre de sesión desde Chrome contra Spring Boot real. Evidencias y límites: [docs/FRONTEND.md](../docs/FRONTEND.md).
+Auditoría vigente: **21 pruebas de cliente/proxy y 28 de navegador aprobadas**, más ocho conciliaciones desde Chrome contra Java real. [Informe y limitaciones](../docs/AUDITORIA_FINAL_FRONTEND.md). La actividad vacía conserva sus mensajes; se comprobaron teclado, contraste y viewports de 375, 390, 768, 1024 y 1440 px.
+
+Para generar capturas y mediciones con respuestas controladas, desde front/: `node scripts/verify-visual.mjs`. Usa un servidor propio con puerto libre y las dependencias Playwright existentes. No ejecuta comandos contra Java. Los resultados distinguen estas capturas de la integración real descrita abajo.
+
+El proxy se limita al HTTP local. Su comprobación Origin compara con http://Host y no confía en X-Forwarded-*. Detrás de terminación HTTPS requeriría configuración explícita de origen/proxies confiables; no se ha implementado ni certificado ese despliegue. No relajar esta validación para aceptar cualquier origen.
 
 La entrega agrega una prueba reproducible de integración sin respuestas simuladas. Después de generar el JAR aislado según back/README.md, desde front/:
 

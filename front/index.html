@@ -26,7 +26,8 @@
         <div class="login-story-content">
           <span class="login-eyebrow">CLARIDAD EN CADA OPERACIÓN</span>
           <h2>
-            Tu punto de acceso.<br />El control de cada pago<span>.</span>
+            Tu punto de acceso.<br />
+            El control de cada pago<span>.</span>
           </h2>
           <p>
             Un espacio para resolver con evidencia, conservar la trazabilidad y
@@ -65,6 +66,7 @@
               name="username"
               placeholder="Ingresa tu usuario"
               autocomplete="username"
+              aria-describedby="login-error"
               required
               maxlength="100"
               autocapitalize="none"
@@ -78,6 +80,7 @@
                 type="password"
                 placeholder="Ingresa tu contraseña"
                 autocomplete="current-password"
+                aria-describedby="login-error"
                 required
                 maxlength="256"
               /><button
@@ -132,12 +135,17 @@
           <button
             class="nav-item active"
             data-view="reconcile"
+            aria-label="Conciliación"
             aria-current="page"
           >
             <span aria-hidden="true">⊞</span> Conciliación
             <span class="nav-indicator"></span>
           </button>
-          <button class="nav-item" data-view="activity">
+          <button
+            class="nav-item"
+            data-view="activity"
+            aria-label="Actividad de sesión"
+          >
             <span aria-hidden="true">◷</span> Actividad de sesión
             <span class="nav-count" id="nav-count">0</span>
           </button>
