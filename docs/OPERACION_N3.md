@@ -6,9 +6,9 @@
 4. Examinar outcome y reason. RESOLVED significa que se persistió una corrección; ALREADY_CONSISTENT significa que no hubo escrituras; MANUAL_REVIEW exige detener compensaciones y escalar con la evidencia.
 5. Verificar estado, neto, reversos vinculados y auditoría después de ejecutar. Repetir el mismo comando debe producir cero movimientos y ninguna auditoría equivalente adicional.
 
-Casos seguros bajo los supuestos acordados: solo APPROVED y cero débitos sin historia previa, o uno/varios débitos completos válidos; solo DECLINED sin ledger. Detenerse ante APPROVED + DECLINED, falta de eventos, devoluciones, importes parciales, moneda no comprobada, referencias cruzadas o historial que no pueda explicarse.
+Casos seguros bajo los supuestos acordados: solo APPROVED con un débito completo activo válido para corregir estado, o solo DECLINED sin ledger. APPROVED sin historial no acredita captura: devuelve APPROVED_WITHOUT_CAPTURE_EVIDENCE y no crea débitos. Detenerse ante varios débitos activos, APPROVED + DECLINED, falta de eventos, devoluciones, importes parciales, moneda no comprobada, referencias cruzadas o historial que no pueda explicarse.
 
-Después de la auditoría, “varios débitos completos” no autoriza compensar por sí solo: fuera de la demo se devuelve DUPLICATE_DEBITS_REQUIRE_REVIEW. Validar primero captura única, importe, moneda e historial externo. La habilitación de compensación corresponde a configuración operativa revisada o al parámetro explícito del procedimiento, nunca a una suposición por contar APPROVED. Oracle necesita instalar también las guardas y CHECK de la guía de despliegue.
+“Varios débitos completos” no autoriza compensar: fuera de la simulación se devuelve DUPLICATE_DEBITS_REQUIRE_REVIEW. Java rechaza habilitar compensación fuera del perfil local; la compilación segura Oracle rechaza el parámetro 1. La simulación ficticia no acredita captura externa ni autorización productiva. Para un caso real, escalar con captura, importe, moneda e historial externo verificables; ese mecanismo de autorización no está implementado. Oracle necesita instalar también las guardas y CHECK de la guía de despliegue.
 
 Validación posterior en Oracle:
 

@@ -30,7 +30,7 @@ Verificación: dos hilos llaman al servicio Spring real, por lo tanto dos transa
 
 ## ADR-003 — Compensación conservadora y determinista
 
-Un APPROVED sin DECLINED se considera suficiente bajo el supuesto de que ese estado es final para un único pago por el importe completo. Se conserva el débito activo de menor ID; el ID aporta determinismo, no prueba de precedencia temporal. Los restantes se compensan por el mismo importe. Los reversos existentes se validan antes de tomar decisiones.
+Regla vigente tras las revisiones: APPROVED sin DECLINED y con un débito completo activo permite corregir estado. APPROVED sin ledger no demuestra captura y exige revisión manual. Varios débitos exigen revisión manual por defecto. Solo en simulación ficticia local o compilación Oracle de laboratorio se conserva el débito activo de menor ID y se reversan sobrantes; el ID aporta determinismo, no prueba de precedencia ni captura. Los reversos existentes se validan antes de decidir.
 
 Alternativas rechazadas: borrar duplicados, sobrescribir importes, crear un ajuste por la diferencia sin relación con un débito concreto o usar el último evento recibido como verdad. Esas opciones eliminan evidencia o inventan precedencia/autorización no suministrada.
 
@@ -66,7 +66,7 @@ La API permite solo comandos autenticados con rol SUPPORT y escucha en loopback 
 
 La revisión posterior encontró que H2 solo protegía la inmutabilidad mediante código y que las escrituras hijas directas podían omitir el bloqueo. Se añadieron guardas locales y scripts Oracle equivalentes. H2 requiere la interfaz Trigger al compilar; se reutilizó la dependencia H2 existente con alcance de compilación opcional, sin incorporar un servidor nuevo. El servicio mantiene READ COMMITTED y WAIT 5; el timeout de adquisición se traduce a conflicto sin absorber otros errores de persistencia.
 
-Se conserva la decisión determinista de menor ID, pero compensar varios débitos queda deshabilitado fuera de demo hasta que negocio valide una sola captura. El parámetro opcional PL/SQL está deshabilitado por defecto. No se expone una bandera de autorización en la API pública.
+Se conserva la decisión determinista de menor ID solo para simulación. Java rechaza activar compensación fuera de local y la compilación Oracle segura rechaza el parámetro 1. El mecanismo externo de autorización productiva no está implementado. No se expone una bandera de autorización en la API pública.
 
 Se mantiene policy-v1 y su vector publicado, ordenando Snapshot por ID y probando permutaciones/escala decimal. Java y Oracle usan una matriz de contrato común; la suite Oracle solo se ejecuta con una conexión de laboratorio explícita. El trabajo Oracle sigue parcialmente validado hasta compilar y ejecutar allí.
 

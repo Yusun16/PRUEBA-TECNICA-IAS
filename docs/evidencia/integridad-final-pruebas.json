@@ -1,0 +1,85 @@
+{
+  "recordedAt": "2026-10-19T15:04:31.9767856-05:00",
+  "java": {
+    "command": "mvnw.cmd -Dmaven.repo.local=.m2 -Dartifact.suffix=-audit -B verify",
+    "registered": 52,
+    "passed": 51,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "suites": [
+      {
+        "name": "com.pagoclaro.support.AnomalyQueryTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ProductionPolicyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationEngineTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationIntegrationTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.EvidenceFingerprintTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.OracleReconciliationContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.pagoclaro.support.service.ReconciliationContractTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.SimulationPolicyTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "artifact": "back/target/support-reconciliation-1.0.0-audit.jar",
+    "sha256": "2A3A19F1261AEDB74D4B8B3764F796160E5F5B307B203B03AAA4772AA890E315"
+  },
+  "frontend": {
+    "unitCommand": "npm test",
+    "unitPassed": 17,
+    "browserCommand": "npm run test:e2e",
+    "browserPassed": 14,
+    "failures": 0
+  },
+  "oracle": {
+    "executed": false,
+    "status": "PENDING",
+    "reason": "No Oracle laboratory connection supplied; conditional suite skipped."
+  },
+  "activeApplicationRestarted": false,
+  "preservedUntrackedFile": "back/db/oracle.zip"
+}

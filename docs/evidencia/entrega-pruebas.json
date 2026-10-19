@@ -1,0 +1,380 @@
+{
+  "recordedAt": "2026-10-19T20:39:20.260Z",
+  "java": {
+    "command": "From back/: mvnw.cmd -Dmaven.repo.local=.m2 -Dartifact.suffix=-audit \"-Dbuild.output-directory=C:\\PRUEBA TECNICA IAS\\back\\.tools\\delivery-build\" -B clean verify",
+    "registered": 54,
+    "passed": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "suites": [
+      {
+        "name": "com.pagoclaro.support.AnomalyQueryTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ProductionPolicyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationEngineTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationIntegrationTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.EvidenceFingerprintTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.OracleReconciliationContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.pagoclaro.support.service.ReconciliationContractTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.SimulationPolicyTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.SupportCredentialPolicyTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "artifact": "back/.tools/delivery-build/support-reconciliation-1.0.0-audit.jar",
+    "artifactSha256": "200AB4DE59DB2B22A9ED80AB260B4B3419285434AEF7C61E6075F440FE1C1929",
+    "packagedClassesAndResourcesCompared": 26,
+    "packagedClassesAndResourcesMatch": true,
+    "selectedRuntimeLibraries": [
+      "spring-boot-3.5.16.jar",
+      "spring-boot-autoconfigure-3.5.16.jar",
+      "h2-2.3.232.jar",
+      "ojdbc11-23.7.0.25.01.jar",
+      "spring-security-core-6.5.11.jar",
+      "spring-boot-jarmode-tools-3.5.16.jar"
+    ]
+  },
+  "frontend": {
+    "unitCommand": "npm test",
+    "unitPassed": 17,
+    "browserCommand": "npm run test:e2e",
+    "browserPassed": 14,
+    "controlledApiInBrowserSuite": true,
+    "failures": 0
+  },
+  "integration": {
+    "httpCommandsPassed": 8,
+    "realBrowserReconciliationsPassed": 8,
+    "realBrowserBackendMocked": false,
+    "h2RestartChecked": true,
+    "clientJsonQueryHeaderCannotEnableCompensation": true
+  },
+  "oracle": {
+    "executed": false,
+    "status": "PENDING",
+    "reason": "No Oracle laboratory connection supplied; conditional suite omitted."
+  },
+  "activeApplication": {
+    "restarted": false,
+    "backendPort": 8080,
+    "backendPid": 12256,
+    "frontendPort": 5173,
+    "frontendPid": 14732
+  },
+  "git": {
+    "committedByThisValidation": false,
+    "pushed": false,
+    "branch": "master",
+    "head": "c8fbb1a",
+    "preservedUnknownArchive": "back/db/oracle.zip"
+  },
+  "sourceManifest": [
+    {
+      "path": "back/db/oracle/00_schema.sql",
+      "sha256": "A57BDA1408E1A080EF3355CF4CDD6765FEC1D623756C8DD6B7A08C72C6F6824B"
+    },
+    {
+      "path": "back/db/oracle/01_support_migration.sql",
+      "sha256": "6AA2871850C660F10B1F2BB37C4B2407E4B44412560F619FF44D1BC54E5EB944"
+    },
+    {
+      "path": "back/db/oracle/02_detect_anomalies.sql",
+      "sha256": "E1A2C2637ECA0DC5F877ED9FFA47A250849FC1022D1A05A7149FCB8A6A1B2E21"
+    },
+    {
+      "path": "back/db/oracle/03_reconcile_payment.sql",
+      "sha256": "ADB0AA417280B708BE4A1D611B6FAD098849A1166C7395621B1EEA0B9EE55D7A"
+    },
+    {
+      "path": "back/db/oracle/04_ledger_immutability.sql",
+      "sha256": "5E7E66C91271FF80EC4460E54C4C6CC8E10A7A9752595BE90EF713D2CCA6A2EA"
+    },
+    {
+      "path": "back/db/oracle/05_seed_demo.sql",
+      "sha256": "66FAC6F9DB555703A365A014FCD76B2C6D2893BC6F2AF4870A31CB81DBB2E832"
+    },
+    {
+      "path": "back/db/oracle/06_verify_procedure.sql",
+      "sha256": "A64F90603FCDA4443A00C5A6DDA7FD61AEA71076F74A3F8BD8011196E8E5E2AB"
+    },
+    {
+      "path": "back/db/oracle/07_preflight.sql",
+      "sha256": "739AC7CEA51982FE0070B7E6A47409B7E5D3E8290C9418D65BDE8FE2E9296BFB"
+    },
+    {
+      "path": "back/db/oracle/08_integrity_constraints.sql",
+      "sha256": "B1649576C62B7079127A0AB5A1FEEA2270155350999ED233BA124963F71C8BCA"
+    },
+    {
+      "path": "back/db/oracle/09_write_guards.sql",
+      "sha256": "48E552A9534C68414202E370B77BFF3F355E73A8E4231B4D0B5F990B8044ADBC"
+    },
+    {
+      "path": "back/db/oracle/10_verify_guards.sql",
+      "sha256": "362CDDB38775284F59BFCD4409D3FE24F93FEFEA830310CAFA85F966FA774DAD"
+    },
+    {
+      "path": "back/db/oracle/11_verify_rollback.sql",
+      "sha256": "E590D93157B46575707D36980686FF2D63C3C80F2A563B413DDB195E23922F1A"
+    },
+    {
+      "path": "back/db/oracle/12_lock_session_a.sql",
+      "sha256": "044D2D5058A126682AD3DE17222A57DA91E6D360B1061A6146FCD015A3E46BA0"
+    },
+    {
+      "path": "back/db/oracle/13_compete_session_b.sql",
+      "sha256": "84B136D03B296C0B8FE4B9876A34D4956C35BF249CC8F871BE6238830A2F2D27"
+    },
+    {
+      "path": "back/db/oracle/14_postcheck.sql",
+      "sha256": "E0969B671932F75323F3ED307BE0DC0625C2983BE07E2A22FB622615C6EB49C2"
+    },
+    {
+      "path": "back/db/oracle/15_backup_metadata.sql",
+      "sha256": "790C44C0EB4D58AC860DEEA051743F17C6932DEC22FF44D3F22E6FD230FEFAB1"
+    },
+    {
+      "path": "back/db/oracle/16_check_contract.sql",
+      "sha256": "174E3FB6082499955368C5A1973ADF992E6134594CDDE38E1A03A036AAD8C85A"
+    },
+    {
+      "path": "back/db/oracle/17_verify_storage_contract.sql",
+      "sha256": "5607E102CE8848A035C848C4CE6942EB537831AB839B337B202D53DE5D164AC0"
+    },
+    {
+      "path": "back/db/oracle/18_verify_safe_policy.sql",
+      "sha256": "F90AAA942ED97034C172B81B6F863A40CBA1D460D4C80FA1DB8732876A294E87"
+    },
+    {
+      "path": "back/db/oracle/demo_install.sql",
+      "sha256": "EAB07792A6C04E1347B048C00FEC74CD1416115ABD3FC626FA63F057A37CDD17"
+    },
+    {
+      "path": "back/db/oracle/deploy_existing.sql",
+      "sha256": "C1C6DE6B4BC6949F2205D2A68726113388EBF39D68F1FC28B23599A840531DF1"
+    },
+    {
+      "path": "back/pom.xml",
+      "sha256": "DBDB44543AB1D5562A6235A6950D5B88E7CF9B351EAF0E4CD25F09D2C6725974"
+    },
+    {
+      "path": "back/scripts/audit-smoke.ps1",
+      "sha256": "E25E329C05FB5D9D2F5D1AB8BE684153DF4F21BE40B913A37FBE74D6C51E6EC0"
+    },
+    {
+      "path": "back/scripts/dev.ps1",
+      "sha256": "A70895EE907A59F0D2C360479C87CC208D236E8D9D2B70DA96A781E9C49E42A9"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/api/ApiExceptionHandler.java",
+      "sha256": "9EED2CAF9DEB4C1631802E33B17E9A74665F93F9C765AC703636B8D0A901A6A6"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/api/ReconciliationController.java",
+      "sha256": "D487A72DDD8B88B4DC337526301E663DFEC93105B18DE50F8581553BEDF886A8"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/api/SecurityConfiguration.java",
+      "sha256": "A1EF93AD85AD20EC5F9DE1AFBF9EEA021BD99559512AE0DC12EA91B10471CD1D"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/api/SupportCredentialPolicy.java",
+      "sha256": "00047E8BCB53860F35295C08C07AD2CA554CDB65C9348C47BA1A5FDAD396A2AA"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/api/SupportSessionController.java",
+      "sha256": "668EA38B5D264EC02AE94D7E1516D03D599D734B822419D08406A4DAB75F4930"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/domain/ReconciliationEngine.java",
+      "sha256": "E1BA71F9656D9F561A7CB3CA447CB5B245B2D483A669453E7681030A53CC34D9"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/persistence/h2/AccountingGuard.java",
+      "sha256": "EF502FE14E76AD483BA2B1D26144A57DC2408D87436B8FB0041A3789E1CEA910"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/persistence/PaymentRepository.java",
+      "sha256": "610A6D438DB32E7C3C32E8E05E339DD259B0702040A5E55B4A2B0116A8FF5A3A"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/service/ReconciliationService.java",
+      "sha256": "9893149D73BF77DB2715CF4EF43F9F2E6C4122C4701961CCF468EC9E1C34C9E0"
+    },
+    {
+      "path": "back/src/main/java/com/pagoclaro/support/SupportApplication.java",
+      "sha256": "1A63AD0C29DDCC479EAD9BD2F9A9D729E7EA710BBECE71AB32D100B2698E7D72"
+    },
+    {
+      "path": "back/src/main/resources/application-local.yml",
+      "sha256": "46658F95BFC33D3E2CD06ED5A3EF64EC2EDE71D42936AB37870404CA6054A676"
+    },
+    {
+      "path": "back/src/main/resources/application-oracle.yml",
+      "sha256": "B2145DF12EC8EBB152A57E9E1074CEF9873A4F9CB661E55B80561B13DD639BE2"
+    },
+    {
+      "path": "back/src/main/resources/application.yml",
+      "sha256": "71FE54FA0498C1AAF042F76FAC74F9EF840BA3B60CA393E084549EC55BA1BC85"
+    },
+    {
+      "path": "back/src/main/resources/db/local/data.sql",
+      "sha256": "3C3B53C7E20BA392CF805E74C136495A587EE845C3CC68DE29167A79BD8904D5"
+    },
+    {
+      "path": "back/src/main/resources/db/local/schema.sql",
+      "sha256": "D7724053EF5E59600A525BF5EA4CD569E64171666F9DD43AF06174819EC15282"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/AnomalyQueryTest.java",
+      "sha256": "251301214EA76C3D35D774EAAD59BF9AF121822182519EFF027D11AD47E14D46"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/ProductionPolicyTest.java",
+      "sha256": "7F652B6F1A66D5440EFF63AB621BB4A556AD2E952168BFAB8529CE2A1F28FE97"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/ReconciliationEngineTest.java",
+      "sha256": "3A9E90CA65CE78C5446CDD4B84A678A107F3367A1D3F985ECDF3914F8E75BE20"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/ReconciliationIntegrationTest.java",
+      "sha256": "D95DE30DF8BAD749730239840968111C45845E89370B657F0DE966E726F76DDC"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/service/EvidenceFingerprintTest.java",
+      "sha256": "6AB4B023172B28544D9002DE344F5633B2A0A9798CC4705C66E5B8066E551366"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/service/OracleReconciliationContractTest.java",
+      "sha256": "68CD0DAA6145836B29877011AA68B21A8A1A9E07B6180DBFBA943B2AC1565F83"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/service/ReconciliationContractCases.java",
+      "sha256": "D1022FD7695F4C39AC21B6F2306BC0E0FB8F37A695D7736EE684DB54FBC9B33D"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/service/ReconciliationContractTest.java",
+      "sha256": "F1F82676D24E07303C4E0C912D577536DAAD220A14734BF1BF1C2A6DCA6307D4"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/service/SimulationPolicyTest.java",
+      "sha256": "172005970C51B94E7BB6912351C093A59EECDD188B1FB6957EA811F3A772878C"
+    },
+    {
+      "path": "back/src/test/java/com/pagoclaro/support/SupportCredentialPolicyTest.java",
+      "sha256": "83B3675E50D82DE51F5E5D8C50750A78490F4DBBEF539D40E2934E5451D219BC"
+    },
+    {
+      "path": "back/src/test/resources/contract/reconciliation-cases.json",
+      "sha256": "4125678ED34182497FB4DC202FB34B89B7EFB44AAFAAA44A3185BE536C432BBE"
+    },
+    {
+      "path": "front/index.html",
+      "sha256": "546E77934AA780AB9368230FA5076DA03BE81A4CDF37F32D7E65E573712EB28E"
+    },
+    {
+      "path": "front/package-lock.json",
+      "sha256": "E1FB61F2F36510C4EB3598FF366A2ABA0C3CA70B38FBB4768AAE7B82EE884BA9"
+    },
+    {
+      "path": "front/package.json",
+      "sha256": "CEC548F2877EC4D720A1EC7B4F5ED7A3ACC30DD891CDFD282887DEFCB36120A4"
+    },
+    {
+      "path": "front/playwright.config.mjs",
+      "sha256": "D992292B72C806090F4FC85E23F5191D622CE49515067BAF503AF5DF304E6D40"
+    },
+    {
+      "path": "front/scripts/start-local.ps1",
+      "sha256": "79878E1675F1E87C0D546BC1323485F1439E7768C08A75E5AB3D1B29BBAB63BE"
+    },
+    {
+      "path": "front/scripts/verify-integration.mjs",
+      "sha256": "1F81DAEB748D7F5038A2E67AF61611A3E064EC058C80C2C94F9F76EC665685E7"
+    },
+    {
+      "path": "front/server.mjs",
+      "sha256": "9425F0D87652D4487D0350432222BBB0C531ED4F8A8EB5EAE3AB3EA36BCD2571"
+    },
+    {
+      "path": "front/src/api.js",
+      "sha256": "44FAC9223226121AE3E17006D38F2FFE190117B0081049456DF0BAE74BEFE4AD"
+    },
+    {
+      "path": "front/src/app.js",
+      "sha256": "05E673DFA28DE75D9F580D370FE47B9FA980A7CEB92E018EF91DFFDE0E0B7CD0"
+    },
+    {
+      "path": "front/src/presentation.js",
+      "sha256": "B57EAE017C59B0B4BDB1D02AE28358BD800D84688CE8662B769B6B0CFB40C606"
+    },
+    {
+      "path": "front/styles.css",
+      "sha256": "1DB6C15D8A8885715063BB888C66A289F2878FF86E0E6BFFF027960AF226AC4D"
+    },
+    {
+      "path": "front/tests/api.test.mjs",
+      "sha256": "04B4D97F6B53916715192B5D2776A56692F778EADF94453B28A9A6C54F22AE56"
+    },
+    {
+      "path": "front/tests/browser/console.spec.mjs",
+      "sha256": "0B690061814F580758358CF9152913167995052C03F346A7F5E9C7FE1CFB1595"
+    },
+    {
+      "path": "front/tests/server.test.mjs",
+      "sha256": "E8E12EDA555575B4A49D646DEB585F2201BC64C7CE90DF0DA5DD9ED99D49C60A"
+    }
+  ]
+}

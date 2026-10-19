@@ -1,3 +1,4 @@
+<!-- La correcci?n posterior y resultados vigentes est?n en CORRECCION_INTEGRIDAD_ORACLE.md. -->
 # Auditoría y finalización de PagoClaro
 
 Fecha: 19 de octubre de 2026, America/Bogota. Se trabajó sobre el repositorio existente, conservando back/front/docs, Java 21, Spring Boot, JDBC, el motor de decisión y Spring Security. No se agregó infraestructura ni tablas de usuarios.

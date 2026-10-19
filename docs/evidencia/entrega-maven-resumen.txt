@@ -1,0 +1,22 @@
+[INFO] Running com.pagoclaro.support.AnomalyQueryTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.589 s -- in com.pagoclaro.support.AnomalyQueryTest
+[INFO] Running com.pagoclaro.support.ProductionPolicyTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.507 s -- in com.pagoclaro.support.ProductionPolicyTest
+[INFO] Running com.pagoclaro.support.ReconciliationEngineTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.030 s -- in com.pagoclaro.support.ReconciliationEngineTest
+[INFO] Running com.pagoclaro.support.ReconciliationIntegrationTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.680 s -- in com.pagoclaro.support.ReconciliationIntegrationTest
+[INFO] Running com.pagoclaro.support.service.EvidenceFingerprintTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 s -- in com.pagoclaro.support.service.EvidenceFingerprintTest
+[INFO] Running com.pagoclaro.support.service.OracleReconciliationContractTest
+[WARNING] Tests run: 1, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 0.001 s -- in com.pagoclaro.support.service.OracleReconciliationContractTest
+[INFO] Running com.pagoclaro.support.service.ReconciliationContractTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.229 s -- in com.pagoclaro.support.service.ReconciliationContractTest
+[INFO] Running com.pagoclaro.support.service.SimulationPolicyTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.018 s -- in com.pagoclaro.support.service.SimulationPolicyTest
+[INFO] Running com.pagoclaro.support.SupportCredentialPolicyTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.pagoclaro.support.SupportCredentialPolicyTest
+[INFO] Tests run: 54, Failures: 0, Errors: 0, Skipped: 1
+[INFO] BUILD SUCCESS
+[INFO] Total time:  31.094 s
+[INFO] Finished at: 2026-10-19T15:33:09-05:00

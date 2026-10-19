@@ -1,3 +1,4 @@
+<!-- La correcci?n posterior y resultados vigentes est?n en CORRECCION_INTEGRIDAD_ORACLE.md. -->
 # Validacion Oracle: pendiente de ejecucion real
 
 La guia vigente es [ORACLE_INSTALACION_Y_RECUPERACION.md](ORACLE_INSTALACION_Y_RECUPERACION.md). Incluye orden exacto de instalacion, migracion sin perdida de historial, backup, scripts de integridad/rollback, concurrencia entre sesiones y pruebas de contrato Java/Oracle.

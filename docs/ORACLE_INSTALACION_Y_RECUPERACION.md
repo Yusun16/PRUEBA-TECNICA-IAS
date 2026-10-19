@@ -48,7 +48,7 @@ La consulta debe devolver AX91, BX17 y CQ22; DK44 debe quedar excluido. BX17 deb
 
 No ejecutar `00_schema.sql`, `05_seed_demo.sql` ni `demo_install.sql` sobre datos existentes.
 
-1. Detener escritores, obtener backup/export de datos aprobado por DBA y conservar el DDL anterior. Para metadatos ejecutar `15_backup_metadata.sql` desde una carpeta externa de backups; su spool se escribe en el directorio de trabajo. Ese archivo no reemplaza un backup de datos.
+1. Detener escritores, obtener backup/export de datos aprobado por DBA y conservar el DDL anterior. Para metadatos, `15_backup_metadata.sql` exige destino absoluto fuera del repositorio y raíz absoluta del repositorio como argumentos. El DBA verifica permisos y ubicación protegida. Ese archivo no reemplaza un backup de datos.
 2. Ejecutar `07_preflight.sql` y revisar sus resultados. Corregir falta de estructura mediante una decisión revisada; no borrar/regrabar movimientos históricos para lograr que pase.
 3. Revisar índices por columnas, no solo por nombre. La migración reutiliza índices válidos equivalentes y prefijos adecuados para búsquedas no únicas; no agrega una copia si ya existe esa cobertura. Un nombre ocupado con una definición distinta provoca un error que se debe investigar.
 4. Ejecutar `deploy_existing.sql`. Orden: preflight → migración → CHECK → inmutabilidad → guardas de escritura → procedimiento → postcheck.
@@ -74,7 +74,7 @@ reconcile_payment(external_ref, outcome OUT, reason OUT,
                   allow_duplicate_compensation IN DEFAULT 0)
 ```
 
-El valor 1 requiere que un operador haya validado la premisa de una sola captura completa. No es un permiso deducido de los eventos. El script de demo lo usa explícitamente para BX17; una API no recibe este permiso desde el navegador. En Java Oracle el equivalente es configurar `RECONCILIATION_ALLOW_DUPLICATE_COMPENSATION=true` únicamente después de esa decisión operativa. El perfil local lo habilita para el escenario ficticio.
+El valor 1 es exclusivo de simulación: requiere compilar el procedimiento en laboratorio con `pagoclaro_demo:TRUE`. La compilación segura FALSE lo rechaza con -20005. Java rechaza habilitar compensaciones fuera del perfil local o con oracle activo. Ni ese parámetro ni APPROVED acreditan captura externa. El instalador demo compila temporalmente TRUE, ejecuta sus pruebas y recompila FALSE antes del postcheck. Consultar [corrección final](CORRECCION_INTEGRIDAD_ORACLE.md).
 
 ```sql
 SET SERVEROUTPUT ON
@@ -95,7 +95,7 @@ NOT_FOUND devuelve netos NULL y no escribe. ALREADY_CONSISTENT no escribe pero c
 
 La misma matriz de once escenarios en `back/src/test/resources/contract/reconciliation-cases.json` alimenta ReconciliationContractTest y OracleReconciliationContractTest. Incluye muestras, política segura, falta de evidencia, débito ausente/parcial, rechazo y aprobación revertida.
 
-Preparar el esquema de laboratorio con el instalador anterior. Desde `back`, con Java/Maven disponibles:
+Preparar el esquema de laboratorio con el instalador anterior. Para probar duplicate-demo por JDBC, recompilar únicamente el laboratorio ficticio con `ALTER SESSION SET PLSQL_CCFLAGS='pagoclaro_demo:TRUE';` y `@03_reconcile_payment.sql`. Después de las pruebas recompilar FALSE y ejecutar `14_postcheck.sql`. Desde `back`, con Java/Maven disponibles:
 
 ```powershell
 $env:ORACLE_TEST_URL = 'jdbc:oracle:thin:@//host:1521/service'

@@ -43,7 +43,7 @@ PAYMENT.external_ref es único, VARCHAR2(40). Estados: PENDING/CONFIRMED/REJECTE
 
 PROVIDER_EVENT tiene provider_event_id único VARCHAR2(60); estados APPROVED/DECLINED. Varios APPROVED no demuestran una sola captura. Recibir estados opuestos no define precedencia: requiere revisión manual.
 
-LEDGER_ENTRY admite DEBIT/REVERSAL, con importe positivo. Un DEBIT no tiene relación. Un REVERSAL apunta a un DEBIT del mismo pago, por el importe completo y sin otro reverso de ese débito. El neto es suma de DEBIT menos suma de REVERSAL. Los movimientos son inmutables; una reversión de una conciliación incorrecta requiere una nueva decisión contable explícita, nunca borrar historial.
+LEDGER_ENTRY admite DEBIT/REVERSAL, con importe positivo. Un DEBIT no tiene relación y su importe debe coincidir con PAYMENT.amount. APPROVED sin ledger requiere revisión manual y no crea débitos. Un REVERSAL apunta a un DEBIT del mismo pago, por el importe completo y sin otro reverso de ese débito. El neto es suma de DEBIT menos suma de REVERSAL. Los movimientos son inmutables; una reversión de una conciliación incorrecta requiere una nueva decisión contable explícita, nunca borrar historial.
 
 SUPPORT_AUDIT registra RESOLVED o MANUAL_REVIEW. La combinación (payment_id,evidence_key) es única; reason es un código estable sin secretos. Una nueva evidencia puede crear otra auditoría. Un pago consistente no genera una auditoría adicional.
 

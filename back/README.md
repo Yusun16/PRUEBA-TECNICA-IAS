@@ -55,8 +55,8 @@ Primera respuesta de BX17:
 | Evidencia e historial | Acción |
 |---|---|
 | Solo APPROVED, un débito completo activo | Confirmar estado si hace falta; conservar el débito. |
-| Solo APPROVED, varios débitos completos activos | Conservar el de menor ID activo; agregar reverso completo por cada sobrante. |
-| Solo APPROVED, sin historial contable | Crear un débito por el importe del pago y confirmar. |
+| Solo APPROVED, varios débitos completos activos | Revisión manual por defecto; solo en simulación local conservar menor ID y reversar sobrantes. |
+| Solo APPROVED, sin historial contable | Revisión manual: no crear débitos sin evidencia de captura. |
 | Solo APPROVED, todos los débitos ya revertidos | Revisión manual: podría existir una devolución intencional. |
 | Solo DECLINED, sin ledger | Pasar a REJECTED si hace falta. |
 | Solo DECLINED, con historial contable | Revisión manual; no inferir autorización de devolución. |
@@ -64,11 +64,11 @@ Primera respuesta de BX17:
 | Débitos parciales, reversos inválidos, importes no positivos | Revisión manual, sin compensar. |
 | Estado y ledger ya consistentes | Sin escrituras, incluso en auditoría. |
 
-**Política de duplicados después de la auditoría:** las compensaciones de débitos repetidos requieren `reconciliation.allow-duplicate-compensation=true`. El perfil local lo habilita únicamente para el escenario ficticio. Fuera de local el valor predeterminado es false y el resultado es MANUAL_REVIEW / DUPLICATE_DEBITS_REQUIRE_REVIEW. Oracle PL/SQL usa un último parámetro opcional equivalente, predeterminado en 0. El menor ID activo aporta determinismo; no demuestra cronología ni que dos aprobaciones sean una sola captura.
+**Política de duplicados:** la opción `reconciliation.allow-duplicate-compensation=true` solo se permite en simulación local, sin perfil oracle. Fuera de esa simulación se rechaza al arrancar. Oracle mantiene el parámetro opcional predeterminado en 0; valor 1 requiere compilación específica de laboratorio. La compilación segura rechaza el valor 1. El menor ID activo aporta determinismo, pero no demuestra captura externa. Consultar [corrección final](../docs/CORRECCION_INTEGRIDAD_ORACLE.md).
 
 `netDebit = SUM(DEBIT.amount) - SUM(REVERSAL.amount)`, calculado con `BigDecimal`. Un reverso válido referencia un débito del mismo pago por su importe completo; cada débito admite un único reverso. Los reversos parciales quedan fuera del alcance seguro.
 
-Supuestos críticos: APPROVED es evidencia final suficiente para confirmar; los débitos completos repetidos corresponden al mismo pago; existe una sola moneda por pago y todas las filas usan esa moneda. Si el contrato del proveedor permite estados posteriores, capturas múltiples o pagos parciales, **no aplicar esta política automáticamente** sin ampliarla. Un REJECTED con evidencia exclusivamente APPROVED puede pasar a CONFIRMED bajo este supuesto; revisar el contrato antes de producción.
+Supuestos críticos: APPROVED solo permite corregir estado cuando existe un débito completo activo válido; no permite crear débitos. Existe una sola moneda por pago y todas las filas usan esa moneda. Si el contrato permite estados posteriores, capturas múltiples o pagos parciales, revisar el contrato antes de aplicar correcciones. La compensación automática productiva permanece deshabilitada.
 
 ## Consistencia y estructura
 
@@ -140,7 +140,20 @@ La consulta de detección selecciona pagos con actividad en cualquiera de las tr
 
 H2 demuestra el comportamiento local de Java y la consulta, **no compila PL/SQL ni certifica bloqueo/driver Oracle**. La compilación y ejecución Oracle quedan pendientes en este entorno sin servidor Oracle. `06_verify_procedure.sql` contiene aserciones reproducibles de muestra e idempotencia; `../docs/VALIDACION_ORACLE.md` detalla concurrencia, rollback y paridad entre interfaces.
 
-Auditoría final: 49 pruebas registradas por Maven, 48 ejecutadas/aprobadas y una suite Oracle omitida. Incluye guardas en la base, espera y HTTP 409, escritores concurrentes de eventos/reversos, fallo real en el segundo INSERT y conversión numérica exacta. Once escenarios comunes alimentan el contrato Java y el contrato Oracle opcional.
+Validación final: 54 pruebas registradas por Maven, 53 aprobadas y una suite Oracle omitida. Incluye guardas, concurrencia, rollback, configuración de simulación, aprobación sin ledger y rechazo de contraseña demo fuera de local. Once escenarios comunes alimentan el contrato Java y el contrato Oracle opcional. Consultar [informe vigente](../docs/VALIDACION_FINAL_ENTREGA.md).
+
+Los errores 401 y 403 de Spring Security también usan application/problem+json y Cache-Control: no-store. El endpoint de acceso conserva HTTP Basic y el rol SUPPORT; no se añadieron usuarios en base, JWT ni sesiones. El arranque no local rechaza la contraseña demo o una contraseña vacía.
+
+Para una compilación realmente limpia sin eliminar el target de una aplicación abierta, desde back/:
+
+```powershell
+$env:DEBUG = 'false'
+$deliveryBuild = Join-Path (Get-Location) '.tools\delivery-build'
+.\mvnw.cmd '-Dmaven.repo.local=.m2' '-Dartifact.suffix=-audit' "-Dbuild.output-directory=$deliveryBuild" -B clean verify
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\audit-smoke.ps1 -JarPath "$deliveryBuild\support-reconciliation-1.0.0-audit.jar"
+```
+
+La propiedad build.output-directory conserva target como valor habitual. La validación de entrega usa únicamente .tools/delivery-build; el JAR de ese directorio es el que se probó por HTTP y navegador. No confundirlo con un JAR anterior en target/.
 
 Para verificar sin tocar el JAR ni los datos H2 de una aplicación abierta, desde `back` con JAVA_HOME configurado:
 

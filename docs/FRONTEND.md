@@ -1,5 +1,7 @@
 # Frontend — decisiones y validación
 
+Validación vigente de entrega: [VALIDACION_FINAL_ENTREGA.md](VALIDACION_FINAL_ENTREGA.md). Se repitieron 17 pruebas de cliente/proxy y 14 de navegador; además `front/scripts/verify-integration.mjs` comprobó ocho conciliaciones en Chrome con backend Java real y política segura. [Evidencia actual](evidencia/entrega-integracion-real.json). Los resultados de seis comandos y capturas descritos más abajo corresponden a ejecuciones anteriores.
+
 ## Alcance implementado
 
 Consola de soporte para operar la API de conciliación existente. El enunciado original no exige frontend; se incorporó a solicitud del usuario manteniendo las carpetas back/front/docs.
