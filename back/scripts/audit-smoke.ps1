@@ -4,6 +4,7 @@ $backRoot = Split-Path -Parent $PSScriptRoot
 $jarPath = if ($JarPath) { (Resolve-Path -LiteralPath $JarPath).Path } else { Join-Path $backRoot 'target\support-reconciliation-1.0.0-audit.jar' }
 $logRoot = Join-Path $backRoot '.tools'
 if (-not (Test-Path -LiteralPath $jarPath)) { throw 'Build first with -Dartifact.suffix=-audit verify.' }
+New-Item -ItemType Directory -Path $logRoot -Force | Out-Null
 if (-not $env:JAVA_HOME) {
     $portableJdk = Get-ChildItem -LiteralPath $logRoot -Directory -Filter 'jdk-*' | Select-Object -First 1
     if ($portableJdk) { $env:JAVA_HOME = $portableJdk.FullName }
