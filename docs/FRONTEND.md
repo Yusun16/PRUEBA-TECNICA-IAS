@@ -4,7 +4,7 @@
 
 Consola de soporte para operar la API de conciliación existente. El enunciado original no exige frontend; se incorporó a solicitud del usuario manteniendo las carpetas back/front/docs.
 
-La interfaz tiene formulario, configuración de acceso, selección de casos demo, resultados, importes anterior/final, auditoría creada y actividad de sesión. No consulta un listado de pagos inexistente en la API, no simula saldos y no muestra contadores globales inventados. La actividad solo corresponde a esta ventana y se limpia al recargar.
+La interfaz tiene formulario, configuración de acceso, resultados, importes anterior/final, auditoría creada y actividad de sesión. La referencia se introduce manualmente; no se publican referencias ni credenciales demo en los recursos web. No consulta un listado de pagos inexistente en la API, no simula saldos y no muestra contadores globales inventados. La actividad solo corresponde a esta ventana y se limpia al recargar.
 
 ## Decisiones
 
@@ -14,7 +14,7 @@ El proxy local reenvía exclusivamente el POST autorizado por ruta, evita CORS y
 
 El frontend nunca calcula ni corrige saldos por su cuenta. Mantiene el token decimal original del JSON para no redondear NUMBER(18,2) a través de un double JavaScript. El formato usa dos decimales sin símbolo de moneda, dado que la base no define una moneda. Java continúa siendo la autoridad sobre contabilidad e idempotencia.
 
-El POST puede modificar datos; la interfaz lo indica antes de ejecutar. Guardar credenciales, navegar por actividad o seleccionar un caso no envía el POST. Durante una solicitud se bloquea el envío repetido. No hay reintentos automáticos; un timeout informa que se debe verificar y reintentar la misma referencia.
+El POST puede modificar datos; la interfaz lo indica antes de ejecutar. Guardar credenciales, navegar por actividad o introducir una referencia no envía el POST. Durante una solicitud se bloquea el envío repetido. No hay reintentos automáticos; un timeout informa que se debe verificar y reintentar la misma referencia.
 
 ## Verificaciones realizadas
 
@@ -22,7 +22,7 @@ Fecha: 19 de octubre de 2026, America/Bogota.
 
 | Verificación | Resultado |
 |---|---|
-| `npm test` | 13 pruebas aprobadas, sin fallos. |
+| `npm test` | 14 pruebas aprobadas, sin fallos. |
 | `npm run test:e2e` | 10 pruebas aprobadas en Chrome real. |
 | `start-local.ps1 -Check` | Frontend HTTP 200; backend HTTP 401 sin credenciales; ambos procesos cerrados. |
 | Integración Chrome → Node → Spring Boot | Seis comandos reales verificados sobre H2 recién iniciado. |
@@ -50,3 +50,11 @@ Capturas: [escritorio](evidencia/frontend-escritorio.png), [móvil](evidencia/fr
 La validación e2e automatizada usa respuestas controladas; se complementó con la integración real descrita. No se certifica compatibilidad con todos los navegadores ni accesibilidad WCAG mediante una auditoría formal. La lista local no reemplaza SUPPORT_AUDIT y no agrega endpoints de lectura a la API. La ejecución de scripts Oracle sigue pendiente del servidor correspondiente.
 
 El despliegue remoto, TLS y autenticación empresarial quedan fuera de esta demostración local. No se publicó el proyecto mediante un servicio externo.
+
+## Corrección de exposición de ejemplos
+
+La primera interfaz incluía referencias y etiquetas del PDF como atajos estáticos, visibles sin autenticación. No provenían de un listado de la base, pero revelaban identificadores y descripciones innecesarios en la pantalla pública. Se eliminaron los cuatro atajos, la referencia precargada, el usuario precargado y el botón que incorporaba la contraseña demo en JavaScript.
+
+Una prueba verifica que HTML y módulos públicos no contengan las referencias del enunciado ni la contraseña demo. Las pruebas de navegador ahora introducen referencias y credenciales manualmente. Se comprobó sobre los servicios en ejecución que el proxy en 5173 y Java en 8080 responden HTTP 401 al POST sin credenciales. Esto verifica ese control de acceso; no constituye una auditoría completa de seguridad.
+
+Los datos del PDF permanecen en documentación y fixtures de laboratorio, que el servidor web no expone. Las capturas de integración anteriores documentan la versión inicial; [la pantalla actual](evidencia/frontend-acceso-actual.png) muestra el formulario vacío sin atajos de pago.

@@ -28,7 +28,7 @@ function node(tag, className, text) {
 }
 
 function openConnection() {
-  $("#username").value = state.credentials?.username ?? "n3";
+  $("#username").value = state.credentials?.username ?? "";
   $("#password").value = "";
   $("#connection-error").hidden = true;
   $("#disconnect").hidden = !state.credentials;
@@ -65,21 +65,13 @@ function selectReference(reference) {
   $("#reference").value = reference;
   $("#form-error").hidden = true;
   $("#reference").removeAttribute("aria-invalid");
-  syncSelection();
+  syncResultReference();
   changeView("reconcile");
   $("#reference").focus();
 }
 
-function syncSelection() {
+function syncResultReference() {
   const reference = $("#reference").value.trim();
-  document
-    .querySelectorAll("[data-reference]")
-    .forEach((button) =>
-      button.classList.toggle(
-        "selected",
-        button.dataset.reference === reference,
-      ),
-    );
   const old = $("#stale-note");
   if (old) old.remove();
   if (state.lastReference && reference !== state.lastReference && !state.busy) {
@@ -98,9 +90,6 @@ function setBusy(busy) {
   $("#submit-button").disabled = busy;
   $("#reference").disabled = busy;
   $("#connection-open").disabled = busy;
-  document.querySelectorAll("[data-reference]").forEach((button) => {
-    button.disabled = busy;
-  });
   $("#submit-label").textContent = busy ? "Conciliando…" : "Conciliar pago";
   $("#submit-icon").textContent = busy ? "···" : "→";
   $("#result-region").setAttribute("aria-busy", String(busy));
@@ -312,10 +301,6 @@ $("#connection-form").addEventListener("submit", (event) => {
   setCredentials({ username, password });
   dialog.close();
 });
-$("#use-demo").addEventListener("click", () => {
-  $("#username").value = "n3";
-  $("#password").value = "demo-change-me";
-});
 $("#disconnect").addEventListener("click", () => {
   setCredentials(null);
   dialog.close();
@@ -328,14 +313,7 @@ document
   .forEach((button) =>
     button.addEventListener("click", () => changeView(button.dataset.view)),
   );
-document
-  .querySelectorAll("[data-reference]")
-  .forEach((button) =>
-    button.addEventListener("click", () =>
-      selectReference(button.dataset.reference),
-    ),
-  );
-$("#reference").addEventListener("input", syncSelection);
+$("#reference").addEventListener("input", syncResultReference);
 $("#show-activity").addEventListener("click", () => changeView("activity"));
 $("#back-to-reconcile").addEventListener("click", () =>
   changeView("reconcile"),

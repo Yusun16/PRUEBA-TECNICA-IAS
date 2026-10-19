@@ -35,6 +35,20 @@ test("serves only public assets with content security headers", async (context) 
   }
 });
 
+test("public assets disclose neither sample payment references nor demo credentials", async (context) => {
+  const url = await start(createAppServer(), context);
+  for (const path of [
+    "/",
+    "/src/app.js",
+    "/src/api.js",
+    "/src/presentation.js",
+  ]) {
+    const body = await (await fetch(url + path)).text();
+    assert.doesNotMatch(body, /PAY-(AX91|BX17|CQ22|DK44)/);
+    assert.doesNotMatch(body, /demo-change-me|use-demo|data-reference/);
+  }
+});
+
 test("proxies only valid commands and forwards explicit auth without cookies", async (context) => {
   let received;
   const upstream = await start(

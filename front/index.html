@@ -134,7 +134,7 @@
                   ><input
                     id="reference"
                     name="reference"
-                    value="PAY-BX17"
+                    placeholder="Ingresa la referencia del pago"
                     maxlength="40"
                     autocomplete="off"
                     spellcheck="false"
@@ -159,28 +159,6 @@
                 </button>
                 <p class="form-error" id="form-error" role="alert" hidden></p>
               </form>
-              <div class="sample-section">
-                <div class="sample-heading">
-                  <strong>¿Estás explorando la demo?</strong
-                  ><span>Selecciona una referencia</span>
-                </div>
-                <div class="sample-grid">
-                  <button class="sample" data-reference="PAY-AX91">
-                    <span>PAY-AX91</span><small>Estado pendiente</small></button
-                  ><button class="sample selected" data-reference="PAY-BX17">
-                    <span>PAY-BX17</span><small>Débito duplicado</small></button
-                  ><button class="sample" data-reference="PAY-CQ22">
-                    <span>PAY-CQ22</span
-                    ><small>Evidencia contradictoria</small></button
-                  ><button class="sample" data-reference="PAY-DK44">
-                    <span>PAY-DK44</span><small>Pago consistente</small>
-                  </button>
-                </div>
-                <p class="sample-footnote">
-                  Casos iniciales del entorno local. Seleccionar una referencia
-                  no ejecuta la operación.
-                </p>
-              </div>
             </section>
 
             <section
@@ -300,7 +278,6 @@
         ><input
           id="username"
           name="username"
-          value="n3"
           autocomplete="username"
           required
           maxlength="100"
@@ -313,15 +290,6 @@
           required
           maxlength="256"
         />
-        <div class="demo-credentials">
-          <div>
-            <strong>Entorno local de demostración</strong
-            ><small>Completa las credenciales de ejemplo.</small>
-          </div>
-          <button class="text-button" type="button" id="use-demo">
-            Usar demo ↗
-          </button>
-        </div>
         <p class="field-help">
           Guardar configura el acceso; las credenciales se validan al conciliar.
         </p>

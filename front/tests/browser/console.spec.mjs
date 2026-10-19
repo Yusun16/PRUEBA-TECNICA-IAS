@@ -13,8 +13,10 @@ const corrected = {
 
 async function connect(page) {
   await page.getByRole("button", { name: "Configurar acceso" }).click();
-  await page.getByRole("button", { name: "Usar demo" }).click();
+  await page.getByLabel("Usuario", { exact: true }).fill("n3");
+  await page.getByLabel("Contraseña", { exact: true }).fill("demo-change-me");
   await page.getByRole("button", { name: "Guardar acceso" }).click();
+  await page.locator("#reference").fill("PAY-BX17");
 }
 
 test("initial state is honest and configuring credentials does not reconcile", async ({
@@ -29,12 +31,17 @@ test("initial state is honest and configuring credentials does not reconcile", a
   await expect(
     page.getByRole("heading", { name: "La claridad empieza aquí" }),
   ).toBeVisible();
+  await expect(page.locator("#reference")).toHaveValue("");
+  await expect(page.locator("body")).not.toContainText("PAY-BX17");
+  await page.locator("#reference").fill("PAY-BX17");
   await page
     .getByRole("button", { name: "Conciliar pago", exact: true })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await page.getByRole("button", { name: "Usar demo" }).click();
+  await page.getByLabel("Usuario", { exact: true }).fill("n3");
+  await page.getByLabel("Contraseña", { exact: true }).fill("demo-change-me");
   await page.getByRole("button", { name: "Guardar acceso" }).click();
+  await page.locator("#reference").fill("PAY-BX17");
   expect(commands).toBe(0);
   expect(
     await page.evaluate(() => [localStorage.length, sessionStorage.length]),
@@ -114,9 +121,7 @@ test("contradictory evidence is clearly manual review with zero movements", asyn
   );
   await page.goto("/");
   await connect(page);
-  await page
-    .getByRole("button", { name: "PAY-CQ22 Evidencia contradictoria" })
-    .click();
+  await page.locator("#reference").fill("PAY-CQ22");
   await page
     .getByRole("button", { name: "Conciliar pago", exact: true })
     .click();
@@ -165,7 +170,7 @@ test("loading blocks duplicate submissions and stale results are labelled", asyn
     page.getByRole("heading", { name: "Pago conciliado" }),
   ).toBeVisible();
   expect(calls).toBe(1);
-  await page.getByRole("button", { name: "PAY-AX91 Estado pendiente" }).click();
+  await page.locator("#reference").fill("PAY-AX91");
   await expect(page.locator("#stale-note")).toContainText("PAY-BX17");
 });
 

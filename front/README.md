@@ -8,11 +8,11 @@ Interfaz en español para conciliar pagos con la API Spring Boot de `../back`. H
 powershell -ExecutionPolicy Bypass -File .\front\scripts\start-local.ps1
 ```
 
-Abre **http://127.0.0.1:5173**. Pulsa **Configurar acceso → Usar demo → Guardar acceso** y luego **Conciliar pago**. Configurar credenciales o seleccionar una referencia no ejecuta operaciones.
+Abre **http://127.0.0.1:5173**. Pulsa **Configurar acceso**, introduce usuario y contraseña y guarda el acceso. Introduce manualmente la referencia y pulsa **Conciliar pago**. Guardar credenciales o escribir una referencia no ejecuta operaciones. La pantalla inicial no muestra referencias de pagos ni credenciales de ejemplo.
 
 El iniciador requiere Node 22+ y Java 21. En este workspace encuentra el JDK portátil de `back/.tools`; en otros equipos admite JAVA_HOME o java en PATH. Si no existe el JAR ejecuta la compilación/pruebas de Java. `-Build` fuerza esa compilación. `-Check` inicia ambos servicios, verifica HTTP 200/401 sin modificar pagos y los cierra. Ctrl+C detiene los procesos iniciados por el script. Los puertos 8080 y 5173 deben estar libres.
 
-El iniciador selecciona el perfil **local H2**. Los datos de muestra se reinician al detener Java. Las credenciales locales predeterminadas son `n3` / `demo-change-me`; si SUPPORT_USER o SUPPORT_PASSWORD fueron personalizados, ingrésalos en lugar de usar el botón demo.
+El iniciador selecciona el perfil **local H2**. Los datos de muestra se reinician al detener Java. Las credenciales locales predeterminadas son `n3` / `demo-change-me`; son exclusivas del laboratorio y se documentan aquí, sin incorporarlas a los archivos públicos de la consola. Si SUPPORT_USER o SUPPORT_PASSWORD fueron personalizados, ingresa esos valores.
 
 ## Iniciar solo el frontend
 
@@ -27,7 +27,7 @@ Node sirve la interfaz en 5173 y reenvía los POST de `/api/support/payments/{re
 
 ## Funciones
 
-- Referencia validada y cuatro selectores de casos demo; seleccionar no ejecuta.
+- Referencia manual validada, sin listado ni valores precargados de pagos.
 - Acceso de soporte con credenciales solo en memoria; no usa localStorage, sessionStorage ni cookies de autenticación.
 - Corrección, pago ya consistente y revisión manual con mensajes distintos.
 - Débito neto anterior/final, movimientos creados y nueva auditoría según la respuesta real.
@@ -64,4 +64,4 @@ npm run test:e2e
 
 Las pruebas del navegador detectan Chrome/Edge en las rutas habituales de Windows. En otro entorno configura CHROME_PATH o instala Chromium con `npx playwright install chromium`. Las pruebas e2e abren su propio servidor en 5174 y simulan respuestas para aislar los escenarios; no necesitan Java.
 
-Resultados: **13 pruebas de cliente/proxy y 10 de navegador aprobadas**. Además se verificaron seis conciliaciones desde Chrome a través del proxy contra Spring Boot real. Evidencias y límites: [docs/FRONTEND.md](../docs/FRONTEND.md).
+Resultados: **14 pruebas de cliente/proxy y 10 de navegador aprobadas**. Además se verificaron seis conciliaciones desde Chrome a través del proxy contra Spring Boot real. Evidencias y límites: [docs/FRONTEND.md](../docs/FRONTEND.md).
