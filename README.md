@@ -67,6 +67,10 @@ npm start
 
 La interfaz inicia en `http://127.0.0.1:5173` y la API en `http://127.0.0.1:8080`. Los ejemplos HTTP están en [back/requests.http](back/requests.http).
 
-El backend tiene 25 pruebas automatizadas; el frontend cuenta con 17 pruebas del cliente/proxy y 14 pruebas de navegador. Los scripts Oracle están entregados; su ejecución en un servidor Oracle sigue pendiente.
+La auditoría dejó **48 pruebas Java/H2 aprobadas**, una suite Oracle omitida por falta de conexión, y **31 pruebas del frontend aprobadas**. Los scripts Oracle están preparados; su ejecución en un servidor Oracle sigue pendiente.
 
-Detalles: [backend](back/README.md), [frontend](front/README.md), [validación Java](docs/VALIDACION_LOCAL.md) y [validación de la interfaz](docs/FRONTEND.md).
+Fuera del perfil local, compensar débitos repetidos está deshabilitado por defecto: varios APPROVED no demuestran un único cobro. H2 y los scripts Oracle incluyen guardas de inmutabilidad y de escritura por pago. La validación Oracle real está pendiente.
+
+Informe completo: [auditoría final](docs/AUDITORIA_FINAL.md). Modelo: [base de datos](docs/MODELO_DATOS.md). Instalación y recuperación: [Oracle 19c+](docs/ORACLE_INSTALACION_Y_RECUPERACION.md).
+
+Detalles: [backend](back/README.md), [frontend](front/README.md), [validación actual](docs/AUDITORIA_FINAL.md) y [validación de la interfaz](docs/FRONTEND.md).

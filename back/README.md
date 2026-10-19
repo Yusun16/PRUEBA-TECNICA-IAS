@@ -64,6 +64,8 @@ Primera respuesta de BX17:
 | Débitos parciales, reversos inválidos, importes no positivos | Revisión manual, sin compensar. |
 | Estado y ledger ya consistentes | Sin escrituras, incluso en auditoría. |
 
+**Política de duplicados después de la auditoría:** las compensaciones de débitos repetidos requieren `reconciliation.allow-duplicate-compensation=true`. El perfil local lo habilita únicamente para el escenario ficticio. Fuera de local el valor predeterminado es false y el resultado es MANUAL_REVIEW / DUPLICATE_DEBITS_REQUIRE_REVIEW. Oracle PL/SQL usa un último parámetro opcional equivalente, predeterminado en 0. El menor ID activo aporta determinismo; no demuestra cronología ni que dos aprobaciones sean una sola captura.
+
 `netDebit = SUM(DEBIT.amount) - SUM(REVERSAL.amount)`, calculado con `BigDecimal`. Un reverso válido referencia un débito del mismo pago por su importe completo; cada débito admite un único reverso. Los reversos parciales quedan fuera del alcance seguro.
 
 Supuestos críticos: APPROVED es evidencia final suficiente para confirmar; los débitos completos repetidos corresponden al mismo pago; existe una sola moneda por pago y todas las filas usan esa moneda. Si el contrato del proveedor permite estados posteriores, capturas múltiples o pagos parciales, **no aplicar esta política automáticamente** sin ampliarla. Un REJECTED con evidencia exclusivamente APPROVED puede pasar a CONFIRMED bajo este supuesto; revisar el contrato antes de producción.
@@ -78,11 +80,11 @@ persistence/  SQL parametrizado y bloqueo de PAYMENT
 db/oracle/    DDL, detección, PL/SQL, protección del ledger y validación
 ```
 
-Cada conciliación bloquea PAYMENT con `SELECT ... FOR UPDATE`, luego lee eventos y ledger, decide y persiste movimientos, estado y auditoría en una única transacción. Un fallo revierte la unidad completa. `row_version` se incrementa una sola vez por corrección, incluso cuando el cambio fue solo contable.
+Cada conciliación usa READ COMMITTED explícito y bloquea PAYMENT con `SELECT ... FOR UPDATE WAIT 5`, luego lee eventos y ledger, decide y persiste movimientos, estado y auditoría en una única transacción. Un fallo revierte la unidad completa. `row_version` se incrementa una sola vez por corrección, incluso cuando el cambio fue solo contable.
 
-La segunda solicitud espera el bloqueo y evalúa el estado ya confirmado por la primera. Esto funciona entre instancias que comparten base de datos. **Todos los escritores de eventos, ledger y estado deben tomar primero ese mismo bloqueo**; el bloqueo del padre no impide por sí solo inserciones concurrentes en tablas hijas. Si los procesos actuales no cumplen este protocolo, detenerlos o adaptarlos antes de usar la corrección. Se asume aislamiento READ COMMITTED.
+La segunda solicitud espera el bloqueo y evalúa el estado ya confirmado por la primera. Esto funciona entre instancias que comparten base de datos. El bloqueo del padre por sí solo no protege inserciones hijas; por eso el esquema H2 incorpora AccountingGuard y Oracle entrega guardas que bloquean el padre al escribir eventos/ledger. Se comprobaron escritores directos concurrentes en H2. La ejecución equivalente en Oracle sigue pendiente. Los usuarios runtime no deben poder desactivar esas protecciones; operaciones con varios pagos necesitan un orden de bloqueo acordado.
 
-La auditoría lleva SHA-256 incremental de la política, motivo, estado, importe, versión, IDs y estados de eventos, e IDs/tipos/importes/relaciones del ledger. Orden por ID y formato decimal fijo de dos posiciones; Java y PL/SQL comparten el formato. No se incluyen timestamps: cambiar una fecha no es evidencia nueva para esta política. Restricción única `(payment_id,evidence_key)` evita auditorías equivalentes. Nueva evidencia puede generar una nueva revisión. Los casos sanos no se auditan en tabla; los logs conservan el intento.
+La auditoría lleva SHA-256 incremental de la política, motivo, estado, importe, versión, IDs y estados de eventos, e IDs/tipos/importes/relaciones del ledger. Snapshot ordena sus listas por ID independientemente del repositorio y el formato decimal usa dos posiciones. Java y PL/SQL definen la misma serialización; se verificaron permutaciones y el vector Java, mientras la paridad real Oracle queda pendiente en su prueba de contrato. No se incluyen timestamps ni cambios de metadatos del ID externo de una misma fila de evento: para esta política, evidencia nueva implica nuevas filas o cambios de estado/importe/versión/relaciones evaluados. Restricción única `(payment_id,evidence_key)` evita auditorías equivalentes. Los casos sanos no se auditan en tabla; los logs conservan el intento después del commit.
 
 Los logs incluyen ID interno del pago, resultado, motivo y cantidad de movimientos. No registran Authorization, credenciales, cuerpos ni datos personales. La autenticación Basic es suficiente para la demostración local; el despliegue real requiere TLS y credenciales gestionadas. CSRF está desactivado para esta API de comandos sin sesiones. La consola web usa autorización explícita en cada petición y un proxy local que rechaza comandos de otro origen; no almacena credenciales en cookies.
 
@@ -100,7 +102,7 @@ Laboratorio vacío, usando SQLcl o SQL*Plus:
 @02_detect_anomalies.sql
 ```
 
-Sobre un esquema existente: no ejecutar `00_schema.sql` ni `05_seed_demo.sql`. Revisar y aplicar `01_support_migration.sql`, `03_reconcile_payment.sql` y `04_ledger_immutability.sql` con DBA. El DDL hace commits implícitos. Detener escritores durante la migración para inicializar las secuencias por encima de los IDs existentes, o reutilizar secuencias compartidas. Revisar reversos ya duplicados antes de crear el índice único. Las auditorías históricas conservan evidence_key NULL. El trigger bloquea UPDATE/DELETE del ledger; la cuenta operativa no debe poder desactivarlo.
+Sobre un esquema existente: no ejecutar `00_schema.sql` ni `05_seed_demo.sql`. Respaldar datos/DDL, detener escritores, revisar `07_preflight.sql` y ejecutar `deploy_existing.sql` con DBA. Incluye migración reanudable, CHECK para nuevas escrituras, guardas y verificación de objetos. El DDL hace commits implícitos; no se elimina ni reescribe historia. Las auditorías históricas conservan evidence_key NULL. Seguir la [guía Oracle completa](../docs/ORACLE_INSTALACION_Y_RECUPERACION.md).
 
 ```powershell
 $env:SPRING_PROFILES_ACTIVE = 'oracle'
@@ -138,12 +140,24 @@ La consulta de detección selecciona pagos con actividad en cualquiera de las tr
 
 H2 demuestra el comportamiento local de Java y la consulta, **no compila PL/SQL ni certifica bloqueo/driver Oracle**. La compilación y ejecución Oracle quedan pendientes en este entorno sin servidor Oracle. `06_verify_procedure.sql` contiene aserciones reproducibles de muestra e idempotencia; `../docs/VALIDACION_ORACLE.md` detalla concurrencia, rollback y paridad entre interfaces.
 
+Auditoría final: 49 pruebas registradas por Maven, 48 ejecutadas/aprobadas y una suite Oracle omitida. Incluye guardas en la base, espera y HTTP 409, escritores concurrentes de eventos/reversos, fallo real en el segundo INSERT y conversión numérica exacta. Once escenarios comunes alimentan el contrato Java y el contrato Oracle opcional.
+
+Para verificar sin tocar el JAR ni los datos H2 de una aplicación abierta, desde `back` con JAVA_HOME configurado:
+
+```powershell
+.\mvnw.cmd '-Dmaven.repo.local=.m2' '-Dartifact.suffix=-audit' -B verify
+powershell -ExecutionPolicy Bypass -File .\scripts\audit-smoke.ps1
+```
+
+Genera `target/support-reconciliation-1.0.0-audit.jar`; el smoke inicia y detiene una instancia aislada en 18082, verifica los cuatro casos, repetición, política segura y reinicialización H2. Para adoptar los cambios en la instancia habitual, cerrar esa instancia y ejecutar el iniciador con `-Build`, considerando que H2 en memoria no conserva datos al detenerse.
+
 ## Diagnóstico y entrega
 
 - [Diagnóstico y decisiones](../docs/DECISIONES.md).
 - [Guía operativa N3](../docs/OPERACION_N3.md).
 - [Validación Oracle pendiente](../docs/VALIDACION_ORACLE.md).
-- [Resultados locales: 23 pruebas y HTTP real](../docs/VALIDACION_LOCAL.md).
+- [Primera validación local (histórica)](../docs/VALIDACION_LOCAL.md).
+- [Auditoría final y resultados vigentes](../docs/AUDITORIA_FINAL.md).
 - [Trazabilidad de IA](../docs/USO_IA.md).
 - [Análisis inicial del PDF](../docs/ANALISIS_PRUEBA.md).
 

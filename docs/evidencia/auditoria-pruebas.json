@@ -1,0 +1,71 @@
+{
+  "generatedAtUtc": "2026-10-19T19:38:57.835Z",
+  "backend": {
+    "tests": 49,
+    "passed": 48,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "suites": [
+      {
+        "name": "com.pagoclaro.support.AnomalyQueryTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ProductionPolicyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationEngineTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationIntegrationTest",
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.EvidenceFingerprintTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.OracleReconciliationContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.pagoclaro.support.service.ReconciliationContractTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "frontend": {
+    "clientAndProxyPassed": 17,
+    "browserPassed": 14
+  },
+  "oracle": {
+    "executed": false,
+    "reason": "No Oracle laboratory connection; suite explicitly skipped."
+  },
+  "httpEvidence": "auditoria-http.json",
+  "activeUserApplicationRestarted": false
+}

@@ -62,6 +62,16 @@ Riesgo: H2 Oracle mode no implementa PL/SQL y difiere en bloqueos, NLS, timestam
 
 La API permite solo comandos autenticados con rol SUPPORT y escucha en loopback por defecto. Basic y credenciales locales simplifican la evaluación. No pretende reemplazar IAM empresarial. Antes de exponerla: TLS, credenciales rotadas, red interna y permisos de base mínimos. El trigger de inmutabilidad protege el ledger en Oracle; cuenta runtime sin privilegios DDL.
 
+## ADR-007 — Cierre de auditoría: guardas y autorización de compensación
+
+La revisión posterior encontró que H2 solo protegía la inmutabilidad mediante código y que las escrituras hijas directas podían omitir el bloqueo. Se añadieron guardas locales y scripts Oracle equivalentes. H2 requiere la interfaz Trigger al compilar; se reutilizó la dependencia H2 existente con alcance de compilación opcional, sin incorporar un servidor nuevo. El servicio mantiene READ COMMITTED y WAIT 5; el timeout de adquisición se traduce a conflicto sin absorber otros errores de persistencia.
+
+Se conserva la decisión determinista de menor ID, pero compensar varios débitos queda deshabilitado fuera de demo hasta que negocio valide una sola captura. El parámetro opcional PL/SQL está deshabilitado por defecto. No se expone una bandera de autorización en la API pública.
+
+Se mantiene policy-v1 y su vector publicado, ordenando Snapshot por ID y probando permutaciones/escala decimal. Java y Oracle usan una matriz de contrato común; la suite Oracle solo se ejecuta con una conexión de laboratorio explícita. El trabajo Oracle sigue parcialmente validado hasta compilar y ejecutar allí.
+
+La migración preserva legado con ENABLE NOVALIDATE, reutiliza índices y alinea secuencias existentes hacia adelante. No incluye limpieza de movimientos ni rollback destructivo de DDL. El costo adicional de guardas y consulta de integridad debe medirse en Oracle; no se atribuyen mejoras de rendimiento a pruebas sobre cuatro pagos.
+
 ## Referencias técnicas consultadas
 
 - [Requisitos de Spring Boot 3.5](https://docs.spring.io/spring-boot/3.5/system-requirements.html).

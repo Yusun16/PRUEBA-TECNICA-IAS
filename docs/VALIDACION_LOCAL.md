@@ -1,5 +1,7 @@
 # Evidencia de validación local
 
+Este documento conserva la primera validación. Los resultados vigentes de la auditoría posterior están en [AUDITORIA_FINAL.md](AUDITORIA_FINAL.md): 48 pruebas Java/H2 aprobadas, una suite Oracle omitida y 31 pruebas del frontend aprobadas.
+
 Ejecutada el 19 de octubre de 2026, zona America/Bogota. Estado: Java y demostración HTTP verificados; servidor Oracle no disponible.
 
 ## Compilación final

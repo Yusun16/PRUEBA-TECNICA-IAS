@@ -8,6 +8,8 @@
 
 Casos seguros bajo los supuestos acordados: solo APPROVED y cero débitos sin historia previa, o uno/varios débitos completos válidos; solo DECLINED sin ledger. Detenerse ante APPROVED + DECLINED, falta de eventos, devoluciones, importes parciales, moneda no comprobada, referencias cruzadas o historial que no pueda explicarse.
 
+Después de la auditoría, “varios débitos completos” no autoriza compensar por sí solo: fuera de la demo se devuelve DUPLICATE_DEBITS_REQUIRE_REVIEW. Validar primero captura única, importe, moneda e historial externo. La habilitación de compensación corresponde a configuración operativa revisada o al parámetro explícito del procedimiento, nunca a una suposición por contar APPROVED. Oracle necesita instalar también las guardas y CHECK de la guía de despliegue.
+
 Validación posterior en Oracle:
 
 ```sql
