@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: support-reconciliation
+  profiles:
+    default: local
+  datasource:
+    hikari:
+      connection-timeout: 5000
+      maximum-pool-size: 8
+  security:
+    user:
+      name: ${SUPPORT_USER:n3}
+      roles: SUPPORT
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
