@@ -16,3 +16,7 @@ Ajustes a propuestas iniciales:
 - Se separó la validación local ejecutada de la validación Oracle pendiente.
 
 No se atribuyen a una revisión humana ni a Oracle las comprobaciones realizadas únicamente por el agente y H2. El candidato debe revisar las reglas y ser capaz de explicar sus supuestos durante la evaluación.
+
+## Extensión solicitada: frontend
+
+Se utilizó Codex para implementar la consola web, el proxy local Node, el iniciador conjunto y las pruebas de interfaz. Se aplicó la guía de diseño de la habilidad Sites al trabajo local, sin publicación externa. Se revisaron capturas de escritorio/móvil y se verificaron los flujos en Chrome con respuestas controladas y con el backend real. Se mejoró la legibilidad tras revisar capturas y se preservaron los tokens decimales para evitar redondeo de importes grandes. Resultados y limitaciones en FRONTEND.md.

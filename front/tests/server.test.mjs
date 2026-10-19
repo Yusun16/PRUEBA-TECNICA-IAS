@@ -1,0 +1,133 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import { createAppServer } from "../server.mjs";
+
+async function start(server, context) {
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  context.after(
+    () =>
+      new Promise((resolve) => {
+        server.closeAllConnections();
+        server.close(resolve);
+      }),
+  );
+  return `http://127.0.0.1:${server.address().port}`;
+}
+
+test("serves only public assets with content security headers", async (context) => {
+  const url = await start(createAppServer(), context);
+  const response = await fetch(url);
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /Conciliación de pagos/);
+  assert.match(
+    response.headers.get("content-security-policy"),
+    /frame-ancestors 'none'/,
+  );
+  for (const path of [
+    "/package.json",
+    "/server.mjs",
+    "/.env",
+    "/tests/api.test.mjs",
+    "/nonexistent",
+  ]) {
+    assert.equal((await fetch(url + path)).status, 404);
+  }
+});
+
+test("proxies only valid commands and forwards explicit auth without cookies", async (context) => {
+  let received;
+  const upstream = await start(
+    createServer((req, res) => {
+      received = {
+        url: req.url,
+        method: req.method,
+        authorization: req.headers.authorization,
+        cookie: req.headers.cookie,
+      };
+      res.setHeader("Content-Type", "application/json");
+      res.end('{"outcome":"RESOLVED"}');
+    }),
+    context,
+  );
+  const url = await start(createAppServer({ backend: upstream }), context);
+  const response = await fetch(
+    url + "/api/support/payments/PAY-BX17/reconcile",
+    {
+      method: "POST",
+      headers: { Authorization: "Basic test", Cookie: "not-forwarded=1" },
+    },
+  );
+  assert.equal(response.status, 200);
+  assert.deepEqual(received, {
+    url: "/api/support/payments/PAY-BX17/reconcile",
+    method: "POST",
+    authorization: "Basic test",
+    cookie: undefined,
+  });
+  assert.equal(
+    (await fetch(url + "/api/support/payments/PAY-BX17/reconcile")).status,
+    405,
+  );
+  assert.equal(
+    (await fetch(url + "/api/not-allowed", { method: "POST" })).status,
+    404,
+  );
+  assert.equal(
+    (
+      await fetch(url + "/api/support/payments/PAY-BX17/reconcile", {
+        method: "POST",
+        headers: { Origin: "https://untrusted.example" },
+      })
+    ).status,
+    403,
+  );
+});
+
+test("does not expose backend error bodies or browser authentication challenges", async (context) => {
+  const upstream = await start(
+    createServer((req, res) => {
+      res.writeHead(401, { "WWW-Authenticate": 'Basic realm="test"' });
+      res.end("SQL secret password");
+    }),
+    context,
+  );
+  const url = await start(createAppServer({ backend: upstream }), context);
+  const response = await fetch(
+    url + "/api/support/payments/PAY-BX17/reconcile",
+    { method: "POST" },
+  );
+  assert.equal(response.status, 401);
+  assert.equal(response.headers.get("www-authenticate"), null);
+  assert.ok(!(await response.text()).includes("secret"));
+});
+
+test("upstream timeout is reported without retrying the financial command", async (context) => {
+  let calls = 0;
+  const upstream = await start(
+    createServer(() => {
+      calls++;
+    }),
+    context,
+  );
+  const url = await start(
+    createAppServer({ backend: upstream, timeout: 30 }),
+    context,
+  );
+  const response = await fetch(
+    url + "/api/support/payments/PAY-BX17/reconcile",
+    { method: "POST" },
+  );
+  assert.equal(response.status, 504);
+  assert.equal(calls, 1);
+});
+
+test("rejects credentials and non-HTTP protocols in backend configuration", () => {
+  for (const backend of [
+    "file:///tmp",
+    "http://user:pass@localhost:8080",
+    "http://localhost:8080/not-an-origin",
+  ]) {
+    assert.throws(() => createAppServer({ backend }), /BACKEND_URL/);
+  }
+});

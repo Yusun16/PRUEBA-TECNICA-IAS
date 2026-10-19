@@ -1,0 +1,20 @@
+{
+  "name": "pagoclaro-support-front",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Consola web de conciliación para soporte N3",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "prettier": "3.6.2"
+  }
+}

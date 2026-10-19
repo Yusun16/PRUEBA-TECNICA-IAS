@@ -82,7 +82,7 @@ La segunda solicitud espera el bloqueo y evalúa el estado ya confirmado por la 
 
 La auditoría lleva SHA-256 incremental de la política, motivo, estado, importe, versión, IDs y estados de eventos, e IDs/tipos/importes/relaciones del ledger. Orden por ID y formato decimal fijo de dos posiciones; Java y PL/SQL comparten el formato. No se incluyen timestamps: cambiar una fecha no es evidencia nueva para esta política. Restricción única `(payment_id,evidence_key)` evita auditorías equivalentes. Nueva evidencia puede generar una nueva revisión. Los casos sanos no se auditan en tabla; los logs conservan el intento.
 
-Los logs incluyen ID interno del pago, resultado, motivo y cantidad de movimientos. No registran Authorization, credenciales, cuerpos ni datos personales. La autenticación Basic es suficiente para la demostración local; el despliegue real requiere TLS y credenciales gestionadas. CSRF está desactivado para esta API de comandos; no se entrega una interfaz web ni sesiones.
+Los logs incluyen ID interno del pago, resultado, motivo y cantidad de movimientos. No registran Authorization, credenciales, cuerpos ni datos personales. La autenticación Basic es suficiente para la demostración local; el despliegue real requiere TLS y credenciales gestionadas. CSRF está desactivado para esta API de comandos sin sesiones. La consola web usa autorización explícita en cada petición y un proxy local que rechaza comandos de otro origen; no almacena credenciales en cookies.
 
 ## Oracle
 
@@ -145,4 +145,4 @@ H2 demuestra el comportamiento local de Java y la consulta, **no compila PL/SQL 
 - [Trazabilidad de IA](../docs/USO_IA.md).
 - [Análisis inicial del PDF](../docs/ANALISIS_PRUEBA.md).
 
-El historial Git registra la evolución real. No se requiere una cuenta de proveedor ni infraestructura adicional. El alcance de evaluación no incluye integración con el proveedor, captura/devolución real de fondos, frontend ni despliegue productivo.
+El historial Git registra la evolución real. No se requiere una cuenta de proveedor ni infraestructura adicional. La interfaz de soporte se encuentra en [front](../front/README.md). El alcance no incluye integración con el proveedor, captura/devolución real de fondos ni despliegue productivo.
