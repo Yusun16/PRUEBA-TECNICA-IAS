@@ -1,8 +1,8 @@
-target/
-.tools/
-.m2/
+**/target/
+**/.tools/
+**/.m2/
 .idea/
 .vscode/
 *.log
 .env
-data/
+**/data/

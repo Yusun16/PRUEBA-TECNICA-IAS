@@ -4,13 +4,13 @@ Ejecutada el 19 de octubre de 2026, zona America/Bogota. Estado: Java y demostra
 
 ## Compilación final
 
-Comando ejecutado desde la raíz:
+Comando equivalente con la organización actual, desde la raíz:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\dev.ps1 verify
+powershell -NoProfile -ExecutionPolicy Bypass -File .\back\scripts\dev.ps1 verify
 ```
 
-El script utilizó JDK Temurin 21.0.12.1, Maven Wrapper 3.3.4 y Maven 3.9.11, con caché local. Se ejecutó `clean verify`, generando `target/support-reconciliation-1.0.0.jar` ejecutable.
+El script utilizó JDK Temurin 21.0.12.1, Maven Wrapper 3.3.4 y Maven 3.9.11, con caché local. Se ejecutó `clean verify`, generando `back/target/support-reconciliation-1.0.0.jar` ejecutable.
 
 Resultado final registrado a las 12:00:24:
 
@@ -25,7 +25,7 @@ BUILD SUCCESS
 | ReconciliationEngineTest | 4 | Reversos duplicados/parciales, elección determinista y tipos/importes inválidos. |
 | AnomalyQueryTest | 2 | SQL del archivo entregado, netos sin multiplicación y ventana de actividad con historial completo. |
 
-Reportes regenerables: `target/surefire-reports/`. Logs de esta ejecución en `.tools/final-verify.log`, excluidos de Git junto con herramientas y dependencias.
+Reportes regenerables: `back/target/surefire-reports/`. Logs de esta ejecución en `back/.tools/final-verify.log`, excluidos de Git junto con herramientas y dependencias.
 
 ## JAR y HTTP real
 
@@ -49,4 +49,6 @@ Respuestas completas conservadas en [evidencia/http-local.json](evidencia/http-l
 
 No se ejecutaron el procedimiento PL/SQL, trigger ni migración en un servidor Oracle. No se verificaron bloqueos ni paridad de huellas entre procesos Java y PL/SQL reales en Oracle. La consulta sí se ejecutó con H2 Oracle mode, lo que no certifica el motor Oracle.
 
-Se priorizó una solución local ejecutable y probada; los scripts y el protocolo reproducible están en `db/oracle` y VALIDACION_ORACLE.md. El siguiente paso de certificación es ejecutar `demo_install.sql` sobre Oracle, resolver cualquier diferencia del motor y probar paridad/concurrencia entre ambas interfaces.
+Se priorizó una solución local ejecutable y probada; los scripts y el protocolo reproducible están en `back/db/oracle` y VALIDACION_ORACLE.md. El siguiente paso de certificación es ejecutar `demo_install.sql` sobre Oracle, resolver cualquier diferencia del motor y probar paridad/concurrencia entre ambas interfaces.
+
+Despu?s de reorganizar el repositorio en back/front/docs se volvi? a ejecutar la verificaci?n completa desde la ra?z con el comando anterior. Las reglas de negocio y los escenarios de prueba se conservan.

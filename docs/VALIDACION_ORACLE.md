@@ -4,7 +4,7 @@ Objetivo: Oracle 19c o posterior, SQLcl/SQL*Plus y un esquema vacío. No usar un
 
 ## Compilación y escenarios del PDF
 
-Desde db/oracle ejecutar `@demo_install.sql`. El instalador crea el modelo, carga muestras, migra soporte, compila procedimiento/trigger, revisa USER_ERRORS y ejecuta `06_verify_procedure.sql`. Esperar `PASS: Oracle sample cases and retries; changes rolled back`. Una aserción o error SQL termina el proceso con código de error. Guardar salida y versión Oracle.
+Desde back/db/oracle ejecutar `@demo_install.sql`. El instalador crea el modelo, carga muestras, migra soporte, compila procedimiento/trigger, revisa USER_ERRORS y ejecuta `06_verify_procedure.sql`. Esperar `PASS: Oracle sample cases and retries; changes rolled back`. Una aserción o error SQL termina el proceso con código de error. Guardar salida y versión Oracle.
 
 `@02_detect_anomalies.sql` debe mostrar AX91 (estado), BX17 (178000 de neto, no 356000) y CQ22 (contradicción), excluyendo DK44. Crear datos viejos con un evento reciente y verificar que el neto incluye todo el historial, como en AnomalyQueryTest.
 
