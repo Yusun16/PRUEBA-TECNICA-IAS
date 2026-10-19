@@ -42,7 +42,10 @@ class ReconciliationIntegrationTest {
     @Autowired PlatformTransactionManager transactionManager;
 
     @Test void loginValidatesCredentialsWithoutChangingPayments() throws Exception {
-        mvc.perform(get("/api/support/session")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/support/session")).andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
+                .andExpect(jsonPath("$.status").value(401))
+                .andExpect(jsonPath("$.title").value("AUTHENTICATION_REQUIRED"));
         mvc.perform(get("/api/support/session").with(httpBasic("n3", "incorrect")))
                 .andExpect(status().isUnauthorized());
         mvc.perform(get("/api/support/session").with(httpBasic("n3", "demo-change-me")))
@@ -56,7 +59,9 @@ class ReconciliationIntegrationTest {
 
     @Test @WithMockUser(roles = "VIEWER")
     void loginRequiresSupportRole() throws Exception {
-        mvc.perform(get("/api/support/session")).andExpect(status().isForbidden());
+        mvc.perform(get("/api/support/session")).andExpect(status().isForbidden())
+                .andExpect(content().contentTypeCompatibleWith("application/problem+json"))
+                .andExpect(jsonPath("$.status").value(403));
     }
 
     @BeforeEach

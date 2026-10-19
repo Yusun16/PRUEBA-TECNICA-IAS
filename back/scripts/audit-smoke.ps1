@@ -1,7 +1,7 @@
-param([ValidateRange(1024,65535)][int]$Port = 18082)
+param([ValidateRange(1024,65535)][int]$Port = 18082, [string]$JarPath)
 $ErrorActionPreference = 'Stop'
 $backRoot = Split-Path -Parent $PSScriptRoot
-$jarPath = Join-Path $backRoot 'target\support-reconciliation-1.0.0-audit.jar'
+$jarPath = if ($JarPath) { (Resolve-Path -LiteralPath $JarPath).Path } else { Join-Path $backRoot 'target\support-reconciliation-1.0.0-audit.jar' }
 $logRoot = Join-Path $backRoot '.tools'
 if (-not (Test-Path -LiteralPath $jarPath)) { throw 'Build first with -Dartifact.suffix=-audit verify.' }
 if (-not $env:JAVA_HOME) {
