@@ -30,19 +30,57 @@ Se revisaron application*.yml, clases de configuración, scripts, documentación
 |---|---|
 | 406c3fb | fix: strengthen payment reconciliation and Oracle integrity — reglas conservadoras, integridad H2/Oracle, contratos y pruebas. |
 | 3024e48 | fix: harden backend security and integration validation — HTTP, credenciales, compilación aislada, smoke e integración real. |
-| Commit de documentación identificable por git log | docs: finalize PagoClaro technical delivery — guías y evidencias completas anteriores a la prueba del clon. |
+| 3eb1963 | docs: finalize PagoClaro technical delivery — guías y evidencias completas anteriores a la prueba del clon. |
+| b931b56 | fix: create smoke evidence directory in fresh clones — crea la carpeta de salida antes de guardar evidencias. |
 
-Se revisaron listas, diferencias preparadas y diff --check antes de confirmar. La reproducción y el cierre documental se registrarán en un commit posterior sin cambios de código; el hash del commit que se pruebe se conservará en la evidencia. Ningún commit histórico se modificó.
+Se revisaron listas, diferencias preparadas y diff --check antes de confirmar. El cierre de este informe y las evidencias se almacena en el commit `docs: record clean-clone verification and GitHub readiness`, identificable con `git log -1 --format=%H`. Su propio hash no se incrusta en su contenido para evitar una dependencia circular. Los hashes de los commits ejecutados están en las evidencias y el hash final se informa al finalizar la tarea. Ningún commit histórico se modificó.
 
 ## F. Clon limpio independiente
 
-La validación de esta sección está en preparación. Se utilizará un directorio temporal nuevo fuera del proyecto y git clone --no-hardlinks, sin copiar manualmente fuentes ni usar los JAR/cachés originales. El JDK 21 es una herramienta externa: se preparó una copia independiente en el directorio temporal, no una dependencia de archivos ignorados del clon. Maven Wrapper y dependencias se resolverán con directorios nuevos; npm usará package-lock y caché nueva.
+Se creó un directorio temporal nuevo fuera del proyecto y se ejecutó `git clone --no-hardlinks` desde Git. HEAD inicial del clon: **3eb196300f7cb9a28139d3e032e95c9e01c53efe**. Se comprobó que no contenía back/target, back/.tools, back/.m2, front/node_modules, back/db/oracle.zip ni alternates de objetos Git. No se copiaron fuentes, JAR ni dependencias del proyecto original.
 
-Esta versión provisional del informe no presenta como aprobada una ejecución aún no realizada. El cierre añadirá comandos, commit probado y resultados reales.
+El JDK 21 es una herramienta externa: se preparó una copia independiente del JDK disponible en el directorio temporal. La ejecución no depende de que exista el JDK ignorado del proyecto original. Maven Wrapper y dependencias se descargaron de Maven Central en directorios nuevos; se usaron settings mínimos externos. npm instaló cuatro paquetes desde package-lock con caché y configuraciones vacías independientes. Node y Chrome instalados son requisitos externos explícitos, no archivos omitidos del repositorio.
+
+En este equipo Windows, el primer clone fue rechazado por distinta propiedad del repositorio original entre identidades del entorno. Se repitió con safe.directory limitado a la invocación y a las rutas exactas del repositorio y su .git; no se modificó la configuración global ni se desactivaron verificaciones para otros repositorios.
+
+El primer smoke reveló una dependencia de carpeta ignorada: ejecutó los casos, pero falló al guardar audit-http-results.json porque back/.tools no existía. Se añadió una sola instrucción de creación de directorio y se confirmó en b931b56. El clon recibió el cambio mediante fetch y merge --ff-only; se repitió el smoke y aprobó. Java, SQL y frontend no cambiaron respecto al commit que compiló. La comprobación Git de esas rutas confirma igualdad.
+
+El commit final agrega únicamente este cierre y evidencias. Después de confirmarlo se actualiza el clon por Git y se verifica el HEAD final, árbol limpio e igualdad de las rutas de aplicación con la versión probada. No se atribuye a ese cierre documental una nueva ejecución completa de tests.
 
 ## G. Pruebas
 
-La validación anterior ejecutó 53 Java/H2, 17 frontend y 14 navegador, más HTTP y navegador real. Es evidencia histórica, no sustituye el nuevo clon. Sus resultados están en VALIDACION_FINAL_ENTREGA.md y evidencia/entrega-*. La suite Oracle permanece omitida hasta disponer de Oracle real.
+Resultados nuevos desde el clon:
+
+| Verificación | Resultado |
+|---|---|
+| Maven Wrapper y clean verify con cachés nuevas | BUILD SUCCESS; 54 registradas, 53 aprobadas, cero fallos/errores, una suite Oracle omitida; duración 01:24 min. |
+| npm ci desde lockfile y caché nueva | Cuatro paquetes instalados; no se usó node_modules original. |
+| npm test | 17 aprobadas, cero fallos. |
+| npm run test:e2e | 14 aprobadas, cero fallos; 12.5 segundos. |
+| Chrome → Node → Java, sin mocks | Login incorrecto/correcto, ocho conciliaciones de cuatro pagos y reintentos, política segura, logout y no persistencia de credenciales. |
+| API real y política segura | ProblemDetail 400/401/404 y rechazo de activación por JSON/query/cabecera. |
+| Smoke tras corrección | Ocho comandos reales, BX17 demo/seguro, reintentos y reinicialización H2. |
+| Artefacto utilizado | SHA-256 idéntico en las evidencias de HTTP y navegador del clon. |
+| Aplicación original | 8080/PID 12256 y 5173/PID 14732 preservados; QA finalizada. |
+| Oracle | Suite omitida por ausencia de instancia, no aprobada. |
+
+Comandos ejecutados desde el clon, con JAVA_HOME apuntando al JDK 21 externo y MAVEN_USER_HOME a un directorio nuevo:
+
+```powershell
+# Desde back/: settings XML mínimo fuera del clon, sin secretos
+.\mvnw.cmd '-Dmaven.repo.local=.m2' '-Dartifact.suffix=-audit' -s $settings -B clean verify
+# Desde front/: cache y archivos de configuración nuevos fuera del clon
+npm ci --ignore-scripts --no-audit --no-fund --cache $npmCache --userconfig $emptyUser --globalconfig $emptyGlobal --registry=https://registry.npmjs.org
+npm test
+npm run test:e2e
+node scripts/verify-integration.mjs ../back/target/support-reconciliation-1.0.0-audit.jar
+# Desde back/, después del arreglo b931b56
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\audit-smoke.ps1
+```
+
+Los settings, caches y variables anteriores se crearon para aislar la máquina, no son requisitos ocultos de la aplicación. Las instrucciones normales del README también utilizan el mismo wrapper y lockfile. La prueba real usó 18084/5175 y el smoke 18082; no utilizaron 8080/5173. Los procesos H2 son JVM independientes.
+
+Evidencia compartible: [git-clon-pruebas.json](evidencia/git-clon-pruebas.json), [resumen Maven](evidencia/git-clon-maven-resumen.txt), [HTTP](evidencia/git-clon-http.json) e [integración real](evidencia/git-clon-integracion-real.json). Los registros anteriores entrega-* conservan su fecha y estado histórico; no se reescribieron para simular otro commit.
 
 ## H. Estado de GitHub
 
@@ -69,4 +107,4 @@ Estos comandos están documentados, no ejecutados. Si origin ya existe, inspecci
 
 Oracle 19c+ no ejecutado; el frontend adicional y las iteraciones posteriores no acreditan cumplir el límite original de dos horas. La publicación requiere URL real y autorización, y no existe certificación productiva de capturas, carga, IAM o TLS. Se conserva la aplicación original de 8080/5173 sin reiniciar ni alterar H2.
 
-**Estado provisional: REQUIERE CORRECCIONES DOCUMENTALES DE CIERRE — pendiente ejecutar y registrar el clon limpio antes de afirmar preparación definitiva.**
+**LISTO PARA PUBLICAR EN GITHUB.** La versión completa está incorporada a Git, conserva su historial, se reprodujo en un clon independiente y pasó las verificaciones locales descritas. El único defecto descubierto en el clon fue corregido y su prueba repetida. No queda una publicación remota ejecutada ni una URL inventada. Para publicar faltan crear el repositorio privado, proporcionar la URL real y autorizar el push; Oracle continúa pendiente.

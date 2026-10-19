@@ -1,0 +1,159 @@
+{
+  "recordedAt": "2026-10-19T16:11:29.7080979-05:00",
+  "source": "independent Git clone outside original workspace",
+  "cloneMethod": "git clone --no-hardlinks",
+  "buildCommit": "3eb196300f7cb9a28139d3e032e95c9e01c53efe",
+  "smokeCommit": "b931b56e6ee406bc8e28bdf13f2a7d3171d887b7",
+  "applicationSourceUnchangedBetweenCommits": true,
+  "initialClone": {
+    "clean": true,
+    "ignoredBuildArtifactsAbsent": true,
+    "oracleZipAbsent": true,
+    "gitAlternatesAbsent": true
+  },
+  "tooling": {
+    "java": "21.0.12.1+1, independent external JDK copy",
+    "mavenWrapper": "3.9.11",
+    "newWrapperCache": true,
+    "newMavenDependencyCache": true,
+    "minimalExternalSettings": true,
+    "newNpmCache": true,
+    "node": "26.5.0",
+    "frontendDependenciesInstalledFromLockfile": true,
+    "npmCiAddedPackages": 4
+  },
+  "backend": {
+    "command": "mvnw.cmd -Dmaven.repo.local=.m2 -Dartifact.suffix=-audit -s <external-empty-settings.xml> -B clean verify",
+    "registered": 54,
+    "passed": 53,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "suites": [
+      {
+        "name": "com.pagoclaro.support.AnomalyQueryTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ProductionPolicyTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationEngineTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.ReconciliationIntegrationTest",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.EvidenceFingerprintTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.OracleReconciliationContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      {
+        "name": "com.pagoclaro.support.service.ReconciliationContractTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.service.SimulationPolicyTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.pagoclaro.support.SupportCredentialPolicyTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "buildSuccess": true,
+    "totalTime": "01:24 min",
+    "artifact": "back/target/support-reconciliation-1.0.0-audit.jar",
+    "artifactSha256": "AF1BDCB682F755E3A707AEF5FD2E954C43645784C27DB33A25444A83448C6B55"
+  },
+  "frontend": {
+    "install": "npm ci --ignore-scripts --no-audit --no-fund --cache <new-cache> --userconfig <empty-user-config> --globalconfig <empty-global-config> --registry=https://registry.npmjs.org",
+    "unitPassed": 17,
+    "browserPassed": 14,
+    "browserDurationSeconds": 12.5,
+    "failures": 0
+  },
+  "integration": {
+    "httpCommandsPassed": 8,
+    "h2RestartVerified": true,
+    "realBrowserReconciliationsPassed": 8,
+    "backendMocked": false,
+    "logoutAndReloadClearedAccess": true,
+    "firstSmokeAttempt": {
+      "passed": false,
+      "cause": "Missing back/.tools directory when persisting audit-http-results.json",
+      "correctedBy": "b931b56e6ee406bc8e28bdf13f2a7d3171d887b7"
+    },
+    "fixedSmokePassed": true
+  },
+  "oracle": {
+    "executed": false,
+    "status": "PENDING",
+    "reason": "No Oracle test instance supplied."
+  },
+  "originalApplication": {
+    "restarted": false,
+    "backendPid": 12256,
+    "frontendPid": 14732,
+    "qaServersStopped": true
+  },
+  "remote": {
+    "originalConfiguredRemotes": [
+      "origin"
+    ],
+    "githubRepositoryCreated": false,
+    "pushPerformed": false
+  },
+  "localState": {
+    "originalWorkingTreeClean": true,
+    "cloneWorkingTreeClean": true
+  },
+  "finalSourceReview": {
+    "comparedTo": "docs/evidencia/entrega-pruebas.json",
+    "onlyChangedSourceFiles": [
+      "back/scripts/audit-smoke.ps1"
+    ],
+    "financialAndApplicationLogicUnchanged": true
+  },
+  "repositoryReview": {
+    "currentTextFilesScanned": 103,
+    "secretPatternMatches": [],
+    "authenticSecretsIdentifiedByManualReview": false,
+    "historicalCommitsInitiallyScanned": 9,
+    "oldHistoryPreserved": true,
+    "ignoredArchiveRetained": true
+  }
+}

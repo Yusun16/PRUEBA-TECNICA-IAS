@@ -1,0 +1,87 @@
+{
+  "generatedAtUtc": "2026-10-19T21:10:30.3001684Z",
+  "cases": [
+    {
+      "reference": "PAY-AX91",
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 125000,
+      "netDebitAfter": 125000,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "reference": "PAY-BX17",
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 89000,
+      "movementsCreated": 1,
+      "auditCreated": true
+    },
+    {
+      "reference": "PAY-BX17",
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 89000,
+      "netDebitAfter": 89000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "reference": "PAY-CQ22",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+      "paymentStatus": "PENDING",
+      "netDebitBefore": 0,
+      "netDebitAfter": 0,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "reference": "PAY-CQ22",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+      "paymentStatus": "PENDING",
+      "netDebitBefore": 0,
+      "netDebitAfter": 0,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "reference": "PAY-DK44",
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 31000,
+      "netDebitAfter": 31000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "reference": "PAY-BX17",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 178000,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "reference": "PAY-BX17",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 178000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    }
+  ],
+  "artifactSha256": "AF1BDCB682F755E3A707AEF5FD2E954C43645784C27DB33A25444A83448C6B55",
+  "h2RestartRestoredFixtures": true
+}

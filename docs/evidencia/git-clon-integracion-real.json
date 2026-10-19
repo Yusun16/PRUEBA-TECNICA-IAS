@@ -1,0 +1,130 @@
+{
+  "recordedAt": "2026-10-19T21:09:37.064Z",
+  "artifactSha256": "af1bdcb682f755e3a707aef5fd2e954c43645784c27db33a25444a83448c6b55",
+  "ports": {
+    "backend": 18084,
+    "frontend": 5175
+  },
+  "backendMocked": false,
+  "loginRejectedInvalidCredentials": true,
+  "browserCasesPassed": 8,
+  "logoutAndReloadClearedAccess": true,
+  "credentialsPersisted": false,
+  "pageErrors": [],
+  "observations": [
+    {
+      "check": "unauthenticated",
+      "status": 401,
+      "problemTitle": "AUTHENTICATION_REQUIRED"
+    },
+    {
+      "check": "invalid-reference",
+      "status": 400,
+      "problemTitle": "INVALID_REFERENCE"
+    },
+    {
+      "check": "missing-payment",
+      "status": 404,
+      "problemTitle": "PAYMENT_NOT_FOUND"
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-AX91",
+      "outcome": "RESOLVED",
+      "reason": "APPROVED_RECONCILED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 125000,
+      "netDebitAfter": 125000,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-AX91",
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 125000,
+      "netDebitAfter": 125000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-BX17",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 178000,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-BX17",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 178000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-CQ22",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+      "paymentStatus": "PENDING",
+      "netDebitBefore": 0,
+      "netDebitAfter": 0,
+      "movementsCreated": 0,
+      "auditCreated": true
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-CQ22",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "CONTRADICTORY_PROVIDER_EVIDENCE",
+      "paymentStatus": "PENDING",
+      "netDebitBefore": 0,
+      "netDebitAfter": 0,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-DK44",
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 31000,
+      "netDebitAfter": 31000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "check": "real-browser-reconciliation",
+      "reference": "PAY-DK44",
+      "outcome": "ALREADY_CONSISTENT",
+      "reason": "NO_CHANGES_REQUIRED",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 31000,
+      "netDebitAfter": 31000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    },
+    {
+      "check": "json-query-header-cannot-enable-compensation",
+      "reference": "PAY-BX17",
+      "outcome": "MANUAL_REVIEW",
+      "reason": "DUPLICATE_DEBITS_REQUIRE_REVIEW",
+      "paymentStatus": "CONFIRMED",
+      "netDebitBefore": 178000,
+      "netDebitAfter": 178000,
+      "movementsCreated": 0,
+      "auditCreated": false
+    }
+  ]
+}
