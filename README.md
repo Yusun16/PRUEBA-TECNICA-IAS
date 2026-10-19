@@ -2,7 +2,7 @@
 
 El proyecto implementa una API Java para conciliar pagos: corrige estados con evidencia suficiente, conserva el historial y evita efectos duplicados al reintentar. La compensación de débitos repetidos se demuestra únicamente en simulación controlada; en operación segura exige revisión manual.
 
-**LISTO PARA PUBLICAR EN GITHUB:** [preparación Git y reproducción desde clon](docs/PREPARACION_GIT_ENTREGA.md). La [validación integral](docs/VALIDACION_FINAL_ENTREGA.md) documenta arquitectura y cumplimiento del enunciado. Desde un clon independiente pasaron **53 pruebas Java/H2, 17 de cliente/proxy y 14 de navegador**, además de ocho comandos HTTP y ocho conciliaciones de navegador contra Java real. Oracle sigue pendiente. Se conserva el historial original y la rama master; no se ha publicado en GitHub.
+**LISTO PARA PUBLICAR EN GITHUB:** [preparación Git y reproducción desde clon](docs/PREPARACION_GIT_ENTREGA.md). La [validación integral](docs/VALIDACION_FINAL_ENTREGA.md) documenta arquitectura y cumplimiento del enunciado. Desde un clon independiente pasaron **53 pruebas Java/H2, 17 de cliente/proxy y 14 de navegador**, además de ocho comandos HTTP y ocho conciliaciones de navegador contra Java real. Oracle sigue pendiente. Se conservan el historial original, master y el origin detectado al finalizar; esta tarea no hizo push.
 
 ## Ruta rápida para el evaluador
 

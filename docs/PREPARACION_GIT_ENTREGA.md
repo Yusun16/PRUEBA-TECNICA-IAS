@@ -32,8 +32,9 @@ Se revisaron application*.yml, clases de configuración, scripts, documentación
 | 3024e48 | fix: harden backend security and integration validation — HTTP, credenciales, compilación aislada, smoke e integración real. |
 | 3eb1963 | docs: finalize PagoClaro technical delivery — guías y evidencias completas anteriores a la prueba del clon. |
 | b931b56 | fix: create smoke evidence directory in fresh clones — crea la carpeta de salida antes de guardar evidencias. |
+| 0e14927 | docs: record clean-clone verification and GitHub readiness — resultados y evidencias del clon. |
 
-Se revisaron listas, diferencias preparadas y diff --check antes de confirmar. El cierre de este informe y las evidencias se almacena en el commit `docs: record clean-clone verification and GitHub readiness`, identificable con `git log -1 --format=%H`. Su propio hash no se incrusta en su contenido para evitar una dependencia circular. Los hashes de los commits ejecutados están en las evidencias y el hash final se informa al finalizar la tarea. Ningún commit histórico se modificó.
+Se revisaron listas, diferencias preparadas y diff --check antes de confirmar. Una última actualización documental registra el origin detectado durante el cierre, sin modificar su configuración ni publicar. El hash del commit que contiene este informe se obtiene con `git log -1 --format=%H`; no se autoincrusta para evitar una dependencia circular y se informa al finalizar la tarea. Ningún commit histórico se modificó.
 
 ## F. Clon limpio independiente
 
@@ -84,27 +85,28 @@ Evidencia compartible: [git-clon-pruebas.json](evidencia/git-clon-pruebas.json),
 
 ## H. Estado de GitHub
 
-No existe remoto configurado ni URL suministrada. No se creó repositorio remoto, no se ejecutó push y no se cambió visibilidad. Se recomienda crear **pagoclaro-soporte-n3** inicialmente **PRIVATE**, hasta confirmar cómo accederán los evaluadores.
+Al iniciar no existía remoto. Durante la comprobación final se detectó **origin** con URL `https://github.com/Yusun16/PRUEBA-TECNICA-IAS.git`, tanto para fetch como push. Esta tarea no añadió ni cambió ese remoto; se conservó como apareció configurado. No se ejecutó push ni se creó un repositorio remoto. Su existencia en GitHub, contenido, permisos y visibilidad no fueron consultados ni certificados.
+
+Se recomienda visibilidad **PRIVATE** hasta confirmar cómo accederán los evaluadores. El nombre sugerido por la instrucción, pagoclaro-soporte-n3, queda como alternativa si el propietario decide crear otro repositorio; no se renombró ni sustituyó origin para imponer ese nombre.
 
 ## I. Instrucciones para publicar cuando exista URL real
 
-En GitHub crear un repositorio vacío llamado pagoclaro-soporte-n3 en la cuenta elegida, con visibilidad PRIVATE, sin generar README, .gitignore o licencia, porque ya existe historial local. Esto evita introducir un historial remoto distinto al importar. Referencias: [crear un repositorio](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository), [publicar código local existente](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github).
+Conservar el origin actual hasta que el propietario confirme el destino. Si todavía debe crear el repositorio de destino, elegir PRIVATE y no generar README, .gitignore ni licencia, porque ya existe historial local; esto evita introducir un historial remoto distinto al importar. Referencias: [crear un repositorio](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository), [publicar código local existente](https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github).
 
-Después de recibir la URL real y autorización explícita de publicación, desde la raíz:
+Después de confirmar que origin es el destino correcto y recibir autorización explícita para publicar, desde la raíz:
 
 ```powershell
 git status
 git remote -v
-$repoUrl = Read-Host 'Pegue la URL real copiada de GitHub, sin token ni contraseña'
-git remote add origin $repoUrl
-git remote -v
+git branch --show-current
+# Antes del push: comprobar permisos, visibilidad e historial remoto.
 git push -u origin master
 ```
 
-Estos comandos están documentados, no ejecutados. Si origin ya existe, inspeccionarlo antes: no sustituirlo automáticamente. Autenticarse con el mecanismo seguro de Git/GitHub disponible; no guardar tokens en archivos ni en la URL. Tras publicar, compartir el acceso privado con los evaluadores conforme a las instrucciones de la prueba.
+El push está documentado, no ejecutado. No ejecutar remote add origin de nuevo: origin ya existe. Si el propietario quiere otro destino, revisar primero su URL y autorizar el cambio por separado. Autenticarse con el mecanismo seguro de Git/GitHub disponible; no guardar tokens en archivos ni en la URL. Si hay commits remotos, inspeccionarlos sin force-push y acordar la integración. Tras publicar, compartir acceso con los evaluadores conforme a las instrucciones de la prueba.
 
 ## J. Riesgos y acciones pendientes
 
-Oracle 19c+ no ejecutado; el frontend adicional y las iteraciones posteriores no acreditan cumplir el límite original de dos horas. La publicación requiere URL real y autorización, y no existe certificación productiva de capturas, carga, IAM o TLS. Se conserva la aplicación original de 8080/5173 sin reiniciar ni alterar H2.
+Oracle 19c+ no ejecutado; el frontend adicional y las iteraciones posteriores no acreditan cumplir el límite original de dos horas. La publicación requiere confirmar el origin detectado, sus permisos/historia/visibilidad y autorizar el push; no existe certificación productiva de capturas, carga, IAM o TLS. Se conserva la aplicación original de 8080/5173 sin reiniciar ni alterar H2.
 
-**LISTO PARA PUBLICAR EN GITHUB.** La versión completa está incorporada a Git, conserva su historial, se reprodujo en un clon independiente y pasó las verificaciones locales descritas. El único defecto descubierto en el clon fue corregido y su prueba repetida. No queda una publicación remota ejecutada ni una URL inventada. Para publicar faltan crear el repositorio privado, proporcionar la URL real y autorizar el push; Oracle continúa pendiente.
+**LISTO PARA PUBLICAR EN GITHUB.** La versión completa está incorporada a Git, conserva su historial, se reprodujo en un clon independiente y pasó las verificaciones locales descritas. El único defecto descubierto en el clon fue corregido y su prueba repetida. No se ejecutó publicación remota ni se inventó una URL. Para publicar falta confirmar y verificar el origin detectado y autorizar el push; Oracle continúa pendiente.
