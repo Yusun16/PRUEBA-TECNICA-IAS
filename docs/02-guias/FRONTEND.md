@@ -1,8 +1,10 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Frontend — decisiones y validación
 
-**Auditoría posterior vigente:** [AUDITORIA_FINAL_FRONTEND.md](AUDITORIA_FINAL_FRONTEND.md), con 21 pruebas unitarias/proxy, 28 de navegador y ocho conciliaciones reales aprobadas. Incluye correcciones de vacío, contraste, teclado y validación del contrato. Los resultados inferiores de este documento son históricos; no representan una certificación HTTPS/WCAG completa.
+**Auditoría posterior vigente:** [AUDITORIA_FINAL_FRONTEND.md](../04-validaciones/AUDITORIA_FINAL_FRONTEND.md), con 21 pruebas unitarias/proxy, 28 de navegador y ocho conciliaciones reales aprobadas. Incluye correcciones de vacío, contraste, teclado y validación del contrato. Los resultados inferiores de este documento son históricos; no representan una certificación HTTPS/WCAG completa.
 
-Validación vigente de entrega: [VALIDACION_FINAL_ENTREGA.md](VALIDACION_FINAL_ENTREGA.md). Se repitieron 17 pruebas de cliente/proxy y 14 de navegador; además `front/scripts/verify-integration.mjs` comprobó ocho conciliaciones en Chrome con backend Java real y política segura. [Evidencia actual](evidencia/entrega-integracion-real.json). Los resultados de seis comandos y capturas descritos más abajo corresponden a ejecuciones anteriores.
+Validación vigente de entrega: [VALIDACION_FINAL_ENTREGA.md](../04-validaciones/VALIDACION_FINAL_ENTREGA.md). Se repitieron 17 pruebas de cliente/proxy y 14 de navegador; además `front/scripts/verify-integration.mjs` comprobó ocho conciliaciones en Chrome con backend Java real y política segura. [Evidencia actual](../evidencia/entrega/entrega-integracion-real.json). Los resultados de seis comandos y capturas descritos más abajo corresponden a ejecuciones anteriores.
 
 ## Alcance implementado
 
@@ -45,9 +47,9 @@ La integración real comprobó, en orden:
 5. CQ22 repetido: MANUAL_REVIEW, sin auditoría nueva.
 6. DK44: ALREADY_CONSISTENT, sin escrituras.
 
-Se verificaron seis filas de actividad y la vista móvil contra el mismo backend. Respuestas sin cabeceras ni credenciales: [evidencia/frontend-integracion.json](evidencia/frontend-integracion.json).
+Se verificaron seis filas de actividad y la vista móvil contra el mismo backend. Respuestas sin cabeceras ni credenciales: [evidencia/frontend-integracion.json](../evidencia/frontend/frontend-integracion.json).
 
-Capturas: [escritorio](evidencia/frontend-escritorio.png), [móvil](evidencia/frontend-movil.png) y [actividad](evidencia/frontend-actividad.png).
+Capturas: [escritorio](../evidencia/frontend/frontend-escritorio.png), [móvil](../evidencia/frontend/frontend-movil.png) y [actividad](../evidencia/frontend/frontend-actividad.png).
 
 ## Límites
 
@@ -61,7 +63,7 @@ La primera interfaz incluía referencias y etiquetas del PDF como atajos estáti
 
 Una prueba verifica que HTML y módulos públicos no contengan las referencias del enunciado ni la contraseña demo. Las pruebas de navegador ahora introducen referencias y credenciales manualmente. Se comprobó sobre los servicios en ejecución que el proxy en 5173 y Java en 8080 responden HTTP 401 al POST sin credenciales. Esto verifica ese control de acceso; no constituye una auditoría completa de seguridad.
 
-Los datos del PDF permanecen en documentación y fixtures de laboratorio, que el servidor web no expone. Las capturas de integración anteriores documentan la versión inicial; [la pantalla actual](evidencia/frontend-acceso-actual.png) muestra el formulario vacío sin atajos de pago.
+Los datos del PDF permanecen en documentación y fixtures de laboratorio, que el servidor web no expone. Las capturas de integración anteriores documentan la versión inicial; [la pantalla actual](../evidencia/frontend/frontend-acceso-actual.png) muestra el formulario vacío sin atajos de pago.
 
 ## Login validado y entrada al dashboard
 
@@ -71,4 +73,4 @@ La validación de acceso usa un GET independiente y no ejecuta conciliaciones ni
 
 Verificación adicional: 25 pruebas Java aprobadas, incluyendo acceso anónimo, contraseña incorrecta, rol no autorizado, identidad válida y ausencia de efectos sobre pagos. En navegador se probaron acceso directo a dashboard, errores de login, entrada válida, logout y recarga. Contra la aplicación real se verificó contraseña incorrecta → error, credenciales válidas → dashboard y logout → login, sin ejecutar comandos de pago.
 
-Capturas actuales: [login escritorio](evidencia/login-escritorio.png), [login móvil](evidencia/login-movil.png) y [dashboard tras autenticación](evidencia/dashboard-autenticado.png). Los servicios locales se reiniciaron con el nuevo backend; H2 cargó nuevamente los datos de muestra.
+Capturas actuales: [login escritorio](../evidencia/frontend/login-escritorio.png), [login móvil](../evidencia/frontend/login-movil.png) y [dashboard tras autenticación](../evidencia/frontend/dashboard-autenticado.png). Los servicios locales se reiniciaron con el nuevo backend; H2 cargó nuevamente los datos de muestra.

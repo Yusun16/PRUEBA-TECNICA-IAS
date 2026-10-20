@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Modelo de datos y garantías
 
 ```mermaid

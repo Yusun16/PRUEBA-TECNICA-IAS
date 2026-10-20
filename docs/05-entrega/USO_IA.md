@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Trazabilidad del uso de IA
 
 Se utilizó Codex durante el análisis y desarrollo, autorizado por el apartado 7 del enunciado y por el candidato. Entradas: PDF de la prueba e instrucciones del usuario sobre calidad y ejecución. No se usaron credenciales ni datos productivos.

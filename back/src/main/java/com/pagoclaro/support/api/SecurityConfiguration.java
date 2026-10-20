@@ -24,6 +24,7 @@ public class SecurityConfiguration {
         return http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.GET, "/api/support/session").hasRole("SUPPORT")
                         .requestMatchers(HttpMethod.POST, "/api/support/payments/*/reconcile").hasRole("SUPPORT")
                         .anyRequest().denyAll())

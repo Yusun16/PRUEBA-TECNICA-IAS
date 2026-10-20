@@ -64,7 +64,7 @@ Primera respuesta de BX17:
 | Débitos parciales, reversos inválidos, importes no positivos | Revisión manual, sin compensar. |
 | Estado y ledger ya consistentes | Sin escrituras, incluso en auditoría. |
 
-**Política de duplicados:** la opción `reconciliation.allow-duplicate-compensation=true` solo se permite en simulación local, sin perfil oracle. Fuera de esa simulación se rechaza al arrancar. Oracle mantiene el parámetro opcional predeterminado en 0; valor 1 requiere compilación específica de laboratorio. La compilación segura rechaza el valor 1. El menor ID activo aporta determinismo, pero no demuestra captura externa. Consultar [corrección final](../docs/CORRECCION_INTEGRIDAD_ORACLE.md).
+**Política de duplicados:** la opción `reconciliation.allow-duplicate-compensation=true` solo se permite en simulación local, sin perfil oracle. Fuera de esa simulación se rechaza al arrancar. Oracle mantiene el parámetro opcional predeterminado en 0; valor 1 requiere compilación específica de laboratorio. La compilación segura rechaza el valor 1. El menor ID activo aporta determinismo, pero no demuestra captura externa. Consultar [corrección final](../docs/03-base-de-datos/CORRECCION_INTEGRIDAD_ORACLE.md).
 
 `netDebit = SUM(DEBIT.amount) - SUM(REVERSAL.amount)`, calculado con `BigDecimal`. Un reverso válido referencia un débito del mismo pago por su importe completo; cada débito admite un único reverso. Los reversos parciales quedan fuera del alcance seguro.
 
@@ -102,7 +102,7 @@ Laboratorio vacío, usando SQLcl o SQL*Plus:
 @02_detect_anomalies.sql
 ```
 
-Sobre un esquema existente: no ejecutar `00_schema.sql` ni `05_seed_demo.sql`. Respaldar datos/DDL, detener escritores, revisar `07_preflight.sql` y ejecutar `deploy_existing.sql` con DBA. Incluye migración reanudable, CHECK para nuevas escrituras, guardas y verificación de objetos. El DDL hace commits implícitos; no se elimina ni reescribe historia. Las auditorías históricas conservan evidence_key NULL. Seguir la [guía Oracle completa](../docs/ORACLE_INSTALACION_Y_RECUPERACION.md).
+Sobre un esquema existente: no ejecutar `00_schema.sql` ni `05_seed_demo.sql`. Respaldar datos/DDL, detener escritores, revisar `07_preflight.sql` y ejecutar `deploy_existing.sql` con DBA. Incluye migración reanudable, CHECK para nuevas escrituras, guardas y verificación de objetos. El DDL hace commits implícitos; no se elimina ni reescribe historia. Las auditorías históricas conservan evidence_key NULL. Seguir la [guía Oracle completa](../docs/03-base-de-datos/ORACLE_INSTALACION_Y_RECUPERACION.md).
 
 ```powershell
 $env:SPRING_PROFILES_ACTIVE = 'oracle'
@@ -138,9 +138,9 @@ La consulta de detección selecciona pagos con actividad en cualquiera de las tr
 
 `clean verify` ejecuta pruebas del motor, integración JDBC/Spring y consulta SQL real de entrega. Incluye los cuatro casos, repetición con conteos persistidos, evidencia nueva, dos hilos/transacciones concurrentes, decimales, inexistencia, falta de evidencia, DECLINED, ledger ambiguo, reversos cruzados/duplicados/parciales y rollback por fallo de auditoría. También valida autenticación, rol, HTTP y errores.
 
-H2 demuestra el comportamiento local de Java y la consulta, **no compila PL/SQL ni certifica bloqueo/driver Oracle**. La compilación y ejecución Oracle quedan pendientes en este entorno sin servidor Oracle. `06_verify_procedure.sql` contiene aserciones reproducibles de muestra e idempotencia; `../docs/VALIDACION_ORACLE.md` detalla concurrencia, rollback y paridad entre interfaces.
+H2 demuestra el comportamiento local de Java y la consulta, **no compila PL/SQL ni certifica bloqueo/driver Oracle**. La compilación y ejecución Oracle quedan pendientes en este entorno sin servidor Oracle. `06_verify_procedure.sql` contiene aserciones reproducibles de muestra e idempotencia; `../docs/03-base-de-datos/VALIDACION_ORACLE.md` detalla concurrencia, rollback y paridad entre interfaces.
 
-Validación final: 54 pruebas registradas por Maven, 53 aprobadas y una suite Oracle omitida. Incluye guardas, concurrencia, rollback, configuración de simulación, aprobación sin ledger y rechazo de contraseña demo fuera de local. Once escenarios comunes alimentan el contrato Java y el contrato Oracle opcional. Consultar [informe vigente](../docs/VALIDACION_FINAL_ENTREGA.md).
+Validación final: 54 pruebas registradas por Maven, 53 aprobadas y una suite Oracle omitida. Incluye guardas, concurrencia, rollback, configuración de simulación, aprobación sin ledger y rechazo de contraseña demo fuera de local. Once escenarios comunes alimentan el contrato Java y el contrato Oracle opcional. Consultar [informe vigente](../docs/04-validaciones/VALIDACION_FINAL_ENTREGA.md).
 
 Los errores 401 y 403 de Spring Security también usan application/problem+json y Cache-Control: no-store. El endpoint de acceso conserva HTTP Basic y el rol SUPPORT; no se añadieron usuarios en base, JWT ni sesiones. El arranque no local rechaza la contraseña demo o una contraseña vacía.
 
@@ -166,12 +166,39 @@ Genera `target/support-reconciliation-1.0.0-audit.jar`; el smoke inicia y detien
 
 ## Diagnóstico y entrega
 
-- [Diagnóstico y decisiones](../docs/DECISIONES.md).
-- [Guía operativa N3](../docs/OPERACION_N3.md).
-- [Validación Oracle pendiente](../docs/VALIDACION_ORACLE.md).
-- [Primera validación local (histórica)](../docs/VALIDACION_LOCAL.md).
-- [Auditoría final y resultados vigentes](../docs/AUDITORIA_FINAL.md).
-- [Trazabilidad de IA](../docs/USO_IA.md).
-- [Análisis inicial del PDF](../docs/ANALISIS_PRUEBA.md).
+- [Diagnóstico y decisiones](../docs/02-guias/DECISIONES.md).
+- [Guía operativa N3](../docs/02-guias/OPERACION_N3.md).
+- [Validación Oracle pendiente](../docs/03-base-de-datos/VALIDACION_ORACLE.md).
+- [Primera validación local (histórica)](../docs/04-validaciones/VALIDACION_LOCAL.md).
+- [Auditoría final y resultados vigentes](../docs/04-validaciones/AUDITORIA_FINAL.md).
+- [Trazabilidad de IA](../docs/05-entrega/USO_IA.md).
+- [Análisis inicial del PDF](../docs/01-enunciado/ANALISIS_PRUEBA.md).
 
 El historial Git registra la evolución real. No se requiere una cuenta de proveedor ni infraestructura adicional. La interfaz de soporte se encuentra en [front](../front/README.md). El alcance no incluye integración con el proveedor, captura/devolución real de fondos ni despliegue productivo.
+
+## Swagger UI / OpenAPI
+
+Integración con springdoc-openapi 2.8.17 para Spring Boot 3.5 (compatibilidad: https://springdoc.org/v2/).
+
+En el perfil local:
+
+1. Abre http://127.0.0.1:8080/swagger-ui/index.html (también /swagger-ui.html).
+   El navegador solicitar? primero las credenciales Basic de soporte para abrir la documentaci?n.
+2. Pulsa **Authorize** y usa las credenciales del laboratorio: `n3` / `demo-change-me`, salvo que hayas configurado otras.
+3. Prueba primero `GET /api/support/session` con **Try it out → Execute**.
+4. Para conciliar, abre `POST /api/support/payments/{reference}/reconcile`, escribe una referencia como `PAY-AX91` y ejecuta sin cuerpo. Esta operación sí puede modificar pagos, auditoría y ledger; `MANUAL_REVIEW` devuelve 200 y requiere revisión humana.
+
+Contrato JSON: http://127.0.0.1:8080/v3/api-docs. La documentación local se puede leer sin credenciales; los endpoints de negocio mantienen Basic Auth y rol SUPPORT. Swagger no persiste la autorización entre recargas. No hay contraseñas preconfiguradas en el contrato.
+
+Fuera del perfil local, `springdoc.api-docs.enabled` y `springdoc.swagger-ui.enabled` están deshabilitados por defecto. No habilites el perfil local en un entorno real. Los endpoints y activos de documentación solo admiten lectura GET en la política de seguridad.
+
+Si ya existe un backend activo, los cambios requieren un nuevo arranque para estar disponibles en 8080. No es necesario detenerlo para probar esta versión: con Java 21, desde `back`, ejecutar en otra terminal:
+
+```powershell
+./mvnw.cmd '-Dbuild.output-directory=.tools/swagger-build' package
+java -jar .tools/swagger-build/support-reconciliation-1.0.0.jar --server.port=8081 '--spring.datasource.url=jdbc:h2:mem:pagoclaro-swagger;MODE=Oracle;DB_CLOSE_DELAY=-1;LOCK_TIMEOUT=5000'
+```
+
+En ese caso abre http://127.0.0.1:8081/swagger-ui/index.html. Esa instancia usa su propia H2 en memoria y no comparte datos con la instancia original. Detenerla elimina únicamente sus datos temporales. El comando de validación completo es `./mvnw.cmd '-Dbuild.output-directory=.tools/swagger-build' verify`; incluye contrato OpenAPI, recursos de UI y regresión de autenticación/autorización.
+
+Validación de esta integración (19/10/2026): Maven verify aprobó 58 pruebas, sin errores ni fallos; una suite Oracle quedó omitida por falta de entorno. Incluye cinco pruebas nuevas de documentación/seguridad. En Chrome real se verificaron carga de Swagger, Authorize con Basic y Try it out de GET /api/support/session (200, usuario n3/rol SUPPORT); sin credenciales la API devolvió 401. Se usó una instancia independiente en 8081 y no se alteró la aplicación original de 8080.

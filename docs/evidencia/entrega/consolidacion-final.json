@@ -1,0 +1,49 @@
+{
+  "reviewDate": "2026-10-19",
+  "timezone": "America/Bogota",
+  "baseCommit": "7373a9c229ba4211bf1594d824a5d5d98ba25363",
+  "backend": {
+    "command": "./mvnw.cmd -Dmaven.repo.local=.m2/repository -Dbuild.output-directory=.tools/consolidation-build verify",
+    "java": 21,
+    "tests": 59,
+    "passed": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1,
+    "skipReason": "Oracle environment unavailable"
+  },
+  "frontend": {
+    "unitPassed": 21,
+    "browserPassed": 28,
+    "realReconciliationsPassed": 8
+  },
+  "swagger": {
+    "swaggerUiRendered": true,
+    "basicAuthorize": true,
+    "tryItOutSessionStatus": 200,
+    "anonymousDocumentationStatus": 401,
+    "documentedOperations": [
+      "/api/support/payments/{reference}/reconcile",
+      "/api/support/session"
+    ],
+    "secretsInContract": false
+  },
+  "accountingLogicChanged": false,
+  "oracleScriptsChanged": false,
+  "github": {
+    "origin": "https://github.com/Yusun16/PRUEBA-TECNICA-IAS.git",
+    "dns": true,
+    "tcp443": true,
+    "lsRemote": true,
+    "authenticatedApiStatus": 200,
+    "visibility": "public",
+    "observedMaster": "3eb196300f7cb9a28139d3e032e95c9e01c53efe",
+    "remoteIsAncestor": true,
+    "pushPerformed": false,
+    "tlsVerificationDisabled": false
+  },
+  "documents": {
+    "relocatedFiles": 38,
+    "sourceEvidenceChecksumsVerified": true
+  }
+}

@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Diagnóstico y decisiones técnicas
 
 ## Hechos, hipótesis y comprobaciones

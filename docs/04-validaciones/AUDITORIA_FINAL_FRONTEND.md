@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # PagoClaro — auditoría final del frontend
 
 Fecha: 19 de octubre de 2026, America/Bogota. Versión de referencia inicial: commit 0881c9a. Alcance: frontend existente, pruebas y documentación. No se modificaron Java, modelo de datos, SQL/PLSQL, Spring Security ni políticas financieras. Durante la auditor?a no se crearon commits ni se hizo push.
@@ -110,9 +112,9 @@ Entorno: Windows, Node 26.5.0 y Chrome instalado. No se añadieron dependencias.
 
 La primera suite ampliada obtuvo 23 aprobadas y cinco fallidas porque la prueba comprobaba :focus-visible después de activar una vista con ratón y enfocar programáticamente. Se corrigió la prueba para recorrer con Tab; no se contó como cinco defectos de aplicación. Tras completar los ajustes se repitió la suite completa: 28 aprobadas (56.6 s en la última ejecución). Se observaron advertencias del entorno Node/Playwright; la ejecución final no tuvo fallos.
 
-Evidencia actual: [resumen](evidencia/frontend-final/audit-summary.json), [mediciones](evidencia/frontend-final/measurements.json), [mediciones anteriores](evidencia/frontend-final/baseline-measurements.json) e [integración real](evidencia/frontend-final/real-integration.json). Logs completos de trabajo: front/.tools/front-audit-*.log, ignorados por Git.
+Evidencia actual: [resumen](../evidencia/frontend-final/audit-summary.json), [mediciones](../evidencia/frontend-final/measurements.json), [mediciones anteriores](../evidencia/frontend-final/baseline-measurements.json) e [integración real](../evidencia/frontend-final/real-integration.json). Logs completos de trabajo: front/.tools/front-audit-*.log, ignorados por Git.
 
-Capturas representativas: [login móvil](evidencia/frontend-final/login-375.png), [dashboard escritorio](evidencia/frontend-final/dashboard-1440.png), [corrección](evidencia/frontend-final/result-1440.png), [consistente](evidencia/frontend-final/consistent-1440.png), [manual móvil](evidencia/frontend-final/manual-390.png) y [error](evidencia/frontend-final/error-1440.png). Las capturas son de datos ficticios controlados, no evidencia de movimientos en la base real. Las ocho respuestas Java están en el JSON independiente.
+Capturas representativas: [login móvil](../evidencia/frontend-final/login-375.png), [dashboard escritorio](../evidencia/frontend-final/dashboard-1440.png), [corrección](../evidencia/frontend-final/result-1440.png), [consistente](../evidencia/frontend-final/consistent-1440.png), [manual móvil](../evidencia/frontend-final/manual-390.png) y [error](../evidencia/frontend-final/error-1440.png). Las capturas son de datos ficticios controlados, no evidencia de movimientos en la base real. Las ocho respuestas Java están en el JSON independiente.
 
 ## H. Archivos modificados
 
@@ -126,9 +128,9 @@ Capturas representativas: [login móvil](evidencia/frontend-final/login-375.png)
 | front/tests/server.test.mjs | Origin/forwarded, body rechazado, backend desconectado y timeout al leer body. |
 | front/tests/browser/audit.spec.mjs | Catorce casos nuevos para vacío/transición, cinco tamaños, teclado, errores y respuestas maliciosas. |
 | front/scripts/verify-visual.mjs | Capturas/mediciones reproducibles en servidor propio, sin tocar Java del usuario. |
-| front/README.md, docs/FRONTEND.md, README.md | Resultados vigentes, enlace al informe y límite HTTPS. |
-| docs/USO_IA.md | Trazabilidad de esta revisión y de la corrección de pruebas. |
-| docs/AUDITORIA_FINAL_FRONTEND.md, docs/evidencia/frontend-final/ | Informe y evidencias compartibles. |
+| front/README.md, docs/02-guias/FRONTEND.md, README.md | Resultados vigentes, enlace al informe y límite HTTPS. |
+| docs/05-entrega/USO_IA.md | Trazabilidad de esta revisión y de la corrección de pruebas. |
+| docs/04-validaciones/AUDITORIA_FINAL_FRONTEND.md, docs/evidencia/frontend-final/ | Informe y evidencias compartibles. |
 
 server.mjs, src/api.js, package.json, package-lock y archivos de backend permanecen sin cambios. Durante la auditor?a no se crearon commits ni se hizo push; front.zip preexistente sigue intacto. Los archivos de trabajo bajo .tools son auxiliares ignorados, no dependencias de ejecución del producto.
 

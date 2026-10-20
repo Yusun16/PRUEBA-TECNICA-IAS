@@ -24,3 +24,14 @@ server:
   error:
     include-message: never
     include-stacktrace: never
+
+springdoc:
+  api-docs:
+    enabled: false
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
+    persist-authorization: false
+    supported-submit-methods: [get, post]
+  paths-to-match: /api/support/**
+  override-with-generic-response: false

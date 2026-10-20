@@ -1,6 +1,8 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # PagoClaro — validación integral y preparación de entrega
 
-**Actualización posterior:** la formalización Git autorizada y la reproducción independiente se documentan en [PREPARACION_GIT_ENTREGA.md](PREPARACION_GIT_ENTREGA.md). Las referencias de este informe al HEAD c8fbb1a, ausencia de commits y clon pendiente describen el estado histórico de esta validación, anterior a esa autorización.
+**Actualización posterior:** la formalización Git autorizada y la reproducción independiente se documentan en [PREPARACION_GIT_ENTREGA.md](../05-entrega/PREPARACION_GIT_ENTREGA.md). Las referencias de este informe al HEAD c8fbb1a, ausencia de commits y clon pendiente describen el estado histórico de esta validación, anterior a esa autorización.
 
 Fecha: 19 de octubre de 2026, America/Bogota. Alcance: versión completa del workspace, incluidos cambios locales previos. No se crearon commits ni se hizo push. No se reinició la aplicación del usuario ni se ejecutaron migraciones Oracle.
 
@@ -43,9 +45,9 @@ No se encontraron fallos locales en las ejecuciones finales. Esto no equivale a 
 | back/scripts/audit-smoke.ps1 | Argumento opcional JarPath para comprobar el artefacto limpio aislado; conserva comportamiento habitual. |
 | front/scripts/verify-integration.mjs | Prueba reproducible Chrome → Node → Java con procesos propios, sin interceptar ni simular la API. |
 | README.md, back/README.md, front/README.md | Ruta rápida, versiones y pruebas actuales, separación de JAR activo/validado y comandos reproducibles. |
-| docs/OPERACION_N3.md, docs/DECISIONES.md | Retiran instrucciones obsoletas de creación de débito y autorización productiva mediante flag. |
-| docs/FRONTEND.md, docs/USO_IA.md | Distinguen evidencia histórica, automatización con mocks e integración real actual. |
-| docs/VALIDACION_FINAL_ENTREGA.md y docs/evidencia/entrega-* | Informe, evidencias, manifiesto de fuentes y propuesta de entrega. |
+| docs/02-guias/OPERACION_N3.md, docs/02-guias/DECISIONES.md | Retiran instrucciones obsoletas de creación de débito y autorización productiva mediante flag. |
+| docs/02-guias/FRONTEND.md, docs/05-entrega/USO_IA.md | Distinguen evidencia histórica, automatización con mocks e integración real actual. |
+| docs/04-validaciones/VALIDACION_FINAL_ENTREGA.md y docs/evidencia/entrega-* | Informe, evidencias, manifiesto de fuentes y propuesta de entrega. |
 
 Los cambios financieros y Oracle que ya estaban sin commit al iniciar se conservaron y se validaron como parte del conjunto; están explicados en CORRECCION_INTEGRIDAD_ORACLE.md. No se reconstruyó ni refactorizó globalmente la aplicación.
 
@@ -108,11 +110,11 @@ Las pruebas HTTP no se suman artificialmente a la cantidad de tests JUnit. Son e
 
 ### Archivos de evidencia
 
-- [entrega-pruebas.json](evidencia/entrega-pruebas.json): conteos derivados de Surefire, versiones empaquetadas, SHA-256, manifiesto de fuentes y procesos conservados.
-- [entrega-maven-resumen.txt](evidencia/entrega-maven-resumen.txt): resultados por suite y BUILD SUCCESS extraídos de la ejecución final.
-- [entrega-http.json](evidencia/entrega-http.json): ocho respuestas reales y reinicialización H2.
-- [entrega-integracion-real.json](evidencia/entrega-integracion-real.json): login, errores y ocho conciliaciones Chrome/Node/Java sin mocks.
-- [entrega-git.json](evidencia/entrega-git.json): estado Git, historial, exclusiones y archivo desconocido preservado.
+- [entrega-pruebas.json](../evidencia/entrega/entrega-pruebas.json): conteos derivados de Surefire, versiones empaquetadas, SHA-256, manifiesto de fuentes y procesos conservados.
+- [entrega-maven-resumen.txt](../evidencia/entrega/entrega-maven-resumen.txt): resultados por suite y BUILD SUCCESS extraídos de la ejecución final.
+- [entrega-http.json](../evidencia/entrega/entrega-http.json): ocho respuestas reales y reinicialización H2.
+- [entrega-integracion-real.json](../evidencia/entrega/entrega-integracion-real.json): login, errores y ocho conciliaciones Chrome/Node/Java sin mocks.
+- [entrega-git.json](../evidencia/entrega/entrega-git.json): estado Git, historial, exclusiones y archivo desconocido preservado.
 
 Logs completos y Surefire XML están en back/.tools/delivery-maven.log y back/.tools/delivery-build/surefire-reports; frontend en front/.tools/delivery-*.log. Son archivos locales ignorados, no publicaciones de logs ni secretos. Las evidencias compartibles no contienen Authorization ni contraseñas operativas.
 
@@ -145,7 +147,7 @@ El procedimiento PL/SQL es una interfaz alternativa a Java/JDBC. Conserva seis a
 
 Oracle no fue ejecutado. Para certificar: esquema de laboratorio vacío, demo_install.sql, pruebas SQL 06/10/11/18, postcheck 14 y dos sesiones 12/13; para el contrato JDBC de demo recompilar únicamente ese laboratorio con pagoclaro_demo:TRUE, ejecutar la suite y volver a compilar FALSE. Repetir bajo NLS alternativo y comprobar driver, bloqueos y rollback. En esquema existente usar deploy_existing.sql con respaldo, mantenimiento y preflight, nunca los scripts de recreación/seed.
 
-Las limitaciones de compilación, índices especiales, restricciones equivalentes, secuencias y legado ENABLE NOVALIDATE siguen descritas en [la guía Oracle](ORACLE_INSTALACION_Y_RECUPERACION.md) y [la corrección de integridad](CORRECCION_INTEGRIDAD_ORACLE.md). No se afirma integridad histórica ni reversibilidad de DDL mediante ROLLBACK.
+Las limitaciones de compilación, índices especiales, restricciones equivalentes, secuencias y legado ENABLE NOVALIDATE siguen descritas en [la guía Oracle](../03-base-de-datos/ORACLE_INSTALACION_Y_RECUPERACION.md) y [la corrección de integridad](../03-base-de-datos/CORRECCION_INTEGRIDAD_ORACLE.md). No se afirma integridad histórica ni reversibilidad de DDL mediante ROLLBACK.
 
 ## G. Git, documentación y reproducción
 
@@ -167,7 +169,7 @@ Reiniciar H2 descarta el estado anterior y restaura la muestra. No usar la ruta 
 
 ## H. Matriz de requisitos del enunciado
 
-Fuente: PDF original presente en docs/Prueba_Tecnica_Desarrollador_Soporte_Java_Candidato.pdf y su extracción disponible Prueba_Tecnica_texto.txt. Se revisaron sus cinco páginas de contenido extraído; no se inventaron requisitos cuando el material reconoce vacíos de evidencia.
+Fuente: PDF original presente en docs/01-enunciado/Prueba_Tecnica_Desarrollador_Soporte_Java_Candidato.pdf y su extracción disponible Prueba_Tecnica_texto.txt. Se revisaron sus cinco páginas de contenido extraído; no se inventaron requisitos cuando el material reconoce vacíos de evidencia.
 
 | Requisito | Estado | Evidencia concreta |
 |---|---|---|

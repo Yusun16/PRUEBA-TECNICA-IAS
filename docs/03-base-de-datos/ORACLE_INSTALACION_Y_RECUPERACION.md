@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Oracle 19c+: instalación, validación y recuperación
 
 **Estado: pendiente de ejecución real.** No hay servidor Oracle ni SQLcl/SQL*Plus disponibles en el entorno de esta auditoría. La revisión de fuentes y las pruebas H2 no certifican PL/SQL, DDL, triggers, driver, bloqueos ni planes Oracle.

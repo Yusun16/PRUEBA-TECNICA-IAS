@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 <!-- La correcci?n posterior y resultados vigentes est?n en CORRECCION_INTEGRIDAD_ORACLE.md. -->
 # Auditoría y finalización de PagoClaro
 
@@ -43,7 +45,7 @@ Se conservaron comportamientos correctos: BigDecimal, SQL parametrizado, transac
 
 ## C. Base de datos
 
-El [modelo](MODELO_DATOS.md) conserva las cuatro tablas y sus relaciones. En H2 se comprobaron inmutabilidad y validación de nuevas inserciones. Los scripts Oracle implementan el mismo objetivo con CHECK, índices únicos y triggers; todavía no están certificados por ejecución.
+El [modelo](../03-base-de-datos/MODELO_DATOS.md) conserva las cuatro tablas y sus relaciones. En H2 se comprobaron inmutabilidad y validación de nuevas inserciones. Los scripts Oracle implementan el mismo objetivo con CHECK, índices únicos y triggers; todavía no están certificados por ejecución.
 
 | Script Oracle | Cambio o finalidad |
 |---|---|
@@ -97,9 +99,9 @@ Desglose final Java: AnomalyQueryTest 4; ProductionPolicyTest 1; ReconciliationE
 
 Se verificó rollback por fallo de auditoría y por una colisión PK real en el segundo reverso, después de insertar el primero. Ningún movimiento parcial permanece y el reintento posterior funciona. También se comprobaron dos conciliaciones simultáneas, un evento directo esperando al padre, un reverso competidor rechazado y HTTP 409 después de cinco segundos de espera.
 
-La evidencia HTTP confirma AX91 sin débito nuevo; BX17 con un reverso y repetición sin efectos; CQ22 manual sin auditoría duplicada; DK44 sano. Tras reiniciar solo la instancia de pruebas, BX17 volvió a neto 178000 y quedó en revisión con la política segura. Archivo: [evidencia/auditoria-http.json](evidencia/auditoria-http.json), con hash del JAR y sin cabeceras de autorización.
+La evidencia HTTP confirma AX91 sin débito nuevo; BX17 con un reverso y repetición sin efectos; CQ22 manual sin auditoría duplicada; DK44 sano. Tras reiniciar solo la instancia de pruebas, BX17 volvió a neto 178000 y quedó en revisión con la política segura. Archivo: [evidencia/auditoria-http.json](../evidencia/auditoria/auditoria-http.json), con hash del JAR y sin cabeceras de autorización.
 
-Reportes regenerables en `back/target/surefire-reports`; logs locales excluidos de Git: `audit-baseline.log`, `audit-integrity.log`, `audit-integrity-fixed.log`, `audit-contract.log`, `audit-final-verify.log`. El [resumen estructurado](evidencia/auditoria-pruebas.json) conserva los conteos para revisión sin depender de esos logs locales.
+Reportes regenerables en `back/target/surefire-reports`; logs locales excluidos de Git: `audit-baseline.log`, `audit-integrity.log`, `audit-integrity-fixed.log`, `audit-contract.log`, `audit-final-verify.log`. El [resumen estructurado](../evidencia/auditoria/auditoria-pruebas.json) conserva los conteos para revisión sin depender de esos logs locales.
 
 ## E. Riesgos pendientes
 
@@ -129,4 +131,4 @@ La aplicación del usuario en 8080/5173 no fue reiniciada ni sus datos H2 inspec
 5. Obtener backup e inventario del esquema real, evaluar legado, revisar planes con datos representativos y aplicar `deploy_existing.sql` solo en mantenimiento.
 6. Para adoptar localmente: conservar la información de la sesión abierta que se necesite, detenerla y ejecutar `front/scripts/start-local.ps1 -Build`. No se hizo automáticamente para evitar perder datos en memoria.
 
-Guía reproducible: [ORACLE_INSTALACION_Y_RECUPERACION.md](ORACLE_INSTALACION_Y_RECUPERACION.md). Las instrucciones y scripts no equivalen a una certificación de Oracle ni a una autorización para compensar fondos reales.
+Guía reproducible: [ORACLE_INSTALACION_Y_RECUPERACION.md](../03-base-de-datos/ORACLE_INSTALACION_Y_RECUPERACION.md). Las instrucciones y scripts no equivalen a una certificación de Oracle ni a una autorización para compensar fondos reales.

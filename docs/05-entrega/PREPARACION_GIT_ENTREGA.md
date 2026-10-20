@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Preparación definitiva de Git y entrega en GitHub
 
 Fecha: 19 de octubre de 2026, America/Bogota. Este informe corresponde a la autorización posterior para crear commits locales. No cambia la lógica financiera validada ni certifica Oracle.
@@ -81,7 +83,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\audit-smoke.ps1
 
 Los settings, caches y variables anteriores se crearon para aislar la máquina, no son requisitos ocultos de la aplicación. Las instrucciones normales del README también utilizan el mismo wrapper y lockfile. La prueba real usó 18084/5175 y el smoke 18082; no utilizaron 8080/5173. Los procesos H2 son JVM independientes.
 
-Evidencia compartible: [git-clon-pruebas.json](evidencia/git-clon-pruebas.json), [resumen Maven](evidencia/git-clon-maven-resumen.txt), [HTTP](evidencia/git-clon-http.json) e [integración real](evidencia/git-clon-integracion-real.json). Los registros anteriores entrega-* conservan su fecha y estado histórico; no se reescribieron para simular otro commit.
+Evidencia compartible: [git-clon-pruebas.json](../evidencia/git/git-clon-pruebas.json), [resumen Maven](../evidencia/git/git-clon-maven-resumen.txt), [HTTP](../evidencia/git/git-clon-http.json) e [integración real](../evidencia/git/git-clon-integracion-real.json). Los registros anteriores entrega-* conservan su fecha y estado histórico; no se reescribieron para simular otro commit.
 
 ## H. Estado de GitHub
 

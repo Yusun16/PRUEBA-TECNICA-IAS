@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 <!-- La correcci?n posterior y resultados vigentes est?n en CORRECCION_INTEGRIDAD_ORACLE.md. -->
 # Validacion Oracle: pendiente de ejecucion real
 

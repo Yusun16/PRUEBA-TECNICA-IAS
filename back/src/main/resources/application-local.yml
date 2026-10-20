@@ -14,3 +14,9 @@ spring:
   security:
     user:
       password: ${SUPPORT_PASSWORD:demo-change-me}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

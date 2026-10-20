@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Auditoría inicial — PagoClaro
 
 Inspección previa a modificaciones: estructura versionada, Java/Spring/JDBC, controladores, configuración de seguridad/transacciones, pruebas, esquema H2 y todos los scripts Oracle. No se encontraron AGENTS.md aplicables. Línea base: `mvnw -B test`, 25 pruebas, cero fallos/errores. No se dispone de docker, SQLcl, SQL*Plus ni conexión Oracle configurada para certificar ejecución.

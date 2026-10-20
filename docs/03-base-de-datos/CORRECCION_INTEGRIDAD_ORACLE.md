@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Corrección final de integridad — 19 de octubre de 2026
 
 Este informe sustituye las conclusiones anteriores sobre creación de débitos y autorización de compensaciones. Oracle 19c+ sigue **pendiente de ejecución real**. No se ejecutaron migraciones ni se reinició la aplicación del usuario.

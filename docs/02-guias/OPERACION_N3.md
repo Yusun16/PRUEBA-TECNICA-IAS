@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Guía operativa para soporte N3
 
 1. Identificar el pago con la consulta `back/db/oracle/02_detect_anomalies.sql`. Correlacionar eventos con proveedor y comprobar monto/moneda, estado final y ausencia de devoluciones fuera del modelo. La consulta detecta candidatos; no declara que sea seguro corregirlos.

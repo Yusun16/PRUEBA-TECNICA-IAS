@@ -1,3 +1,5 @@
+[Volver al ?ndice de documentaci?n](../README.md)
+
 # Evidencia de validación local
 
 Este documento conserva la primera validación. Los resultados vigentes de la auditoría posterior están en [AUDITORIA_FINAL.md](AUDITORIA_FINAL.md): 48 pruebas Java/H2 aprobadas, una suite Oracle omitida y 31 pruebas del frontend aprobadas.
@@ -45,7 +47,7 @@ Se inició el JAR generado en loopback, puerto 18080, con perfil local. Se hicie
 | Pago inexistente | HTTP 404 PAYMENT_NOT_FOUND. |
 | Referencia inválida | HTTP 400 INVALID_REFERENCE. |
 
-Respuestas completas conservadas en [evidencia/http-local.json](evidencia/http-local.json). Los logs del servidor confirmaron registro de conciliaciones después del commit. No se incluyen cabeceras de autorización en la evidencia.
+Respuestas completas conservadas en [evidencia/http-local.json](../evidencia/inicial/http-local.json). Los logs del servidor confirmaron registro de conciliaciones después del commit. No se incluyen cabeceras de autorización en la evidencia.
 
 ## Pendiente de infraestructura
 

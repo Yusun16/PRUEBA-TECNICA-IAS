@@ -66,7 +66,7 @@ npm run test:e2e
 
 Las pruebas del navegador detectan Chrome/Edge en las rutas habituales de Windows. En otro entorno configura CHROME_PATH o instala Chromium con `npx playwright install chromium`. Las pruebas e2e abren su propio servidor en 5174 y simulan respuestas para aislar los escenarios; no necesitan Java.
 
-Auditoría vigente: **21 pruebas de cliente/proxy y 28 de navegador aprobadas**, más ocho conciliaciones desde Chrome contra Java real. [Informe y limitaciones](../docs/AUDITORIA_FINAL_FRONTEND.md). La actividad vacía conserva sus mensajes; se comprobaron teclado, contraste y viewports de 375, 390, 768, 1024 y 1440 px.
+Auditoría vigente: **21 pruebas de cliente/proxy y 28 de navegador aprobadas**, más ocho conciliaciones desde Chrome contra Java real. [Informe y limitaciones](../docs/04-validaciones/AUDITORIA_FINAL_FRONTEND.md). La actividad vacía conserva sus mensajes; se comprobaron teclado, contraste y viewports de 375, 390, 768, 1024 y 1440 px.
 
 Para generar capturas y mediciones con respuestas controladas, desde front/: `node scripts/verify-visual.mjs`. Usa un servidor propio con puerto libre y las dependencias Playwright existentes. No ejecuta comandos contra Java. Los resultados distinguen estas capturas de la integración real descrita abajo.
 
@@ -78,4 +78,4 @@ La entrega agrega una prueba reproducible de integración sin respuestas simulad
 node scripts/verify-integration.mjs
 ```
 
-Utiliza Java en JAVA_HOME o el JDK portátil local y Chrome/Edge instalado, CHROME_PATH o Chromium de Playwright. Inicia y cierra exclusivamente sus procesos en 18084 y 5175. Verifica login incorrecto/correcto, política segura, los cuatro pagos y reintentos, respuestas ProblemDetail, ausencia de almacenamiento de credenciales y logout. No modifica la aplicación de 8080/5173. Permite pasar otro JAR como primer argumento. Evidencia vigente: [entrega-integracion-real.json](../docs/evidencia/entrega-integracion-real.json).
+Utiliza Java en JAVA_HOME o el JDK portátil local y Chrome/Edge instalado, CHROME_PATH o Chromium de Playwright. Inicia y cierra exclusivamente sus procesos en 18084 y 5175. Verifica login incorrecto/correcto, política segura, los cuatro pagos y reintentos, respuestas ProblemDetail, ausencia de almacenamiento de credenciales y logout. No modifica la aplicación de 8080/5173. Permite pasar otro JAR como primer argumento. Evidencia vigente: [entrega-integracion-real.json](../docs/evidencia/entrega/entrega-integracion-real.json).
